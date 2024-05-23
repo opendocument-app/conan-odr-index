@@ -1,0 +1,34 @@
+sources:
+  "1.0.0":
+    source:
+      url: "https://github.com/opendocument-app/OpenDocument.core/archive/refs/tags/v1.0.0.tar.gz"
+      sha256: "4da749ce3ea1cd5fbc4d710f068f582e8e7e14c4847faca323436516ff59df8c"
+  "2.0.0":
+    source:
+      url: "https://github.com/opendocument-app/OpenDocument.core/archive/refs/tags/v2.0.0.tar.gz"
+      sha256: "b77f3e05406b91fd63ce01863a5c2705527960a45681079a519c52235e996f1c"
+  "2.1.0":
+    source:
+      url: "https://github.com/opendocument-app/OpenDocument.core/archive/refs/tags/v2.1.0.tar.gz"
+      sha256: "17911e2d531275585ba0bbd109193fca8443621c91f60d0a6829873ac5aed1c0"
+  "2.1.1":
+    source:
+      url: "https://github.com/opendocument-app/OpenDocument.core/archive/refs/tags/v2.1.1.tar.gz"
+      sha256: "48083e3144b3eaf3fdcdbb9388ed9b218714bc8acfe81c9bae7185e200edce85"
+  "2.1.2":
+    source:
+      url: "https://github.com/opendocument-app/OpenDocument.core/archive/refs/tags/v2.1.2.tar.gz"
+      sha256: "6cc76ba0be4d89da57f71910e7c8ebc457890d1495f9fa5937c48b0196a0bce7"
+  "2.2.0":
+    source:
+      url: "https://github.com/opendocument-app/OpenDocument.core/archive/refs/tags/v2.2.0.tar.gz"
+      sha256: "66fe5c5fbe4c1adcc9ebfbdd1a8fb3fac1faab33c2aa303bfdbd8ed5a10ecf0c"
+  "3.0.0":
+    source:
+      url: "https://github.com/opendocument-app/OpenDocument.core/archive/refs/tags/v3.0.0.tar.gz"
+      sha256: "7a4009a5e489302ac1a0db4b071bd138825aa40982dcaec32c74277290769908"
+  "4.0.0":
+    source:
+      url: "https://github.com/opendocument-app/OpenDocument.core/archive/refs/tags/v4.0.0.tar.gz"
+      sha256: "b2d671f34bf641d465dfaae9adefdcb4a6210d58a519594a182ba2839531435e"
+patches:
