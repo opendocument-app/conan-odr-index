@@ -1,0 +1,13 @@
+diff --git a/3rdparty/CMakeLists.txt b/3rdparty/CMakeLists.txt
+index fd817e1..792f18b 100644
+--- a/3rdparty/CMakeLists.txt
++++ b/3rdparty/CMakeLists.txt
+@@ -33,7 +33,7 @@ FetchContent_Declare(
+ )
+ FetchContent_Declare(
+         uchardet
+-        GIT_REPOSITORY https://github.com/freedesktop/uchardet.git
++        GIT_REPOSITORY https://gitlab.freedesktop.org/uchardet/uchardet.git
+         GIT_TAG d7dad54
+ )
+ FetchContent_Declare(

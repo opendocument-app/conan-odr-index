@@ -2,14 +2,17 @@ import os
 from conan import ConanFile
 from conan.tools.build import check_min_cppstd
 from conan.tools.files import copy
-from conan.tools.cmake import CMakeToolchain, CMakeDeps, CMake
+from conan.tools.cmake import CMakeToolchain, CMakeDeps, CMake, cmake_layout
+from conan.tools.files import (
+    apply_conandata_patches, export_conandata_patches, get, copy
+)
+from conan.tools.scm import Version
 
 
 class OpenDocumentCoreConan(ConanFile):
     name = "odrcore"
-    version = ""
-    url = ""
-    homepage = "https://github.com/opendocument-app/OpenDocument.core"
+    url = "https://github.com/opendocument-app/OpenDocument.core"
+    homepage = "https://opendocument.app/"
     description = "C++ library that translates office documents to HTML"
     topics = "open document", "openoffice xml", "open document reader"
     license = "GPL 3.0"
@@ -26,7 +29,24 @@ class OpenDocumentCoreConan(ConanFile):
 
     exports_sources = ["cli/*", "cmake/*", "src/*", "CMakeLists.txt"]
 
+    def export_sources(self):
+        export_conandata_patches(self)
+
+    def config_options(self):
+        if self.settings.os == "Windows":
+            del self.options.fPIC
+
+    def configure(self):
+        if self.options.shared:
+            self.options.rm_safe("fPIC")
+
+    def layout(self):
+        cmake_layout(self, src_folder="src")
+
     def requirements(self):
+        if Version(self.version) <= "2.0.0":
+            return
+
         self.requires("pugixml/1.14")
         self.requires("cryptopp/8.8.0")
         self.requires("miniz/3.0.2")
@@ -36,23 +56,36 @@ class OpenDocumentCoreConan(ConanFile):
         self.requires("utfcpp/4.0.4")
 
     def build_requirements(self):
+        if Version(self.version) <= "2.0.0":
+            return
+
         self.test_requires("gtest/1.14.0")
 
     def validate_build(self):
         if self.settings.get_safe("compiler.cppstd"):
             check_min_cppstd(self, 17)
 
+    def source(self):
+        get(self, **self.conan_data["sources"][self.version]["source"], strip_root=True)
+
     def generate(self):
         tc = CMakeToolchain(self)
         tc.variables["CMAKE_PROJECT_VERSION"] = self.version
         tc.variables["BUILD_SHARED_LIBS"] = self.options.shared
         tc.variables["ODR_TEST"] = False
+        if Version(self.version) < "4.0.0":
+            tc.variables["CONAN_EXPORTED"] = True
         tc.generate()
 
         deps = CMakeDeps(self)
         deps.generate()
 
+    def _patch_sources(self):
+        apply_conandata_patches(self)
+
     def build(self):
+        self._patch_sources()
+
         cmake = CMake(self)
         cmake.configure()
         cmake.build()
