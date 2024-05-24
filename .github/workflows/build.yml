@@ -1,0 +1,119 @@
+name: build_test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+env:
+  CCACHE_DIR: ${{ github.workspace }}/ccache
+  CCACHE_MAXSIZE: 500M
+  CCACHE_KEY_SUFFIX: r1
+
+jobs:
+  build:
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - { os: ubuntu-22.04, compiler: clang-15, cc: clang-15, cxx: clang++-15 }
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: ubuntu install ccache
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt install ccache
+          ccache -V
+      - name: macos install ccache
+        if: runner.os == 'macOS'
+        run: |
+          brew install ccache
+          ccache -V
+
+      - name: setup python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+      - name: install python dependencies
+        run: pip install --upgrade pip conan
+
+      - name: conan remote
+        run: conan remote add --index 0 odr https://artifactory.opendocument.app/artifactory/api/conan/conan
+      - name: conan login
+        run: conan remote login odr admin --password ${{ secrets.ARTIFACTORY }}
+      - name: conan config
+        run: conan config install .github/config/${{ matrix.config.os }}-${{ matrix.config.compiler }}/conan
+
+      - name: conan install 1.0.0
+        run: conan install recipes/odrcore/all/conanfile.py --version 1.0.0 --output-folder=build --build=missing
+      - name: conan source 1.0.0
+        run: conan source recipes/odrcore/all/conanfile.py --version 1.0.0
+      - name: conan build 1.0.0
+        run: conan build recipes/odrcore/all/conanfile.py --version 1.0.0
+
+      - name: conan install 2.0.0
+        run: conan install recipes/odrcore/all/conanfile.py --version 2.0.0 --output-folder=build --build=missing
+      - name: conan source 2.0.0
+        run: conan source recipes/odrcore/all/conanfile.py --version 2.0.0
+      - name: conan build 2.0.0
+        run: conan build recipes/odrcore/all/conanfile.py --version 2.0.0
+
+      - name: conan install 2.1.0
+        run: conan install recipes/odrcore/all/conanfile.py --version 2.1.0 --output-folder=build --build=missing
+      - name: conan source 2.1.0
+        run: conan source recipes/odrcore/all/conanfile.py --version 2.1.0
+      - name: conan build 2.1.0
+        run: conan build recipes/odrcore/all/conanfile.py --version 2.1.0
+
+      - name: conan install 2.1.1
+        run: conan install recipes/odrcore/all/conanfile.py --version 2.1.1 --output-folder=build --build=missing
+      - name: conan source 2.1.1
+        run: conan source recipes/odrcore/all/conanfile.py --version 2.1.1
+      - name: conan build 2.1.1
+        run: conan build recipes/odrcore/all/conanfile.py --version 2.1.1
+
+      - name: conan install 2.1.2
+        run: conan install recipes/odrcore/all/conanfile.py --version 2.1.2 --output-folder=build --build=missing
+      - name: conan source 2.1.2
+        run: conan source recipes/odrcore/all/conanfile.py --version 2.1.2
+      - name: conan build 2.1.2
+        run: conan build recipes/odrcore/all/conanfile.py --version 2.1.2
+
+      - name: conan install 2.2.0
+        run: conan install recipes/odrcore/all/conanfile.py --version 2.2.0 --output-folder=build --build=missing
+      - name: conan source 2.2.0
+        run: conan source recipes/odrcore/all/conanfile.py --version 2.2.0
+      - name: conan build 2.2.0
+        run: conan build recipes/odrcore/all/conanfile.py --version 2.2.0
+
+      - name: conan install 3.0.0
+        run: conan install recipes/odrcore/all/conanfile.py --version 3.0.0 --output-folder=build --build=missing
+      - name: conan source 3.0.0
+        run: conan source recipes/odrcore/all/conanfile.py --version 3.0.0
+      - name: conan build 3.0.0
+        run: conan build recipes/odrcore/all/conanfile.py --version 3.0.0
+
+      - name: conan install 4.0.0
+        run: conan install recipes/odrcore/all/conanfile.py --version 4.0.0 --output-folder=build --build=missing
+      - name: conan source 4.0.0
+        run: conan source recipes/odrcore/all/conanfile.py --version 4.0.0
+      - name: conan build 4.0.0
+        run: conan build recipes/odrcore/all/conanfile.py --version 4.0.0
+
+      - name: cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.ccache
+            /Users/runner/Library/Caches/ccache
+          key: ${{ matrix.config.os }}-${{ matrix.config.compiler }}-${{ env.CCACHE_KEY_SUFFIX }}
+          restore-keys: |
+            ${{ matrix.config.os }}-${{ matrix.config.compiler }}-
