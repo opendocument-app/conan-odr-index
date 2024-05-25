@@ -39,20 +39,18 @@ def main():
         package_infos[recipe_path.name] = infos
 
     if args.github:
-        result = {
-            "packages": [
-                {
-                    "package_version": f"{package}/{infos["version"]}",
-                    "package": package,
-                    "version": infos["version"],
-                    "conanfile": str(
-                        Path("recipes") / package / infos["folder"] / "conanfile.py"
-                    ),
-                }
-                for package in sorted(package_infos.keys())
-                for infos in sorted(package_infos[package], key=lambda x: x["version"])
-            ]
-        }
+        result = [
+            {
+                "package_version": f"{package}/{infos["version"]}",
+                "package": package,
+                "version": infos["version"],
+                "conanfile": str(
+                    Path("recipes") / package / infos["folder"] / "conanfile.py"
+                ),
+            }
+            for package in sorted(package_infos.keys())
+            for infos in sorted(package_infos[package], key=lambda x: x["version"])
+        ]
 
         print("packages=" + json.dumps(result))
     else:

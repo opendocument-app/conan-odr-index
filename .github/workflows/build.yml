@@ -18,6 +18,8 @@ env:
 jobs:
   find-all-packages:
     runs-on: ubuntu-22.04
+    outputs:
+      packages: ${{ steps.list-packages.outputs.packages }}
     steps:
       - name: checkout
         uses: actions/checkout@v4
