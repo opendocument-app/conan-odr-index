@@ -3,6 +3,7 @@
 import argparse
 from pathlib import Path
 import yaml
+import json
 
 def main():
     parser = argparse.ArgumentParser(description="List package versions")
@@ -43,7 +44,7 @@ def main():
               for infos in sorted(package_infos[package], key=lambda x: x["version"])
         ]
 
-        print(result)
+        print("packages=" + json.dumps(result))
     else:
         for package in sorted(package_infos.keys()):
             infos = package_infos[package]

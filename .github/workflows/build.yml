@@ -36,10 +36,6 @@ jobs:
         id: list-packages
         run: python scripts/list_package_versions.py --github | tee $GITHUB_OUTPUT
 
-      - name: Set output in the matrix format
-        id: set-output
-        run: echo "packages=${{ steps.list-packages.outputs.* }}" >> "$GITHUB_OUTPUT"
-
   build:
     runs-on: ${{ matrix.config.os }}
     needs:
