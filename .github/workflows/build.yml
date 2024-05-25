@@ -93,6 +93,8 @@ jobs:
         run: conan source ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }}
       - name: conan build
         run: conan build ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }}
+      - name: conan export
+        run: conan export ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }}
 
       # test_package
 
