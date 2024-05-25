@@ -31,6 +31,7 @@ sources:
     source:
       url: "https://github.com/opendocument-app/OpenDocument.core/archive/refs/tags/v4.0.0.tar.gz"
       sha256: "b2d671f34bf641d465dfaae9adefdcb4a6210d58a519594a182ba2839531435e"
+
 patches:
   "2.0.0":
     - patch_file: "patches/2.0.0-0001-fix-cmake.patch"
