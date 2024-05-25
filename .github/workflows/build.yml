@@ -19,6 +19,9 @@ jobs:
   find-all-packages:
     runs-on: ubuntu-22.04
     steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
       - name: setup python 3.12
         uses: actions/setup-python@v5
         with:
