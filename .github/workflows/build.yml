@@ -26,6 +26,8 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: 3.12
+      - name: install python dependencies
+        run: pip install --upgrade pip pyyaml
 
       - name: List all packages
         run: python scripts/list_package_versions.py
