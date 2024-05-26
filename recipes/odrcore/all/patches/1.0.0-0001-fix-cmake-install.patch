@@ -1,0 +1,25 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 3a27624..93a9966 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -95,3 +95,20 @@ set_property(TARGET odrlib PROPERTY POSITION_INDEPENDENT_CODE ON)
+ add_subdirectory("test")
+ 
+ add_subdirectory("main")
++
++install(
++        DIRECTORY include/
++        DESTINATION include/
++)
++install(
++        DIRECTORY src/
++        DESTINATION include/
++        FILES_MATCHING PATTERN "*.h"
++)
++install(
++        TARGETS odrlib odrmain
++        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
++        BUNDLE DESTINATION ${CMAKE_INSTALL_BINDIR}
++        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
++        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
++)

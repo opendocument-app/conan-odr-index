@@ -1,0 +1,20 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index a037876..d51df1c 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -189,6 +189,15 @@ if (ODR_TEST)
+     add_subdirectory(test)
+ endif ()
+ 
++install(
++        DIRECTORY include/
++        DESTINATION include/
++        )
++install(
++        DIRECTORY src/
++        DESTINATION include/
++        FILES_MATCHING PATTERN "*.hpp"
++        )
+ install(
+         TARGETS
+         odr
