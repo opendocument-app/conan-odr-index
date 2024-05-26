@@ -97,9 +97,9 @@ jobs:
         run: conan export ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }}
 
       - name: conan test
-        run: >
-          test_conanfil=$(dirname ${{ matrix.package.conanfile }})/test_package/conanfile.py
-          conan test ${{ matrix.package.conanfile }} ${{ matrix.package.package_version }} --build missing
+        run: |
+          test_conanfile=$(dirname ${{ matrix.package.conanfile }})/test_package/conanfile.py
+          conan test $test_conanfile ${{ matrix.package.package_version }} --build missing
 
       - name: conan upload
         run: conan upload "*" --check --confirm --remote odr
