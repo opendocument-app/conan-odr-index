@@ -13,7 +13,7 @@ index 746026d..398f751 100644
 +install(
 +        DIRECTORY src/
 +        DESTINATION include/
-+        FILES_MATCHING PATTERN "*.hpp"
++        FILES_MATCHING PATTERN "*.h"
 +)
  install(
          TARGETS
