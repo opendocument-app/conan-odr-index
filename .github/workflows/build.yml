@@ -1,6 +1,7 @@
 name: build_test
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -88,15 +89,21 @@ jobs:
             ${{ matrix.config.os }}-${{ matrix.config.compiler }}-
 
       - name: conan install
-        run: conan install ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --build=missing
+        run: conan install ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --build missing
       - name: conan source
         run: conan source ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }}
       - name: conan build
         run: conan build ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }}
       - name: conan export
         run: conan export ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }}
+      - name: conan export-pkg
+        run: conan export-pkg ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }}
 
-      # test_package
+      - name: conan test
+        run: |
+          test_conanfile=$(dirname ${{ matrix.package.conanfile }})/test_package/conanfile.py
+          conan test $test_conanfile ${{ matrix.package.package_version }} --build missing
 
       - name: conan upload
+        if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
         run: conan upload "*" --check --confirm --remote odr
