@@ -102,4 +102,9 @@ class OpenDocumentCoreConan(ConanFile):
         cmake.install()
 
     def package_info(self):
-        self.cpp_info.libs = ["odr"]
+        if Version(self.version) <= "1.0.0":
+            self.cpp_info.libs = ["odrlib"]
+        elif Version(self.version) <= "2.0.0":
+            self.cpp_info.libs = ["odr-static"]
+        else:
+            self.cpp_info.libs = ["odr"]
