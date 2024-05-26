@@ -88,7 +88,7 @@ jobs:
             ${{ matrix.config.os }}-${{ matrix.config.compiler }}-
 
       - name: conan install
-        run: conan install ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --build=missing
+        run: conan install ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --build missing
       - name: conan source
         run: conan source ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }}
       - name: conan build
@@ -97,7 +97,9 @@ jobs:
         run: conan export ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }}
 
       - name: conan test
-        run: conan test ${{ matrix.package.conanfile }} ${{ matrix.package.package_version }}
+        run: >
+          test_conanfil=$(dirname ${{ matrix.package.conanfile }})/test_package/conanfile.py
+          conan test ${{ matrix.package.conanfile }} ${{ matrix.package.package_version }} --build missing
 
       - name: conan upload
         run: conan upload "*" --check --confirm --remote odr
