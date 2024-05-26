@@ -33,11 +33,41 @@ sources:
       sha256: "b2d671f34bf641d465dfaae9adefdcb4a6210d58a519594a182ba2839531435e"
 
 patches:
+  "1.0.0":
+    - patch_file: "patches/1.0.0-0001-fix-cmake-install.patch"
+      patch_description: "Fix header install in CMakeLists.txt"
+      patch_type: "conan"
   "2.0.0":
-    - patch_file: "patches/2.0.0-0001-fix-cmake.patch"
-      patch_description: "Fix broken dependencies in CMakeLists.txt"
+    - patch_file: "patches/2.0.0-0001-fix-cmake-uchardet.patch"
+      patch_description: "Fix broken dependency in CMakeLists.txt"
+      patch_type: "conan"
+    - patch_file: "patches/2.0.0-0002-fix-cmake-install.patch"
+      patch_description: "Fix header install in CMakeLists.txt"
+      patch_type: "conan"
+  "2.1.0":
+    - patch_file: "patches/2.1.0-0001-fix-cmake-install.patch"
+      patch_description: "Fix header install in CMakeLists.txt"
+      patch_type: "conan"
+  "2.1.1":
+    - patch_file: "patches/2.1.1-0001-fix-cmake-install.patch"
+      patch_description: "Fix header install in CMakeLists.txt"
+      patch_type: "conan"
+  "2.1.2":
+    - patch_file: "patches/2.1.2-0001-fix-cmake-install.patch"
+      patch_description: "Fix header install in CMakeLists.txt"
+      patch_type: "conan"
+  "2.2.0":
+    - patch_file: "patches/2.2.0-0001-fix-cmake-install.patch"
+      patch_description: "Fix header install in CMakeLists.txt"
+      patch_type: "conan"
+  "3.0.0":
+    - patch_file: "patches/3.0.0-0001-fix-cmake-install.patch"
+      patch_description: "Fix header install in CMakeLists.txt"
       patch_type: "conan"
   "4.0.0":
-    - patch_file: "patches/4.0.0-0001-fix-cmake.patch"
-      patch_description: "Fix broken dependencies in CMakeLists.txt"
+    - patch_file: "patches/4.0.0-0001-fix-cmake-utf8cpp.patch"
+      patch_description: "Fix broken dependency in CMakeLists.txt"
+      patch_type: "conan"
+    - patch_file: "patches/4.0.0-0002-fix-cmake-install.patch"
+      patch_description: "Fix header install in CMakeLists.txt"
       patch_type: "conan"

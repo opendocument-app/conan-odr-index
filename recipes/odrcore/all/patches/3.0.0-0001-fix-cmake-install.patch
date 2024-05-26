@@ -1,0 +1,16 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 51afb68..be0e892 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -189,6 +189,11 @@ if (ODR_CLANG_TIDY)
+     add_subdirectory("static_analysis/clang-tidy")
+ endif ()
+ 
++install(
++        DIRECTORY src/
++        DESTINATION include/
++        FILES_MATCHING PATTERN "*.hpp"
++)
+ install(
+         TARGETS
+         odr

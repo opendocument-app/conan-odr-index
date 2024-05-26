@@ -1,0 +1,20 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 746026d..398f751 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -181,6 +181,15 @@ if (ODR_TEST)
+     add_subdirectory(test)
+ endif ()
+ 
++install(
++        DIRECTORY include/
++        DESTINATION include/
++)
++install(
++        DIRECTORY src/
++        DESTINATION include/
++        FILES_MATCHING PATTERN "*.h"
++)
+ install(
+         TARGETS
+         odr-static
