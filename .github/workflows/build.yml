@@ -1,6 +1,7 @@
 name: build_test
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -104,4 +105,5 @@ jobs:
           conan test $test_conanfile ${{ matrix.package.package_version }} --build missing
 
       - name: conan upload
+        if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
         run: conan upload "*" --check --confirm --remote odr
