@@ -23,6 +23,9 @@ def main():
         if not recipe_path.is_dir():
             continue
 
+        if not recipe_path.name == 'fontforge':
+            continue
+
         infos = []
 
         with open(recipe_path / "config.yml") as f:

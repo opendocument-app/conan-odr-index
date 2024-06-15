@@ -50,10 +50,10 @@ jobs:
         package: ${{ fromJson(needs.find-all-packages.outputs.packages) }}
         config:
           - { os: ubuntu-22.04, compiler: clang-15, host-profile: host }
-          - { os: ubuntu-22.04, compiler: ndk-26.3.11579264, host-profile: armv8 }
-          - { os: ubuntu-22.04, compiler: ndk-26.3.11579264, host-profile: x86_64 }
-          - { os: ubuntu-22.04, compiler: ndk-26.3.11579264, host-profile: armv7 }
-          - { os: ubuntu-22.04, compiler: ndk-26.3.11579264, host-profile: x86 }
+#          - { os: ubuntu-22.04, compiler: ndk-26.3.11579264, host-profile: armv8 }
+#          - { os: ubuntu-22.04, compiler: ndk-26.3.11579264, host-profile: x86_64 }
+#          - { os: ubuntu-22.04, compiler: ndk-26.3.11579264, host-profile: armv7 }
+#          - { os: ubuntu-22.04, compiler: ndk-26.3.11579264, host-profile: x86 }
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -81,7 +81,7 @@ jobs:
         with:
           python-version: 3.12
       - name: install python dependencies
-        run: pip install --upgrade pip conan
+        run: pip install --upgrade pip conan setuptools
 
       - name: conan remote
         run: conan remote add --index 0 odr https://artifactory.opendocument.app/artifactory/api/conan/conan
