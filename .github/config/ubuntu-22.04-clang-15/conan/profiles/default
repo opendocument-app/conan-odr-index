@@ -9,3 +9,18 @@ os=Linux
 
 [conf]
 tools.build:compiler_executables={'c': 'clang-15', 'cpp': 'clang++-15'}
+
+[options]
+*/*:shared=True
+glib/*:with_elf=False
+glib/*:with_mount=False
+glib/*:with_selinux=False
+freetype/*:with_bzip2=False
+freetype/*:with_brotli=False
+poppler/*:with_tiff=False
+poppler/*:shared=False
+poppler/*:with_gobject_introspection=False
+
+[replace_requires]
+libjpeg/9e: libjpeg/9f
+libdeflate/1.19: libdeflate/1.20
