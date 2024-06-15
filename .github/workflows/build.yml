@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - pdf2htmlEX_and_deps
   pull_request:
 
 concurrency:
