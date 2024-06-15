@@ -23,8 +23,6 @@ def main():
         if not recipe_path.is_dir():
             continue
 
-        if not recipe_path.name == 'fontforge':
-            continue
 
         infos = []
 

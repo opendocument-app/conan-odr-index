@@ -50,10 +50,10 @@ jobs:
         package: ${{ fromJson(needs.find-all-packages.outputs.packages) }}
         config:
           - { os: ubuntu-22.04, compiler: clang-15, host-profile: host }
-#          - { os: ubuntu-22.04, compiler: ndk-26.3.11579264, host-profile: armv8 }
-#          - { os: ubuntu-22.04, compiler: ndk-26.3.11579264, host-profile: x86_64 }
-#          - { os: ubuntu-22.04, compiler: ndk-26.3.11579264, host-profile: armv7 }
-#          - { os: ubuntu-22.04, compiler: ndk-26.3.11579264, host-profile: x86 }
+          - { os: ubuntu-22.04, compiler: ndk-26.3.11579264, host-profile: armv8 }
+          - { os: ubuntu-22.04, compiler: ndk-26.3.11579264, host-profile: x86_64 }
+          - { os: ubuntu-22.04, compiler: ndk-26.3.11579264, host-profile: armv7 }
+          - { os: ubuntu-22.04, compiler: ndk-26.3.11579264, host-profile: x86 }
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -86,6 +86,7 @@ jobs:
       - name: conan remote
         run: conan remote add --index 0 odr https://artifactory.opendocument.app/artifactory/api/conan/conan
       - name: conan login
+        if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
         run: conan remote login odr admin --password ${{ secrets.ARTIFACTORY }}
       - name: conan config
         run: conan config install .github/config/${{ matrix.config.os }}-${{ matrix.config.compiler }}/conan
