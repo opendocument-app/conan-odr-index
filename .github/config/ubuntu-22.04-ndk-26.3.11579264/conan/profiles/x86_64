@@ -1,0 +1,4 @@
+include(host)
+
+[settings]
+arch=x86_64

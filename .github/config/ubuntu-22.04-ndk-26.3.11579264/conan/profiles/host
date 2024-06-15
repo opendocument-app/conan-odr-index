@@ -1,0 +1,13 @@
+include(default)
+
+[settings]
+os=Android
+os.api_level=23
+arch=armv8
+compiler=clang
+compiler.version=17
+compiler.libcxx=c++_static
+compiler.cppstd=20
+
+[conf]
+tools.android:ndk_path=$ANDROID_HOME/ndk/26.3.11579264

@@ -1,0 +1,4 @@
+include(host)
+
+[settings]
+arch=armv7
