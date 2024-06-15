@@ -1,0 +1,8 @@
+sources:
+  "20240423-git":
+    url: "https://github.com/fontforge/fontforge/archive/cce02b132c698b4568e7823abdd2f1b3daa32b5e.zip"
+    sha256: "e525de8b54f2855c85b0c54dbecf601ccc141f2695f71db613b9812bcb4a1e20"
+patches:
+  "20240423-git":
+    - patch_file: "patches/20240423-git/conan-find-glib.patch"
+    - patch_file: "patches/20240423-git/InstallStaticLibrary.patch"

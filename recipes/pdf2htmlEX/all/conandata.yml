@@ -1,0 +1,7 @@
+sources:
+  "0.18.8.rc1-20240614-git":
+    url: "https://github.com/ViliusSutkus89/pdf2htmlEX/archive/bca108a53e130612ff4d9366887cd346ab7a6c9d.zip"
+    sha256: "1bd6941102fe87481238c7ba7ffe96bb1acfb6cedb981fc83fdd22dd3cae458e"
+patches:
+  "0.18.8.rc1-20240614-git":
+    - patch_file: "patches/0.18.8.rc1-20240614-git/conan.patch"
