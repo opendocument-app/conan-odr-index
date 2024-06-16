@@ -1,3 +1,6 @@
+import os
+import posixpath
+
 from conan import ConanFile
 from conan.tools.apple import fix_apple_shared_install_name
 from conan.tools.build import cross_building
@@ -16,7 +19,6 @@ from conan.tools.gnu import Autotools, AutotoolsToolchain
 from conan.tools.layout import basic_layout
 from conan.tools.microsoft import is_msvc, unix_path
 from conan.tools.scm import Version
-import os
 
 required_conan_version = ">=1.54.0"
 
@@ -132,8 +134,11 @@ class LibiconvConan(ConanFile):
             env.define("NM", "dumpbin -symbols")
             env.define("win32_target", "_WIN32_WINNT_VISTA")
 
+        # https://github.com/conan-io/conan-center-index/issues/24349
         if cross_building(self) and self.settings.os == "Android":
-            android_ndk_home = self.conf.get("tools.android:ndk_path")
+            # NDK binary paths need to be supplied as posixpath, not os path, even on windows
+            # This means no backslashes, because scripts in NDK don't like backslashes
+            android_ndk_home = self.conf.get("tools.android:ndk_path").replace("\\", "/")
 
             target_host_triple = {
                 "armv7": "armv7a-linux-androideabi",
@@ -143,17 +148,22 @@ class LibiconvConan(ConanFile):
             }[self.settings.get_safe("arch")]
             api_level = self.settings.os.get_safe("api_level")
 
-            # @TODO: this toolchain path probably doesn't work on anything that is not x86_64 linux
-            toolchain = os.path.join(android_ndk_home, "toolchains", "llvm", "prebuilt", "linux-x86_64", "bin")
+            build_machine = "{}-x86_64".format({"Linux": "linux", "Macos": "darwin","Windows": "windows"}[str(self.settings_build.os)])
 
-            # @TODO: binary names may be wrong for older NDK versions too
-            env.define("AR", os.path.join(toolchain, "llvm-ar"))
-            env.define("AS", os.path.join(toolchain, "llvm-as"))
-            env.define("RANLIB", os.path.join(toolchain, "llvm-ranlib"))
-            env.define("CC", os.path.join(toolchain, "{}{}-clang".format(target_host_triple, api_level)))
-            env.define("CXX", os.path.join(toolchain, "{}{}-clang++".format(target_host_triple, api_level)))
-            env.define("LD", os.path.join(toolchain, "ld"))
-            env.define("STRIP", os.path.join(toolchain, "llvm-strip"))
+            toolchain = posixpath.join(android_ndk_home, "toolchains", "llvm", "prebuilt", build_machine, "bin")
+
+            if self.settings_build.os == "Windows":
+                executable_suffix = ".exe"
+            else:
+                executable_suffix = ""
+
+            env.define("AR", posixpath.join(toolchain, "llvm-ar" + executable_suffix))
+            env.define("AS", posixpath.join(toolchain, "llvm-as" + executable_suffix))
+            env.define("RANLIB", posixpath.join(toolchain, "llvm-ranlib" + executable_suffix))
+            env.define("CC", posixpath.join(toolchain, "{}{}-clang".format(target_host_triple, api_level)))
+            env.define("CXX", posixpath.join(toolchain, "{}{}-clang++".format(target_host_triple, api_level)))
+            env.define("LD", posixpath.join(toolchain, "ld" + executable_suffix))
+            env.define("STRIP", posixpath.join(toolchain, "llvm-strip" + executable_suffix))
 
         tc.generate(env)
 
