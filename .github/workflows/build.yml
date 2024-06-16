@@ -84,8 +84,6 @@ jobs:
 
       - name: conan remote
         run: conan remote add --index 0 odr https://artifactory.opendocument.app/artifactory/api/conan/conan
-      - name: conan login
-        run: conan remote login odr admin --password ${{ secrets.ARTIFACTORY }}
       - name: conan config
         run: conan config install .github/config/${{ matrix.config.os }}-${{ matrix.config.compiler }}/conan
 
@@ -114,6 +112,10 @@ jobs:
         run: |
           test_conanfile=$(dirname ${{ matrix.package.conanfile }})/test_package/conanfile.py
           conan test $test_conanfile ${{ matrix.package.package_version }} --build missing --profile:host ${{ matrix.config.host-profile }}
+
+      - name: conan login
+        if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+        run: conan remote login odr admin --password ${{ secrets.ARTIFACTORY }}
 
       - name: conan upload
         if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
