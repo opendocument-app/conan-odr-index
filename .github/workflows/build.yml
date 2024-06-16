@@ -41,7 +41,7 @@ jobs:
         run: python scripts/list_package_versions.py --github | tee $GITHUB_OUTPUT
 
   build:
-    runs-on: ${{ matrix.config.os }}
+    runs-on: ${{ matrix.config.build_machine }}
     needs:
       - find-all-packages
     strategy:
@@ -49,11 +49,12 @@ jobs:
       matrix:
         package: ${{ fromJson(needs.find-all-packages.outputs.packages) }}
         config:
-          - { os: ubuntu-22.04, compiler: clang-15, host-profile: host }
-          - { os: ubuntu-22.04, compiler: ndk-26.3.11579264, host-profile: armv8 }
-          - { os: ubuntu-22.04, compiler: ndk-26.3.11579264, host-profile: x86_64 }
-          - { os: ubuntu-22.04, compiler: ndk-26.3.11579264, host-profile: armv7 }
-          - { os: ubuntu-22.04, compiler: ndk-26.3.11579264, host-profile: x86 }
+          - { build_machine: ubuntu-22.04, host_profile: ubuntu }
+          - { build_machine: ubuntu-22.04, host_profile: android-armv8, ndk_version: 26.3.11579264 }
+        # Known not working build configurations
+        exclude:
+          - package: { "package_version": "odrcore/1.0.0", "package": "odrcore", "version": "1.0.0", "conanfile": "recipes/odrcore/all/conanfile.py" }
+            config: { build_machine: ubuntu-22.04, host_profile: android-armv8, ndk_version: 26.3.11579264 }
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -69,13 +70,6 @@ jobs:
           brew install ccache
           ccache -V
 
-      - name: install ndk
-        if: startsWith(matrix.config.compiler, 'ndk-')
-        run: echo "y" | sudo ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install `echo "${{ matrix.config.compiler }}" | tr - ";"`
-      - name: expand ANDROID_HOME env var in conan profile
-        if: startsWith(matrix.config.compiler, 'ndk-')
-        run: perl -pi -e 's/\$ANDROID_HOME/$ENV{ANDROID_HOME}/g' .github/config/${{ matrix.config.os }}-${{ matrix.config.compiler }}/conan/profiles/host
-
       - name: setup python 3.12
         uses: actions/setup-python@v5
         with:
@@ -83,13 +77,18 @@ jobs:
       - name: install python dependencies
         run: pip install --upgrade pip conan setuptools
 
+      - name: install NDK and append path to conan profile
+        if: startsWith(matrix.config.host_profile, 'android')
+        run: |
+          echo "y" | sudo ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install "ndk;${{ matrix.config.ndk_version }}"
+          host_profile_file=.github/config/${{ matrix.config.build_machine }}/conan/profiles/${{ matrix.config.host_profile }}
+          echo "[conf]" >> $host_profile_file
+          echo "tools.android:ndk_path=$ANDROID_HOME/ndk/${{ matrix.config.ndk_version }}" >> $host_profile_file
+
       - name: conan remote
         run: conan remote add --index 0 odr https://artifactory.opendocument.app/artifactory/api/conan/conan
-      - name: conan login
-        if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
-        run: conan remote login odr admin --password ${{ secrets.ARTIFACTORY }}
       - name: conan config
-        run: conan config install .github/config/${{ matrix.config.os }}-${{ matrix.config.compiler }}/conan
+        run: conan config install .github/config/${{ matrix.config.build_machine }}/conan
 
       - name: cache
         uses: actions/cache@v4
@@ -97,35 +96,29 @@ jobs:
           path: |
             ~/.ccache
             /Users/runner/Library/Caches/ccache
-          key: ${{ matrix.config.os }}-${{ matrix.config.compiler }}-${{ env.CCACHE_KEY_SUFFIX }}
+          key: ${{ matrix.config.build_machine }}-${{ matrix.config.host_profile }}-${{ env.CCACHE_KEY_SUFFIX }}
           restore-keys: |
-            ${{ matrix.config.os }}-${{ matrix.config.compiler }}-
+            ${{ matrix.config.build_machine }}-${{ matrix.config.host_profile }}-
 
       - name: conan install
-        run: conan install ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --build missing --profile:host ${{ matrix.config.host-profile }}
-
-      - name: conan graph
-        if: always()
-        run: conan graph info ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --format=html --profile:host ${{ matrix.config.host-profile }} > graph.html
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: graph.html.${{ matrix.package.package }}-${{ matrix.package.version }}-${{ matrix.config.os }}-${{ matrix.config.compiler }}-${{ matrix.config.host-profile }}
-          path: graph.html
-
+        run: conan install ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --build missing --profile:host ${{ matrix.config.host_profile }}
       - name: conan source
         run: conan source ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }}
       - name: conan build
-        run: conan build ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --profile:host ${{ matrix.config.host-profile }}
+        run: conan build ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --profile:host ${{ matrix.config.host_profile }}
       - name: conan export
         run: conan export ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }}
       - name: conan export-pkg
-        run: conan export-pkg ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --profile:host ${{ matrix.config.host-profile }}
+        run: conan export-pkg ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --profile:host ${{ matrix.config.host_profile }}
 
       - name: conan test
         run: |
           test_conanfile=$(dirname ${{ matrix.package.conanfile }})/test_package/conanfile.py
-          conan test $test_conanfile ${{ matrix.package.package_version }} --build missing --profile:host ${{ matrix.config.host-profile }}
+          conan test $test_conanfile ${{ matrix.package.package_version }} --build missing --profile:host ${{ matrix.config.host_profile }}
+
+      - name: conan login
+        if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+        run: conan remote login odr admin --password ${{ secrets.ARTIFACTORY }}
 
       - name: conan upload
         if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'

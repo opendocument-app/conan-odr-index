@@ -1,4 +1,0 @@
-include(host)
-
-[settings]
-arch=armv8
