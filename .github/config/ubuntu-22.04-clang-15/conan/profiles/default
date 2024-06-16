@@ -11,7 +11,9 @@ os=Linux
 tools.build:compiler_executables={'c': 'clang-15', 'cpp': 'clang++-15'}
 
 [options]
-*/*:shared=True
+*/*:shared=False
+cryptopp/[>=8.7.0]:shared=False
+
 glib/*:with_elf=False
 glib/*:with_mount=False
 glib/*:with_selinux=False
