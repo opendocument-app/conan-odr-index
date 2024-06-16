@@ -12,7 +12,7 @@ tools.build:compiler_executables={'c': 'clang-15', 'cpp': 'clang++-15'}
 
 [options]
 */*:shared=False
-cryptopp/[>=8.7.0]:shared=False
+cryptopp/[>8.6.9]:shared=False
 
 glib/*:with_elf=False
 glib/*:with_mount=False
