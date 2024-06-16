@@ -131,6 +131,30 @@ class LibiconvConan(ConanFile):
             env.define("RANLIB", ":")
             env.define("NM", "dumpbin -symbols")
             env.define("win32_target", "_WIN32_WINNT_VISTA")
+
+        if cross_building(self) and self.settings.os == "Android":
+            android_ndk_home = self.conf.get("tools.android:ndk_path")
+
+            target_host_triple = {
+                "armv7": "armv7a-linux-androideabi",
+                "armv8": "aarch64-linux-android",
+                "x86": "i686-linux-android",
+                "x86_64": "x86_64-linux-android",
+            }[self.settings.get_safe("arch")]
+            api_level = self.settings.os.get_safe("api_level")
+
+            # @TODO: this toolchain path probably doesn't work on anything that is not x86_64 linux
+            toolchain = os.path.join(android_ndk_home, "toolchains", "llvm", "prebuilt", "linux-x86_64", "bin")
+
+            # @TODO: binary names may be wrong for older NDK versions too
+            env.define("AR", os.path.join(toolchain, "llvm-ar"))
+            env.define("AS", os.path.join(toolchain, "llvm-as"))
+            env.define("RANLIB", os.path.join(toolchain, "llvm-ranlib"))
+            env.define("CC", os.path.join(toolchain, "{}{}-clang".format(target_host_triple, api_level)))
+            env.define("CXX", os.path.join(toolchain, "{}{}-clang++".format(target_host_triple, api_level)))
+            env.define("LD", os.path.join(toolchain, "ld"))
+            env.define("STRIP", os.path.join(toolchain, "llvm-strip"))
+
         tc.generate(env)
 
     def _apply_resource_patch(self):
