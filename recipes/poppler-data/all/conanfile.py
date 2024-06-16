@@ -19,6 +19,9 @@ class PopplerDataConan(ConanFile):
     def export_sources(self):
         export_conandata_patches(self)
 
+    def package_id(self):
+        self.info.settings.clear()
+
     def layout(self):
         cmake_layout(self)
 
