@@ -1,4 +1,5 @@
-# Taken from https://github.com/conan-io/conan-center-index
+# Taken from https://github.com/valgur/conan-center-index/tree/migrate/poppler
+# Copy not as is, modifications were made
 
 import os
 
