@@ -29,6 +29,10 @@ CXX={{android_home}}/ndk/{{ndk_version}}/toolchains/llvm/prebuilt/linux-x86_64/b
 LD={{android_home}}/ndk/{{ndk_version}}/toolchains/llvm/prebuilt/linux-x86_64/bin/ld
 STRIP={{android_home}}/ndk/{{ndk_version}}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip
 
+[options]
+# gobject introspection not yet available for conan 2
+poppler/*:with_gobject_introspection=False
+
 [replace_requires]
 libjpeg/9e: libjpeg/9f
 libdeflate/1.19: libdeflate/1.20

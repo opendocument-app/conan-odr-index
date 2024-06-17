@@ -11,16 +11,7 @@ compiler.libcxx=libstdc++11
 tools.build:compiler_executables={'c': 'clang-15', 'cpp': 'clang++-15'}
 
 [options]
-*/*:shared=False
-cryptopp/[>8.6.9]:shared=False
-
-glib/*:with_elf=False
-glib/*:with_mount=False
-glib/*:with_selinux=False
-freetype/*:with_bzip2=False
-freetype/*:with_brotli=False
-poppler/*:with_tiff=False
-poppler/*:shared=False
+# gobject introspection not yet available for conan 2
 poppler/*:with_gobject_introspection=False
 
 [replace_requires]
