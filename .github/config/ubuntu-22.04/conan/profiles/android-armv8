@@ -28,3 +28,6 @@ CC={{android_home}}/ndk/{{ndk_version}}/toolchains/llvm/prebuilt/linux-x86_64/bi
 CXX={{android_home}}/ndk/{{ndk_version}}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android{{api_level}}-clang++
 LD={{android_home}}/ndk/{{ndk_version}}/toolchains/llvm/prebuilt/linux-x86_64/bin/ld
 STRIP={{android_home}}/ndk/{{ndk_version}}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip
+
+[replace_requires]
+libdeflate/1.19: libdeflate/1.20
