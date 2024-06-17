@@ -1,0 +1,7 @@
+sources:
+  "0.8.2":
+    url: "https://github.com/JuliaMath/openlibm/archive/refs/tags/v0.8.2.tar.gz"
+    sha256: "7244f9aa468584744e260cef740d57d10eab6e9c05f62084f8f2ba457f4b4b1d"
+patches:
+  "0.8.2":
+    - patch_file: "patches/0.8.2/cmake.patch"
