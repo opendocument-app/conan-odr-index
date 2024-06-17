@@ -103,6 +103,7 @@ class FontForgeConan(ConanFile):
         tc.variables["ENABLE_PYTHON_EXTENSION"] = "OFF"
         tc.variables["ENABLE_LIBSPIRO"] = "OFF"
         tc.variables["ENABLE_LIBTIFF"] = self.options.with_tiff
+        tc.variables["ENABLE_LIBREADLINE"] = "OFF"
         tc.variables["INSTALL_PRIVATE_HEADERS"] = self.options.install_private_headers
         tc.generate()
 
