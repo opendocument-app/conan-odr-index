@@ -72,6 +72,9 @@ class FontForgeConan(ConanFile):
 
         self.requires("glib/2.78.3")
 
+        if self.settings.os == "Android" and int(self.settings.os.get_safe("api_level")) < 23:
+            self.requires("openlibm/0.8.2")
+
     def build_requirements(self):
         self.tool_requires("gettext/0.22.5")
 
@@ -120,12 +123,6 @@ class FontForgeConan(ConanFile):
 
         # patch(self, patch_file=os.path.join(patch_folder, "InstallLibrary.patch"))
 
-        # @TODO: openlibm
-        # patch(self, patch_file=os.path.join(patch_folder, "splinestroke-complex-math.patch"))
-        # projectDir.resolve("patches/$portVersion/FindMathLib.cmake").copyTo(
-        #     target = srcDir.resolve("cmake/packages/FindMathLib.cmake"),
-        #     overwrite = true
-        # )
 
         # if (minSupportedSdk < 21) {
         #     // fontforge uses newlocale and localeconv, which are not available on Android pre 21 (Lollipop)

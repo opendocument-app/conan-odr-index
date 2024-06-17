@@ -1,0 +1,31 @@
+--- fontforge/splinestroke.c	2023-01-01 07:25:39.000000000 +0200
++++ fontforge/splinestroke.c	2023-12-13 04:21:53.293000000 +0200
+@@ -41,7 +41,11 @@
+ #include "utanvec.h"
+
+ #include <assert.h>
++#if defined(__ANDROID__) && __ANDROID_API__ < 23
++#include <openlibm.h>
++#else
+ #include <complex.h>
++#endif
+ #include <math.h>
+
+ #define CIRCOFF 0.551915
+
+--- CMakeLists.txt
++++ CMakeLists.txt
+@@ -115,7 +115,12 @@
+ endif()
+ find_package(Iconv REQUIRED)
+ find_package(LibXml2 REQUIRED)
+-find_package(MathLib REQUIRED)
++if(ANDROID AND ANDROID_NATIVE_API_LEVEL STRLESS "23")
++  find_package(OpenLibm REQUIRED)
++  add_library(MathLib::MathLib ALIAS openlibm::openlibm)
++else ()
++  find_package(MathLib REQUIRED)
++endif()
+ find_package(ZLIB REQUIRED)
+ 
+ check_include_file(pthread.h HAVE_PTHREAD_H)
