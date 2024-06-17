@@ -77,13 +77,9 @@ jobs:
       - name: install python dependencies
         run: pip install --upgrade pip conan setuptools
 
-      - name: install NDK and append path to conan profile
+      - name: install NDK
         if: startsWith(matrix.config.host_profile, 'android')
-        run: |
-          echo "y" | sudo ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install "ndk;${{ matrix.config.ndk_version }}"
-          host_profile_file=.github/config/${{ matrix.config.build_machine }}/conan/profiles/${{ matrix.config.host_profile }}
-          echo "[conf]" >> $host_profile_file
-          echo "tools.android:ndk_path=$ANDROID_HOME/ndk/${{ matrix.config.ndk_version }}" >> $host_profile_file
+        run: echo "y" | sudo ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install "ndk;${{ matrix.config.ndk_version }}"
 
       - name: conan remote
         run: conan remote add --index 0 odr https://artifactory.opendocument.app/artifactory/api/conan/conan
