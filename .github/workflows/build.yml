@@ -50,7 +50,10 @@ jobs:
         package: ${{ fromJson(needs.find-all-packages.outputs.packages) }}
         config:
           - { build_machine: ubuntu-22.04, host_profile: ubuntu }
+          - { build_machine: ubuntu-22.04, host_profile: android-armv7, ndk_version: 26.3.11579264 }
           - { build_machine: ubuntu-22.04, host_profile: android-armv8, ndk_version: 26.3.11579264 }
+          - { build_machine: ubuntu-22.04, host_profile: android-x86, ndk_version: 26.3.11579264 }
+          - { build_machine: ubuntu-22.04, host_profile: android-x86_64, ndk_version: 26.3.11579264 }
         # Known not working build configurations
         exclude:
           - package: { "package_version": "odrcore/1.0.0", "package": "odrcore", "version": "1.0.0", "conanfile": "recipes/odrcore/all/conanfile.py" }

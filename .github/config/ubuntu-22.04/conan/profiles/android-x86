@@ -5,7 +5,7 @@
 [settings]
 os=Android
 os.api_level={{api_level}}
-arch=armv8
+arch=x86
 build_type=RelWithDebInfo
 compiler=clang
 compiler.version=17
