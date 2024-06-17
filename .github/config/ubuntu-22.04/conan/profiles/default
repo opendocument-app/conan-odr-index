@@ -20,6 +20,11 @@ cairo/*:with_xlib_xrender=False
 cairo/*:with_xcb=False
 cairo/*:with_symbol_lookup=False
 
+# Unused functionality in GLib
+glib/*:with_elf=False
+glib/*:with_mount=False
+glib/*:with_selinux=False
+
 [replace_requires]
 libjpeg/9e: libjpeg/9f
 libdeflate/1.19: libdeflate/1.20
