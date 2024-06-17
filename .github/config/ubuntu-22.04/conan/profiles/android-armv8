@@ -30,4 +30,5 @@ LD={{android_home}}/ndk/{{ndk_version}}/toolchains/llvm/prebuilt/linux-x86_64/bi
 STRIP={{android_home}}/ndk/{{ndk_version}}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip
 
 [replace_requires]
+libjpeg/9e: libjpeg/9f
 libdeflate/1.19: libdeflate/1.20
