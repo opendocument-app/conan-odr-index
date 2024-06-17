@@ -118,6 +118,14 @@ class GLibConan(ConanFile):
                 "libintl = dependency('libgettext', method : 'pkg-config', required : false",
             )
 
+        if self.settings.os == "Android":
+            # allow to find libiconv
+            replace_in_file(self,
+                os.path.join(self.source_folder, "meson.build"),
+                "libiconv = dependency('iconv')",
+                "libiconv = dependency('libiconv', method : 'pkg-config')"
+                )
+
         replace_in_file(self,
             os.path.join(
                 self.source_folder,
