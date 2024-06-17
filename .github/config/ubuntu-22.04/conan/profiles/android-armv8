@@ -33,6 +33,12 @@ STRIP={{android_home}}/ndk/{{ndk_version}}/toolchains/llvm/prebuilt/linux-x86_64
 # gobject introspection not yet available for conan 2
 poppler/*:with_gobject_introspection=False
 
+# We are not using xorg functionality in cairo
+cairo/*:with_xlib=False
+cairo/*:with_xlib_xrender=False
+cairo/*:with_xcb=False
+cairo/*:with_symbol_lookup=False
+
 [replace_requires]
 libjpeg/9e: libjpeg/9f
 libdeflate/1.19: libdeflate/1.20
