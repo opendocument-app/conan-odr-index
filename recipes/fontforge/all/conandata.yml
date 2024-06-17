@@ -6,3 +6,4 @@ patches:
   "20240423-git":
     - patch_file: "patches/20240423-git/conan-find-glib.patch"
     - patch_file: "patches/20240423-git/InstallStaticLibrary.patch"
+    - patch_file: "patches/20240423-git/gutils-fsys-get-home-dir.patch"
