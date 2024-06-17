@@ -26,11 +26,13 @@ class FontForgeConan(ConanFile):
         "shared": [True, False],
         "fPIC": [True, False],
         "install_private_headers": [True, False],
+        "with_tiff": [True, False],
     }
     default_options = {
         "shared": False,
         "fPIC": True,
         "install_private_headers": True,
+        "with_tiff": True,
     }
 
     def requirements(self):
@@ -60,7 +62,9 @@ class FontForgeConan(ConanFile):
         self.requires("libjpeg/9f")
         self.requires("libpng/1.6.43")
 
-        # self.requires("libtiff/4.6.0")
+        if self.options.with_libtiff:
+            self.requires("libtiff/4.6.0")
+
         # jbig and libdeflate are required by libtiff
         # Conan auto finds them, but linker doesn't, unless they're added here manually
         # self.requires("jbig/20160605")
