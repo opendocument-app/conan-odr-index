@@ -14,6 +14,8 @@ sources:
       - "https://mirror.koddos.net/blfs/conglomeration/cairo/cairo-1.17.4.tar.xz"
     sha256: "74b24c1ed436bbe87499179a3b27c43f4143b8676d8ad237a6fa787401959705"
 patches:
+  "1.18.0":
+    - patch_file: "patches/cairo-1.18.0-no-backtrace-symbols.patch"
   "1.17.4":
     - patch_file: "patches/binutils-2.34-libbfd-fix.patch"
       patch_type: "backport"
