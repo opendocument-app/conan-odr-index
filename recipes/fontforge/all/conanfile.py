@@ -62,7 +62,7 @@ class FontForgeConan(ConanFile):
         self.requires("libjpeg/9f")
         self.requires("libpng/1.6.43")
 
-        if self.options.with_libtiff:
+        if self.options.with_tiff:
             self.requires("libtiff/4.6.0")
 
         # jbig and libdeflate are required by libtiff
