@@ -5,4 +5,4 @@ sources:
 patches:
   "0.8.2":
     - patch_file: "patches/0.8.2/cmake.patch"
-    - patch_file: "patches/0.8.2/armv7a.patch"
+    - patch_file: "patches/0.8.2/i686-and-armv7a.patch"
