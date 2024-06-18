@@ -59,6 +59,8 @@ jobs:
         exclude:
           - package: { "package_version": "odrcore/1.0.0", "package": "odrcore", "version": "1.0.0", "conanfile": "recipes/odrcore/all/conanfile.py" }
             config: { build_machine: ubuntu-22.04, host_profile: android-armv8, ndk_version: 26.3.11579264 }
+          - package: { "package_version": "openlibm/0.8.2", "package": "openlibm", "version": "0.8.2", "conanfile": "recipes/openlibm/all/conanfile.py" }
+            config: { build_machine: ubuntu-22.04, host_profile: android-x86, ndk_version: 26.3.11579264 }
     steps:
       - name: checkout
         uses: actions/checkout@v4
