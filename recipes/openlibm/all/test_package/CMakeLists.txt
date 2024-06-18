@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(test_package C)
+project(link_test C)
 
 find_package(openlibm CONFIG REQUIRED)
 
