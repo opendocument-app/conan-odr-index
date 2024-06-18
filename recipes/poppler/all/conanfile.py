@@ -141,7 +141,7 @@ class PopplerConan(ConanFile):
             self.requires("jbig/20160605")
 
         if self.options.splash:
-            self.requires("boost/1.85.0")
+            self.requires("boost/1.85.0", options={"header_only": True})
         if self.options.with_libcurl:
             # https://gitlab.freedesktop.org/poppler/poppler/-/blob/poppler-23.11.0/poppler/CurlCachedFile.h#L18
             self.requires("libcurl/[>=7.78 <9]", transitive_headers=True, transitive_libs=True)
