@@ -41,6 +41,7 @@ jobs:
 
   build:
     runs-on: ${{ matrix.config.build_machine }}
+    name: ${{ matrix.package.package_version }} - ${{ matrix.config.host_profile }}
     needs:
       - find-all-packages
     strategy:
