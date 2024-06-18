@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(pdf2htmlEXTest LANGUAGES CXX)
+project(link_test LANGUAGES CXX)
 
 find_package(pdf2htmlEX CONFIG REQUIRED)
 
