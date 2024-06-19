@@ -101,7 +101,7 @@ class FontconfigConan(ConanFile):
         fix_msvc_libname(self)
 
     def package_info(self):
-        self.cpp_info.resdirs = ["share"]
+        self.cpp_info.resdirs = ["res/share"]
         self.cpp_info.set_property("cmake_find_mode", "both")
         self.cpp_info.set_property("cmake_file_name", "Fontconfig")
         self.cpp_info.set_property("cmake_target_name", "Fontconfig::Fontconfig")
