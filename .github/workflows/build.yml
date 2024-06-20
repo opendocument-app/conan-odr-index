@@ -41,7 +41,7 @@ jobs:
 
   build:
     runs-on: ${{ matrix.config.build_machine }}
-    name: ${{ matrix.package.package_version }} - ${{ matrix.config.host_profile }}
+    name: ${{ matrix.package.package_reference }} - ${{ matrix.config.host_profile }}
     needs:
       - find-all-packages
     strategy:
@@ -110,7 +110,7 @@ jobs:
       - name: conan test
         run: |
           test_conanfile=$(dirname ${{ matrix.package.conanfile }})/test_package/conanfile.py
-          conan test $test_conanfile ${{ matrix.package.package_version }} --build missing --profile:host ${{ matrix.config.host_profile }}
+          conan test $test_conanfile ${{ matrix.package.package_reference }} --build missing --profile:host ${{ matrix.config.host_profile }}
 
       - name: conan login
         if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'

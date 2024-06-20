@@ -41,7 +41,7 @@ def main():
     if args.github:
         result = [
             {
-                "package_version": f"{package}/{infos["version"]}",
+                "package_reference": f"{package}/{infos["version"]}",
                 "package": package,
                 "version": infos["version"],
                 "conanfile": str(
