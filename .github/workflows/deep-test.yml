@@ -9,7 +9,7 @@ concurrency:
 jobs:
   find-all-packages:
     # Deep testing limited to personal fork
-    if: ${{ github.repository_owner }} == "ViliusSutkus89"
+    if: ${{ github.repository_owner == 'ViliusSutkus89' }}
     runs-on: ubuntu-22.04
     outputs:
       packages: ${{ steps.list-packages.outputs.packages }}
