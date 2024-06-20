@@ -49,7 +49,7 @@ def main():
                 ),
             }
             for package in sorted(package_infos.keys())
-            for infos in sorted(package_infos[package], key=lambda x: x["version"])
+            for infos in sorted(package_infos[package], key=lambda x: x["version"], reverse=True)
         ]
 
         print("packages=" + json.dumps(result))
