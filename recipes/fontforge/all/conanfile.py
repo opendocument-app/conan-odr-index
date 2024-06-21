@@ -73,7 +73,7 @@ class FontForgeConan(ConanFile):
         self.requires("glib/2.78.3")
 
         if self.settings.os == "Android" and int(self.settings.os.get_safe("api_level")) < 23:
-            self.requires("openlibm/0.8.2")
+            self.requires("openlibm/0.8.3")
 
     def build_requirements(self):
         self.tool_requires("gettext/0.22.5")
