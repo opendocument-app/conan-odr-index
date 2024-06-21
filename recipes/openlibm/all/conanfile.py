@@ -2,7 +2,7 @@ import os
 
 from conan import ConanFile
 from conan.tools.cmake import CMakeToolchain, CMake, cmake_layout, CMakeDeps
-from conan.tools.files import apply_conandata_patches, copy, export_conandata_patches, get
+from conan.tools.files import apply_conandata_patches, copy, export_conandata_patches, get, rmdir
 
 required_conan_version = ">=2.0.6"
 
@@ -55,6 +55,7 @@ class OpenLibmConan(ConanFile):
         copy(self, "LICENSE.md", src=self.source_folder, dst=os.path.join(self.package_folder, "licenses"))
         cmake = CMake(self)
         cmake.install()
+        rmdir(self, os.path.join(self.package_folder, "lib", "pkgconfig"))
 
     def package_info(self):
         self.cpp_info.libs = ["openlibm"]
