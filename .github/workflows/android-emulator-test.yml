@@ -2,96 +2,56 @@ name: android emulator test
 
 on:
   push:
-  workflow_dispatch:
-    inputs:
-      package:
-        description: "Package name"
-        required: true
-      version:
-        description: "Package version"
-        required: true
+#  workflow_dispatch:
+#    inputs:
+#      package:
+#        description: "Package name"
+#        type: string
+#        required: true
+#      version:
+#        description: "Package version"
+#        type: string
+#        required: true
 
 jobs:
-  build:
-    runs-on: ubuntu-22.04
-    name: ${{ matrix.api-level }} - ${{ matrix.arch }}
+  aosp_atd-target:
+#    name: ${{ matrix.api_level }} on ${{ matrix.arch }} (${{ matrix.api_type_target }})
     strategy:
       fail-fast: false
       matrix:
-        package: ${{ fromJson(needs.find-all-packages.outputs.packages) }}
-        config:
-          - { api-level: 34, arch: x86_64, api-type-target: aosp_atd, host_profile: android-21-x86_64, ndk_version: 26.3.11579264 }
-#          - { api-level: 33, arch: x86_64, api-type-target: aosp_atd, host_profile: android-21-x86_64, ndk_version: 26.3.11579264 }
-#          - { api-level: 32, arch: x86_64, api-type-target: aosp_atd, host_profile: android-21-x86_64, ndk_version: 26.3.11579264 }
-#          - { api-level: 31, arch: x86_64, api-type-target: aosp_atd, host_profile: android-21-x86_64, ndk_version: 26.3.11579264 }
-#          - { api-level: 30, arch: x86_64, api-type-target: aosp_atd, host_profile: android-21-x86_64, ndk_version: 26.3.11579264 }
-#          - { api-level: 29, arch: x86_64, api-type-target: default, host_profile: android-21-x86_64, ndk_version: 26.3.11579264 }
-#          - { api-level: 29, arch: x86, api-type-target: default, host_profile: android-21-x86, ndk_version: 26.3.11579264 }
-#          - { api-level: 28, arch: x86_64, api-type-target: default, host_profile: android-21-x86_64, ndk_version: 26.3.11579264 }
-#          - { api-level: 28, arch: x86, api-type-target: default, host_profile: android-21-x86, ndk_version: 26.3.11579264 }
-#          - { api-level: 27, arch: x86_64, api-type-target: default, host_profile: android-21-x86_64, ndk_version: 26.3.11579264 }
-#          - { api-level: 27, arch: x86, api-type-target: default, host_profile: android-21-x86, ndk_version: 26.3.11579264 }
-#          - { api-level: 26, arch: x86_64, api-type-target: default, host_profile: android-21-x86_64, ndk_version: 26.3.11579264 }
-#          - { api-level: 26, arch: x86, api-type-target: default, host_profile: android-21-x86, ndk_version: 26.3.11579264 }
-#          - { api-level: 25, arch: x86_64, api-type-target: default, host_profile: android-21-x86_64, ndk_version: 26.3.11579264 }
-#          - { api-level: 25, arch: x86, api-type-target: default, host_profile: android-21-x86, ndk_version: 26.3.11579264 }
-#          - { api-level: 24, arch: x86_64, api-type-target: default, host_profile: android-21-x86_64, ndk_version: 26.3.11579264 }
-#          - { api-level: 24, arch: x86, api-type-target: default, host_profile: android-21-x86, ndk_version: 26.3.11579264 }
-#          - { api-level: 23, arch: x86_64, api-type-target: default, host_profile: android-21-x86_64, ndk_version: 26.3.11579264 }
-#          - { api-level: 23, arch: x86, api-type-target: default, host_profile: android-21-x86, ndk_version: 26.3.11579264 }
-#          - { api-level: 22, arch: x86_64, api-type-target: default, host_profile: android-21-x86_64, ndk_version: 26.3.11579264 }
-#          - { api-level: 22, arch: x86, api-type-target: default, host_profile: android-21-x86, ndk_version: 26.3.11579264 }
-#          - { api-level: 21, arch: x86_64, api-type-target: default, host_profile: android-21-x86_64, ndk_version: 26.3.11579264 }
-          - { api-level: 21, arch: x86, api-type-target: default, host_profile: android-21-x86, ndk_version: 26.3.11579264 }
-    steps:
-      - name: checkout
-        uses: actions/checkout@v4
+#        api_level: [34, 33, 32, 31, 30]
+        api_level: [34]
+        arch: [x86_64]
+        api_type_target: [aosp_atd]
+        include:
+          - api_level: 30
+            arch: x86
+            api_type_target: aosp_atd
+    uses: ./.github/workflows/testInner.yml
+    with:
+      api_level: ${{ matrix.api_level }}
+      arch: ${{ matrix.arch }}
+      api_type_target: ${{ matrix.api_type_target }}
+      ndk_version: 26.3.11579264
+      package_name: "pdf2htmlex"
+      package_version: "0.18.8.rc1-20240619-git"
 
-      - name: setup python 3.12
-        uses: actions/setup-python@v5
-        with:
-          python-version: 3.12
-      - name: install python dependencies and setuptools (required to build GLib)
-        run: pip install --upgrade pip conan setuptools
-
-      - name: install NDK
-        if: startsWith(matrix.config.host_profile, 'android')
-        run: echo "y" | sudo ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install "ndk;${{ matrix.config.ndk_version }}"
-
-      - name: conan remote
-        run: conan remote add --index 0 odr https://artifactory.opendocument.app/artifactory/api/conan/conan
-      - name: conan config
-        run: conan config install .github/config/ubuntu-22.04/conan
-
-      # Multiple unpublished packages in this repo have inter-dependencies
-      # Can't build them until the deps are published to artifactory or at least exported
-      - name: Conan export all packages
-        run: python scripts/conan_export_all_packages.py
-
-      - name: conan install
-        run: conan install recipes/${{ inputs.package }}/all/conanfile.py --version ${{ inputs.version }} --build missing --profile:host ${{ matrix.config.host_profile }}
-      - name: conan source
-        run: conan source recipes/${{ inputs.package }}/all/conanfile.py --version ${{ inputs.version }}
-      - name: conan build
-        run: conan build recipes/${{ inputs.package }}/all/conanfile.py --version ${{ inputs.version }} --profile:host ${{ matrix.config.host_profile }}
-      - name: conan export
-        run: conan export recipes/${{ inputs.package }}/all/conanfile.py --version ${{ inputs.version }}
-      - name: conan export-pkg
-        run: conan export-pkg recipes/${{ inputs.package }}/all/conanfile.py --version ${{ inputs.version }} --profile:host ${{ matrix.config.host_profile }}
-
-      - name: Enable KVM group perms
-        run: |
-          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-          sudo udevadm control --reload-rules
-          sudo udevadm trigger --name-match=kvm
-
-      - uses: reactivecircus/android-emulator-runner@v2
-        with:
-          force-avd-creation: false
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -no-snapshot-save
-          api-level: ${{ inputs.api-level }}
-          arch: ${{ inputs.arch }}
-          target: ${{ inputs.api-type-target }}
-          script: |
-            test_conanfile=recipes/${{ inputs.package }}/all/test_package/conanfile.py
-            conan test $test_conanfile ${{ inputs.package }}/${{ inputs.version }} --build missing --profile:host ${{ matrix.config.host_profile }}
+  default-target:
+#    name: android-${{ matrix.api_level }} on ${{ matrix.arch }} (${{ matrix.api_type_target }})
+    strategy:
+      fail-fast: false
+      matrix:
+#        api_level: [29, 28, 27, 26, 25, 24, 23, 22, 21]
+        api_level: [21]
+        arch:
+          - x86_64
+          - x86
+        api_type_target: [default]
+    uses: ./.github/workflows/android-emulator-test-inner.yml
+    with:
+      api_level: ${{ matrix.api_level }}
+      arch: ${{ matrix.arch }}
+      api_type_target: ${{ matrix.api_type_target }}
+      ndk_version: 26.3.11579264
+      package_name: "pdf2htmlex"
+      package_version: "0.18.8.rc1-20240619-git"
