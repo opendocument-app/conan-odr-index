@@ -32,6 +32,7 @@ jobs:
       api_level: ${{ matrix.api_level }}
       arch: ${{ matrix.arch }}
       api_type_target: ${{ matrix.api_type_target }}
+      host_profile: android-21-${{ matrix.arch }}
       ndk_version: 26.3.11579264
       package_name: "pdf2htmlex"
       package_version: "0.18.8.rc1-20240619-git"
@@ -52,6 +53,7 @@ jobs:
       api_level: ${{ matrix.api_level }}
       arch: ${{ matrix.arch }}
       api_type_target: ${{ matrix.api_type_target }}
+      host_profile: android-21-${{ matrix.arch }}
       ndk_version: 26.3.11579264
       package_name: "pdf2htmlex"
       package_version: "0.18.8.rc1-20240619-git"
