@@ -14,8 +14,6 @@ jobs:
   build:
     runs-on: ubuntu-22.04
     name: ${{ matrix.api-level }} - ${{ matrix.arch }}
-    needs:
-      - find-all-packages
     strategy:
       fail-fast: false
       matrix:
