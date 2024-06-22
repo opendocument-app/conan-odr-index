@@ -21,6 +21,12 @@ class FontForgeTestConan(ConanFile):
         cmake_layout(self)
 
     def test(self):
+        bin_path = os.path.join(self.cpp.build.bindir, "link_test")
         if can_run(self):
-            cmd = os.path.join(self.cpp.build.bindir, "link_test")
-            self.run(cmd, env="conanrun")
+            self.run(bin_path, env="conanrun")
+
+        elif self.settings.os == "Android":
+            uploaded_bin_path = "/data/local/tmp/test_package"
+            if self.run("adb push {} {}".format(bin_path, uploaded_bin_path), env="conanrun", ignore_errors=True) == 0:
+                self.run("adb shell {}".format(uploaded_bin_path), env="conanrun")
+                self.run("adb shell rm {}".format(uploaded_bin_path), env="conanrun")
