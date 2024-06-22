@@ -27,7 +27,7 @@ jobs:
           - api_level: 30
             arch: x86
             api_type_target: aosp_atd
-    uses: ./.github/workflows/testInner.yml
+    uses: ./.github/workflows/android-emulator-test-inner.yml
     with:
       api_level: ${{ matrix.api_level }}
       arch: ${{ matrix.arch }}
