@@ -1,6 +1,7 @@
 name: android emulator test
 
 on:
+  push:
   workflow_dispatch:
     inputs:
       package:
