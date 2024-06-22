@@ -75,6 +75,4 @@ jobs:
           api-level: ${{ inputs.api_level }}
           arch: ${{ inputs.arch }}
           target: ${{ inputs.api_type_target }}
-          script: |
-            test_conanfile=recipes/${{ inputs.package_name }}/all/test_package/conanfile.py
-            conan test $test_conanfile ${{ inputs.package_name }}/${{ inputs.package_version }} --build missing --profile:host ${{ inputs.host_profile }}
+          script: conan test recipes/${{ inputs.package_name }}/all/test_package/conanfile.py ${{ inputs.package_name }}/${{ inputs.package_version }} --build missing --profile:host ${{ inputs.host_profile }}
