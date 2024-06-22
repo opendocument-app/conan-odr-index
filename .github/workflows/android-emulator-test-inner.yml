@@ -39,8 +39,7 @@ jobs:
         run: pip install --upgrade pip conan setuptools
 
       - name: install NDK
-        if: startsWith(inputs.host_profile, 'android')
-        run: echo "y" | sudo ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install "ndk;${{ matrix.config.ndk_version }}"
+        run: echo "y" | sudo ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install "ndk;${{ inputs.ndk_version }}"
 
       - name: conan remote
         run: conan remote add --index 0 odr https://artifactory.opendocument.app/artifactory/api/conan/conan
