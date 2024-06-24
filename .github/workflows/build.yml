@@ -6,11 +6,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
-env:
-  CCACHE_DIR: ${{ github.workspace }}/ccache
-  CCACHE_MAXSIZE: 500M
-  CCACHE_KEY_SUFFIX: r1
-
 jobs:
   find-all-packages:
     runs-on: ubuntu-22.04
@@ -29,7 +24,7 @@ jobs:
 
       - name: List all packages
         run: python scripts/list_package_versions.py
-      
+
       - name: List all packages in GitHub Actions format
         id: list-packages
         run: python scripts/list_package_versions.py --github | tee $GITHUB_OUTPUT
@@ -54,17 +49,6 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
 
-      - name: ubuntu install ccache
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt install ccache
-          ccache -V
-      - name: macos install ccache
-        if: runner.os == 'macOS'
-        run: |
-          brew install ccache
-          ccache -V
-
       - name: setup python 3.12
         uses: actions/setup-python@v5
         with:
@@ -84,16 +68,6 @@ jobs:
       # Export all recipes to local conan cache, to make sure all changes in all dependencies are picked up
       - name: Conan export all packages
         run: python scripts/conan_export_all_packages.py
-
-      - name: cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.ccache
-            /Users/runner/Library/Caches/ccache
-          key: ${{ matrix.config.build_machine }}-${{ matrix.config.host_profile }}-${{ env.CCACHE_KEY_SUFFIX }}
-          restore-keys: |
-            ${{ matrix.config.build_machine }}-${{ matrix.config.host_profile }}-
 
       - name: conan install
         run: conan install ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --build missing --profile:host ${{ matrix.config.host_profile }}
