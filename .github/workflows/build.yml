@@ -92,20 +92,20 @@ jobs:
         run: python scripts/conan_export_all_packages.py
 
       - name: conan install
-        run: conan install ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --build missing --profile:host ${{ matrix.config.host_profile }}
+        run: conan install ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --build missing --profile:host ${{ matrix.config.host_profile }} --profile:build ubuntu
       - name: conan source
         run: conan source ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }}
       - name: conan build
-        run: conan build ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --profile:host ${{ matrix.config.host_profile }}
+        run: conan build ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --profile:host ${{ matrix.config.host_profile }} --profile:build ubuntu
       - name: conan export
         run: conan export ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }}
       - name: conan export-pkg
-        run: conan export-pkg ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --profile:host ${{ matrix.config.host_profile }}
+        run: conan export-pkg ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --profile:host ${{ matrix.config.host_profile }} --profile:build ubuntu
 
       - name: conan test
         run: |
           test_conanfile=$(dirname ${{ matrix.package.conanfile }})/test_package/conanfile.py
-          conan test $test_conanfile ${{ matrix.package.package_reference }} --build missing --profile:host ${{ matrix.config.host_profile }}
+          conan test $test_conanfile ${{ matrix.package.package_reference }} --build missing --profile:host ${{ matrix.config.host_profile }} --profile:build ubuntu
 
       - name: conan login
         if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
