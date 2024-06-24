@@ -86,6 +86,10 @@ jobs:
       - name: conan config
         run: conan config install .github/config/${{ matrix.config.build_machine }}/conan
 
+      # Export all recipes to local conan cache, to make sure all changes in all dependencies are picked up
+      - name: Conan export all packages
+        run: python scripts/conan_export_all_packages.py
+
       - name: cache
         uses: actions/cache@v4
         with:

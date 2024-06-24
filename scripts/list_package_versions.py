@@ -6,13 +6,7 @@ import yaml
 import json
 
 
-def main():
-    parser = argparse.ArgumentParser(description="List package versions")
-    parser.add_argument(
-        "--github", help="Format output for GitHub Actions", action="store_true"
-    )
-    args = parser.parse_args()
-
+def get_package_infos():
     script_path = Path(__file__).resolve().parent
     root_path = script_path.parent
     recipes_path = root_path / "recipes"
@@ -38,6 +32,16 @@ def main():
 
         package_infos[recipe_path.name] = infos
 
+    return package_infos
+
+
+def main():
+    package_infos = get_package_infos()
+    parser = argparse.ArgumentParser(description="List package versions")
+    parser.add_argument(
+        "--github", help="Format output for GitHub Actions", action="store_true"
+    )
+    args = parser.parse_args()
     if args.github:
         result = [
             {
