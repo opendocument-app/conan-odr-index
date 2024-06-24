@@ -142,3 +142,5 @@ jobs:
       - name: conan upload
         if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
         run: conan upload "*" --check --confirm --remote odr
+
+      - run: ccache --show-stats
