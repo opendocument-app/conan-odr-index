@@ -1,0 +1,26 @@
+name: list_packages
+
+on:
+  push:
+
+jobs:
+  find-all-packages:
+    runs-on: ubuntu-22.04
+    outputs:
+      packages: ${{ steps.list-packages.outputs.packages }}
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: setup python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+      - name: install python dependencies
+        run: pip install --upgrade pip pyyaml
+
+      - name: List all modified packages in GitHub Actions format
+        id: list-packages
+        run: python scripts/list_package_versions.py --github --git-modified $COMMITS | tee $GITHUB_OUTPUT
+        env:
+          COMMITS: ${{ toJson(github.event.commits) }}

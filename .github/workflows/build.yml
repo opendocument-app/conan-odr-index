@@ -32,9 +32,11 @@ jobs:
       - name: List all packages
         run: python scripts/list_package_versions.py
 
-      - name: List all packages in GitHub Actions format
+      - name: List all modified packages in GitHub Actions format
         id: list-packages
-        run: python scripts/list_package_versions.py --github | tee $GITHUB_OUTPUT
+        run: python scripts/list_package_versions.py --github --git-modified $COMMITS | tee $GITHUB_OUTPUT
+        env:
+          COMMITS: ${{ toJson(github.event.commits) }}
 
   build:
     runs-on: ${{ matrix.config.build_machine }}
