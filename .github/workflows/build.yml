@@ -27,16 +27,26 @@ jobs:
         with:
           python-version: 3.12
       - name: install python dependencies
-        run: pip install --upgrade pip pyyaml
+        run: pip install --upgrade pip conan
 
-      - name: List all packages
-        run: python scripts/list_package_versions.py
+      - name: conan config
+        run: conan config install .github/config/ubuntu-22.04/conan
+
+      - name: Conan export all packages
+        run: python scripts/conan_export_all_packages.py
+
+      - run: conan graph info recipes/odrcore/all/conanfile.py --version=4.0.0 --profile:host=android-21-armv8 --format=json | tee odrcore-dependency-tree.json
+      - run: conan graph info recipes/poppler-data/all/conanfile.py --version=0.4.12 --profile:host=android-21-armv8 --format=json | tee pdf2htmlEX-dependency-tree.json
+
+      - name: Get a list of commits that triggered this workflow
+        id: commit_list
+        run: python get_commits_from_github_event.py
+        env:
+          GITHUB_EVENT: ${{ toJson(github.event) }}
 
       - name: List all modified packages in GitHub Actions format
         id: list-packages
-        run: python scripts/list_package_versions.py --github --git-modified $COMMITS | tee $GITHUB_OUTPUT
-        env:
-          COMMITS: ${{ toJson(github.event.commits) }}
+        run: python scripts/list_package_versions.py --github --git-modified ${{ steps.commit_list.output.commits }} --modified-tree odrcore-dependency-tree.json pdf2htmlEX-dependency-tree.json | tee $GITHUB_OUTPUT
 
   build:
     runs-on: ${{ matrix.config.build_machine }}
