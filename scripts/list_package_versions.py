@@ -77,7 +77,7 @@ def main():
             )
             for updated_file in filter(None, files_in_commit.stdout.split("\n")):
                 update_file_full_path = PurePath(root_path / updated_file)
-                if update_file_full_path.relative_to(recipes_path):
+                if update_file_full_path.is_relative_to(recipes_path):
                     updated_recipe_name = update_file_full_path.parts[len(recipes_path.parts)]
                     updated_packages.add(updated_recipe_name)
                 else:
