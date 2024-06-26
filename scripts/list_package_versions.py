@@ -59,13 +59,14 @@ def main():
 
         for commit_id in args.COMMIT_ID:
             print("commit_id: '{}'".format(commit_id))
-            print("git diff-tree --no-commit-id --name-only -r '{}'".format(commit_id))
+            print("git diff-tree --no-commit-id --name-only -r {}".format(commit_id))
             files_in_commit = subprocess.run(
                 ["git", "diff-tree", "--no-commit-id", "--name-only", "-r", commit_id],
                 capture_output=True,
                 text=True,
                 cwd=root_path,
             )
+            print('cwd: {}'.format(root_path))
             print('retval: {}'.format(files_in_commit.returncode))
             print('stderr: "{}"'.format(files_in_commit.stderr))
             print("Files in commit: {}".format(files_in_commit.stdout))
