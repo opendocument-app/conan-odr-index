@@ -69,7 +69,6 @@ def main():
         global_update = False
 
         for commit_id in commits:
-            print(commit_id)
             files_in_commit = subprocess.run(
                 ["git", "diff-tree", "--no-commit-id", "--name-only", "-r", commit_id],
                 capture_output=True,
