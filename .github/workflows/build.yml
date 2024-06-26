@@ -41,14 +41,9 @@ jobs:
       - name: Get a list of commits that triggered this workflow
         id: commit-list
         shell: bash # bash will pipefail on error
-        run: python scripts/get_commits_from_github_event.py
+        run: python scripts/get_commits_from_github_event.py | tee $GITHUB_OUTPUT
         env:
           GITHUB_EVENT: ${{ toJson(github.event) }}
-
-      - run: echo $CL
-        env:
-          CL: ${{ steps.commit-list.outputs.commits }}
-      - run: echo ${{ steps.commit-list.outputs.commits }}
 
       - name: List all modified packages in GitHub Actions format
         id: list-packages
