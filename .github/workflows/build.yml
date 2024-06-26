@@ -48,6 +48,7 @@ jobs:
           GITHUB_EVENT: ${{ toJson(github.event) }}
 
       - run: git diff-tree --no-commit-id --name-only -r 03ae667be0e86c5e259e1b3c042ca96c857c30af
+      - run: git diff-tree --no-commit-id --name-only -r 03ae667be0e86c5e259e1b3c042ca96c857c30af
 
       - name: List all modified packages in GitHub Actions format
         id: list-packages
