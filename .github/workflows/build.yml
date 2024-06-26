@@ -39,14 +39,14 @@ jobs:
       - run: conan graph info recipes/poppler-data/all/conanfile.py --version=0.4.12 --profile:host=android-21-armv8 --format=json | tee pdf2htmlEX-dependency-tree.json
 
       - name: Get a list of commits that triggered this workflow
-        id: commit_list
+        id: commit-list
         run: python scripts/get_commits_from_github_event.py
         env:
           GITHUB_EVENT: ${{ toJson(github.event) }}
 
       - name: List all modified packages in GitHub Actions format
         id: list-packages
-        run: python scripts/list_package_versions.py --github --git-modified ${{ steps.commit_list.output.commits }} --modified-tree odrcore-dependency-tree.json pdf2htmlEX-dependency-tree.json | tee $GITHUB_OUTPUT
+        run: python scripts/list_package_versions.py --github --git-modified ${{ steps.commit-list.outputs.commits }} --modified-tree odrcore-dependency-tree.json pdf2htmlEX-dependency-tree.json | tee $GITHUB_OUTPUT
 
   build:
     runs-on: ${{ matrix.config.build_machine }}
