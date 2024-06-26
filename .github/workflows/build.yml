@@ -21,6 +21,10 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
+#        with:
+#          # Fetch whole git history.
+#          # Required to parse changed files
+#          fetch-depth: 0
 
       - name: setup python 3.12
         uses: actions/setup-python@v5
@@ -47,8 +51,8 @@ jobs:
         env:
           GITHUB_EVENT: ${{ toJson(github.event) }}
 
-      - run: git diff-tree --no-commit-id --name-only -r 03ae667be0e86c5e259e1b3c042ca96c857c30af
-      - run: git diff-tree --no-commit-id --name-only -r 03ae667be0e86c5e259e1b3c042ca96c857c30af
+      - run: git log
+      - run: git diff-tree --no-commit-id --name-only -r ${{ steps.commit-list.outputs.commits }}
 
       - name: List all modified packages in GitHub Actions format
         id: list-packages
