@@ -21,10 +21,10 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
-#        with:
-#          # Fetch whole git history.
-#          # Required to parse changed files
-#          fetch-depth: 0
+        with:
+          # Fetch whole git history.
+          # Required to parse changed files
+          fetch-depth: 0
 
       - name: setup python 3.12
         uses: actions/setup-python@v5
