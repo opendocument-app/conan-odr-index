@@ -12,7 +12,7 @@ on:
           - odrcore
           - poppler-data
       package_version:
-        description: Package version (leave empty to build all)
+        description: Package version (leave empty to build all versions)
         required: false
       build_dependants:
         type: boolean
@@ -70,6 +70,13 @@ jobs:
 
       - name: List all modified packages in GitHub Actions format
         id: list-packages
+        if: true
+        shell: bash # bash shell needed to pipefail on error
+        run: python scripts/list_package_versions.py --github --git-modified ${{ steps.commit-list.outputs.commits }} --modified-tree odrcore-dependency-tree.json pdf2htmlEX-dependency-tree.json | tee $GITHUB_OUTPUT
+
+      - name: List all modified packages in GitHub Actions format
+        id: list-packages
+        if: false
         shell: bash # bash shell needed to pipefail on error
         run: python scripts/list_package_versions.py --github --git-modified ${{ steps.commit-list.outputs.commits }} --modified-tree odrcore-dependency-tree.json pdf2htmlEX-dependency-tree.json | tee $GITHUB_OUTPUT
 
