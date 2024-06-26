@@ -51,7 +51,7 @@ def main():
         raise Exception("--modified-tree can only be used with --git-modified")
 
     package_infos = get_package_infos()
-    pprint(package_infos)
+    # pprint(package_infos)
 
     if args.COMMIT_ID:
         updated_packages = set()
@@ -59,14 +59,14 @@ def main():
 
         for commit_id in args.COMMIT_ID:
             print("commit_id: '{}'".format(commit_id))
-            print("git diff-tree --no-commit-id --name-only -r " + commit_id)
-            subprocess.run(["git", "diff-tree", "--no-commit-id", "--name-only", "-r", commit_id], cwd=root_path)
+            print("git diff-tree --no-commit-id --name-only -r '{}'".format(commit_id))
             files_in_commit = subprocess.run(
                 ["git", "diff-tree", "--no-commit-id", "--name-only", "-r", commit_id],
                 capture_output=True,
                 text=True,
-                cwd=root_path
+                cwd=root_path,
             )
+            print('retval: {}'.format(files_in_commit.returncode))
             print('stderr: "{}"'.format(files_in_commit.stderr))
             print("Files in commit: {}".format(files_in_commit.stdout))
             for updated_file in filter(None, files_in_commit.stdout.split("\n")):
