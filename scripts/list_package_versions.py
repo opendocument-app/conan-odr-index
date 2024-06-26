@@ -53,6 +53,7 @@ def main():
     package_infos = get_package_infos()
 
     if args.COMMIT_ID:
+
         # args.COMMIT_ID is a list where each element is either
         # A) commit_id string
         # B) comma separated list of commit_id strings
