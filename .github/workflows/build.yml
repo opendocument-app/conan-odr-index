@@ -40,7 +40,7 @@ jobs:
 
       - name: Get a list of commits that triggered this workflow
         id: commit_list
-        run: python get_commits_from_github_event.py
+        run: python scripts/get_commits_from_github_event.py
         env:
           GITHUB_EVENT: ${{ toJson(github.event) }}
 
