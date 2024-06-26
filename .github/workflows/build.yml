@@ -51,9 +51,6 @@ jobs:
         env:
           GITHUB_EVENT: ${{ toJson(github.event) }}
 
-      - run: git log
-      - run: git diff-tree --no-commit-id --name-only -r ${{ steps.commit-list.outputs.commits }}
-
       - name: List all modified packages in GitHub Actions format
         id: list-packages
         shell: bash # bash will pipefail on error
