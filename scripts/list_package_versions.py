@@ -39,20 +39,20 @@ def get_package_infos():
 def main():
     parser = argparse.ArgumentParser(description="List package versions")
     parser.add_argument("--github", help="Format output for GitHub Actions", action="store_true")
-    parser.add_argument("--git-modified", nargs='+', dest="COMMIT_ID",
+    parser.add_argument("--git-modified", nargs='*', dest="COMMIT_ID",
                         help="Return packages modified by supplied commits")
     parser.add_argument("--modified-tree", nargs='+', dest="CONAN_GRAPH.json",
-                        help="Extra parameter for --git-modified to include dependants of modified packages too")
+                        help="Extra parameter for --git-modified to include downstream dependants of modified "
+                             "packages too")
     args = parser.parse_args()
 
-    if getattr(args, 'CONAN_GRAPH.json') and not args.COMMIT_ID:
+    if getattr(args, 'CONAN_GRAPH.json') and args.COMMIT_ID is None:
         raise Exception("--modified-tree can only be used with --git-modified")
 
     package_infos = get_package_infos()
 
     if args.COMMIT_ID:
         updated_packages = set()
-        global_update = False
 
         for commit_id in args.COMMIT_ID:
             files_in_commit = subprocess.run(
@@ -66,11 +66,9 @@ def main():
                 if update_file_full_path.is_relative_to(recipes_path):
                     updated_recipe_name = update_file_full_path.parts[len(recipes_path.parts)]
                     updated_packages.add(updated_recipe_name)
-                else:
-                    global_update = True
 
-        # downstream_packages key is package name,
-        # value is a set of packages that use this package
+        # downstream_packages dictionary key is package name,
+        # value is a set of packages, which use this package
         downstream_packages = dict()
         for conan_dependency_graph_file in getattr(args, 'CONAN_GRAPH.json'):
             with open(conan_dependency_graph_file, 'r') as dep_json:
@@ -92,14 +90,13 @@ def main():
 
                         downstream_packages[dep_name].add(node_name)
 
-        if not global_update:
-            filtered_packages = {}
-            for package in package_infos:
-                if package in updated_packages:
-                    filtered_packages[package] = package_infos[package]
-                    for dependency in downstream_packages.get(package, list()):
-                        filtered_packages[dependency] = package_infos[dependency]
-            package_infos = filtered_packages
+        filtered_packages = {}
+        for package in package_infos:
+            if package in updated_packages:
+                filtered_packages[package] = package_infos[package]
+                for dependency in downstream_packages.get(package, list()):
+                    filtered_packages[dependency] = package_infos[dependency]
+        package_infos = filtered_packages
 
     if args.github:
         result = [
