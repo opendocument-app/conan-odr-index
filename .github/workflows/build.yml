@@ -6,9 +6,12 @@ on:
     inputs:
       package_name:
         description: Package name
-        required: true
+        type: choice
+        options:
+          - odrcore
+          - poppler-data
       package_version:
-        description: Package version
+        description: Package version (leave empty to build all)
         required: false
       build_dependants:
         type: boolean
