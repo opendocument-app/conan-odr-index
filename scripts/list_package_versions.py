@@ -51,6 +51,7 @@ def main():
         raise Exception("--modified-tree can only be used with --git-modified")
 
     package_infos = get_package_infos()
+    pprint(package_infos)
 
     if args.COMMIT_ID:
         updated_packages = set()
