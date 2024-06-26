@@ -46,7 +46,7 @@ jobs:
 
       - run: echo $CL
         env:
-          CL: ${{ toJson(steps.commit-list.outputs.commits) }}
+          CL: ${{ steps.commit-list.outputs.commits }}
       - run: echo ${{ steps.commit-list.outputs.commits }}
 
       - name: List all modified packages in GitHub Actions format
