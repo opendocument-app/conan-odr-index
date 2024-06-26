@@ -53,21 +53,10 @@ def main():
     package_infos = get_package_infos()
 
     if args.COMMIT_ID:
-
-        # args.COMMIT_ID is a list where each element is either
-        # A) commit_id string
-        # B) comma separated list of commit_id strings
-        # commits = list()
-        # for commit_id in args.COMMIT_ID:
-        #     if ',' in commit_id:
-        #         for ci in commit_id.split(','):
-        #             commits.append(ci)
-
         updated_packages = set()
         global_update = False
 
         for commit_id in args.COMMIT_ID:
-            print('commit_id: "{}"'.format(commit_id))
             files_in_commit = subprocess.run(
                 ["git", "diff-tree", "--no-commit-id", "--name-only", "-r", commit_id],
                 capture_output=True,
@@ -75,6 +64,7 @@ def main():
                 cwd=root_path
             )
             for updated_file in filter(None, files_in_commit.stdout.split("\n")):
+                print("Updated file: '{}'".format(updated_file))
                 update_file_full_path = PurePath(root_path / updated_file)
                 if update_file_full_path.is_relative_to(recipes_path):
                     updated_recipe_name = update_file_full_path.parts[len(recipes_path.parts)]
