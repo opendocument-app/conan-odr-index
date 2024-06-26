@@ -64,6 +64,7 @@ def main():
                 text=True,
                 cwd=root_path
             )
+            print("Files in commit: {}".format(files_in_commit.stdout))
             for updated_file in filter(None, files_in_commit.stdout.split("\n")):
                 print("Updated file: '{}'".format(updated_file))
                 update_file_full_path = PurePath(root_path / updated_file)
