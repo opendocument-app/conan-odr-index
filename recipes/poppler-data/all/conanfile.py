@@ -54,3 +54,4 @@ class PopplerDataConan(ConanFile):
         self.cpp_info.includedirs = []
         self.cpp_info.libdirs = []
         self.cpp_info.bindirs = []
+
