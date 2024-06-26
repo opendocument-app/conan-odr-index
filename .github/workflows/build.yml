@@ -70,15 +70,12 @@ jobs:
 
       - name: List all modified packages in GitHub Actions format
         id: list-packages
-        if: true
         shell: bash # bash shell needed to pipefail on error
-        run: python scripts/list_package_versions.py --github --git-modified ${{ steps.commit-list.outputs.commits }} --modified-tree odrcore-dependency-tree.json pdf2htmlEX-dependency-tree.json | tee $GITHUB_OUTPUT
-
-      - name: List all modified packages in GitHub Actions format
-        id: list-packages
-        if: false
-        shell: bash # bash shell needed to pipefail on error
-        run: python scripts/list_package_versions.py --github --git-modified ${{ steps.commit-list.outputs.commits }} --modified-tree odrcore-dependency-tree.json pdf2htmlEX-dependency-tree.json | tee $GITHUB_OUTPUT
+        run: python scripts/list_package_versions.py --github \
+          --git-modified ${{ steps.commit-list.outputs.commits }} \
+          --modified-tree odrcore-dependency-tree.json pdf2htmlEX-dependency-tree.json \
+          --requested-package ${{ github.event.inputs.package_name }} \
+          | tee $GITHUB_OUTPUT
 
   build:
     runs-on: ${{ matrix.config.build_machine }}
