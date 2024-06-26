@@ -7,7 +7,7 @@ def main():
     commits = []
     for commit in json.loads(os.environ.get('GITHUB_EVENT', '{}')).get("commits", list()):
         commits.append(commit["id"])
-    print("commits=" + json.dumps(commits))
+    print("commits=" + ' '.join(commits))
 
 
 if __name__ == "__main__":

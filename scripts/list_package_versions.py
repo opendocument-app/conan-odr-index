@@ -55,20 +55,18 @@ def main():
     if args.COMMIT_ID:
         # args.COMMIT_ID is a list where each element is either
         # A) commit_id string
-        # B) json string containing a list of commit_id strings
-        commits = list()
-        for commit_id in args.COMMIT_ID:
-            try:
-                commit_ids_json = json.loads(commit_id)
-                for commit_id_in_json in commit_ids_json:
-                    commits.append(commit_id_in_json)
-            except ValueError:
-                commits.append(commit_id)
+        # B) comma separated list of commit_id strings
+        # commits = list()
+        # for commit_id in args.COMMIT_ID:
+        #     if ',' in commit_id:
+        #         for ci in commit_id.split(','):
+        #             commits.append(ci)
 
         updated_packages = set()
         global_update = False
 
-        for commit_id in commits:
+        for commit_id in args.COMMIT_ID:
+            print('commit_id: "{}"'.format(commit_id))
             files_in_commit = subprocess.run(
                 ["git", "diff-tree", "--no-commit-id", "--name-only", "-r", commit_id],
                 capture_output=True,
