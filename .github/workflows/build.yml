@@ -1,8 +1,20 @@
 name: build_test
 
 on:
-  workflow_dispatch:
   push:
+  workflow_dispatch:
+    inputs:
+      package_name:
+        description: Package name
+        required: true
+      package_version:
+        description: Package version
+        required: false
+      build_dependants:
+        type: boolean
+        default: false
+        description: Include dependants of requested package
+
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
