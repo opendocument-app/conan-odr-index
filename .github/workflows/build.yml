@@ -152,9 +152,7 @@ jobs:
         run: conan export-pkg ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --profile:host ${{ matrix.config.host_profile }} --profile:build ubuntu
 
       - name: conan test
-        run: |
-          test_conanfile=$(dirname ${{ matrix.package.conanfile }})/test_package/conanfile.py
-          conan test $test_conanfile ${{ matrix.package.package_reference }} --build missing --profile:host ${{ matrix.config.host_profile }} --profile:build ubuntu
+        run: conan test ${{ matrix.package.test_conanfile }} ${{ matrix.package.package_reference }} --build missing --profile:host ${{ matrix.config.host_profile }} --profile:build ubuntu
 
       - name: conan login
         if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'

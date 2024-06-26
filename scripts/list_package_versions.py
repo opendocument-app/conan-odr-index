@@ -107,6 +107,9 @@ def main():
                 "conanfile": str(
                     Path("recipes") / package / infos["folder"] / "conanfile.py"
                 ),
+                "test_conanfile": str(
+                    Path("recipes") / package / infos["folder"] / "test_package" / "conanfile.py"
+                )
             }
             for package in sorted(package_infos.keys())
             for infos in sorted(package_infos[package], key=lambda x: x["version"], reverse=True)
