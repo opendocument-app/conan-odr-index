@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import json
 import os
-from pprint import pprint
 
 
 def main():
