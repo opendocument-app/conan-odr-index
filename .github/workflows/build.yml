@@ -8,6 +8,7 @@ on:
         description: Package name
         type: choice
         options:
+          - all packages
           - odrcore
           - poppler-data
       package_version:
