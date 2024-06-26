@@ -40,6 +40,7 @@ jobs:
 
       - name: Get a list of commits that triggered this workflow
         id: commit-list
+        shell: bash # bash will pipefail on error
         run: python scripts/get_commits_from_github_event.py
         env:
           GITHUB_EVENT: ${{ toJson(github.event) }}
@@ -51,6 +52,7 @@ jobs:
 
       - name: List all modified packages in GitHub Actions format
         id: list-packages
+        shell: bash # bash will pipefail on error
         run: python scripts/list_package_versions.py --github --git-modified ${{ steps.commit-list.outputs.commits }} --modified-tree odrcore-dependency-tree.json pdf2htmlEX-dependency-tree.json | tee $GITHUB_OUTPUT
 
   build:
