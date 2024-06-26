@@ -44,6 +44,11 @@ jobs:
         env:
           GITHUB_EVENT: ${{ toJson(github.event) }}
 
+      - run: echo $CL
+        env:
+          CL: ${{ toJson(steps.commit-list.outputs.commits) }}
+      - run: echo ${{ steps.commit-list.outputs.commits }}
+
       - name: List all modified packages in GitHub Actions format
         id: list-packages
         run: python scripts/list_package_versions.py --github --git-modified ${{ steps.commit-list.outputs.commits }} --modified-tree odrcore-dependency-tree.json pdf2htmlEX-dependency-tree.json | tee $GITHUB_OUTPUT
