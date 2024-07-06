@@ -8,17 +8,16 @@ on:
         description: Package name
         type: choice
         options:
-          - all packages
+          - all
           - odrcore
           - poppler-data
       package_version:
         description: Package version (leave empty to build all versions)
         required: false
-      build_dependants:
+      build_downstream_packages:
         type: boolean
-        default: false
-        description: Include dependants of requested package
-
+        default: true
+        description: Include dependants of requested or modified packages
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -55,27 +54,23 @@ jobs:
       - name: Conan export all packages
         run: python scripts/conan_export_all_packages.py
 
-      # Generate dependency trees for all disjoined trees
+      # Generate dependency graphs for all disjoint packages
       - run: conan graph info recipes/odrcore/all/conanfile.py --version=4.0.0 --profile:host=android-21-armv8 --format=json | tee odrcore-dependency-tree.json
         shell: bash # bash shell needed to pipefail on error
       - run: conan graph info recipes/poppler-data/all/conanfile.py --version=0.4.12 --profile:host=android-21-armv8 --format=json | tee pdf2htmlEX-dependency-tree.json
         shell: bash # bash shell needed to pipefail on error
 
-      - name: Get a list of commits that triggered this workflow
-        id: commit-list
-        shell: bash # bash shell needed to pipefail on error
-        run: python scripts/get_commits_from_github_event.py | tee $GITHUB_OUTPUT
+      - name: Get requested packages from commits and workflow_dispatch inputs
+        id: list-packages
+        run: python scripts/list_package_versions.py \
+          --git-modified ${{ steps.commit-list.outputs.commits }} \
+          --modified-tree \
+            odrcore-dependency-tree.json \
+            pdf2htmlEX-dependency-tree.json \
+          --requested-package ${{ github.event.inputs.package_name }} \
+          --requested-package-version ${{ github.event.inputs.package_version }}
         env:
           GITHUB_EVENT: ${{ toJson(github.event) }}
-
-      - name: List all modified packages in GitHub Actions format
-        id: list-packages
-        shell: bash # bash shell needed to pipefail on error
-        run: python scripts/list_package_versions.py --github \
-          --git-modified ${{ steps.commit-list.outputs.commits }} \
-          --modified-tree odrcore-dependency-tree.json pdf2htmlEX-dependency-tree.json \
-          --requested-package ${{ github.event.inputs.package_name }} \
-          | tee $GITHUB_OUTPUT
 
   build:
     runs-on: ${{ matrix.config.build_machine }}
