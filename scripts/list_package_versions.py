@@ -89,11 +89,11 @@ def main():
     parser.add_argument("--commit-ids", nargs='*', dest="COMMIT_ID",
                         help="Find packages modified by supplied commits. Commit ids will also be obtained from "
                              "$ENV[GITHUB_EVENT][commits]")
-    parser.add_argument("--requested-package", action='store',
+    parser.add_argument("--request-package", action='store',
                         help="Requested package will also be obtained from "
                              "$ENV[GITHUB_EVENT][inputs][package_name]")
-    parser.add_argument("--requested-package-version", action='store',
-                        help="Used together with --requested-package, ignored when building all packages. "
+    parser.add_argument("--request-package-version", action='store',
+                        help="Used together with --request-package, ignored when building all packages. "
                              "Requested package version will also be obtained from "
                              "$ENV[GITHUB_EVENT][inputs][package_version]")
     parser.add_argument("--dependency-graph", nargs='+', dest="CONAN_DEPENDENCY_GRAPH.json",
@@ -117,12 +117,12 @@ def main():
             requested_packages.add(get_packages_in_commit(commit["id"]))
 
     # Check if any packages were asked to be rebuilt
-    if args.requested_package:
-        print("Requested package: " + args.requested_package)
-        if args.requested_package_version and args.requested_package != 'all':
-            requested_packages.add("{}/{}".format(args.requested_package, args.requested_package_version))
+    if args.request_package:
+        print("Requested package: " + args.request_package)
+        if args.request_package_version and args.request_package != 'all':
+            requested_packages.add("{}/{}".format(args.request_package, args.request_package_version))
         else:
-            requested_packages.add(args.requested_package)
+            requested_packages.add(args.request_package)
     elif inputs.get('package_name'):
         print("Requested package: " + inputs.get('package_name'))
         if inputs.get('package_version') and inputs.get('package_name') != 'all':
