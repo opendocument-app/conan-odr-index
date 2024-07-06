@@ -62,10 +62,7 @@ jobs:
 
       - name: Get requested packages from commits and workflow_dispatch inputs
         id: list-packages
-        run: python scripts/list_package_versions.py \
-          --dependency-graph \
-            odrcore-dependency-tree.json \
-            pdf2htmlEX-dependency-tree.json
+        run: python scripts/list_package_versions.py --dependency-graph odrcore-dependency-tree.json pdf2htmlEX-dependency-tree.json
         env:
           GITHUB_EVENT: ${{ toJson(github.event) }}
 
