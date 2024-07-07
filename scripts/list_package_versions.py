@@ -5,6 +5,7 @@ import json
 import os
 import subprocess
 from pathlib import Path
+from pprint import pprint
 
 import yaml
 
@@ -119,6 +120,9 @@ def main():
         print("commit {} requested as argument". format(commit_id))
         requested_packages.add(get_packages_in_commit(commit_id))
 
+    #@TODO: instrumentation
+    print("commits:")
+    pprint(github_event.get("commits", list()))
     for commit in github_event.get("commits", list()):
         if not str.lower(commit["message"]).find('[skipci]'):
             print("Found commit without [skipci]: {} - {}".format(commit["id"], commit["message"]))
