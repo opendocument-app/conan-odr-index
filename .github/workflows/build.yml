@@ -39,7 +39,8 @@ jobs:
   find-all-packages:
     runs-on: ubuntu-22.04
     outputs:
-      packages: ${{ steps.list-packages.outputs.packages }}
+      packages-with-dependents: ${{ steps.list-packages-with-dependents.outputs.packages }}
+      packages-without-dependents: ${{ steps.list-packages-without-dependents.outputs.packages }}
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -67,22 +68,28 @@ jobs:
       - run: conan graph info recipes/pdf2htmlex/all/conanfile.py --version=0.18.8.rc1-20240619-git --profile:host=android-21-armv8 --format=json | tee pdf2htmlEX-dependency-tree.json
         shell: bash # bash shell needed to pipefail on error
 
-      - name: Get requested packages from commits and workflow_dispatch inputs
-        id: list-packages
+      - name: Get requested packages and dependants from commits and workflow_dispatch inputs
+        id: list-packages-with-dependents
         run: python scripts/list_package_versions.py --dependency-graph odrcore-dependency-tree.json pdf2htmlEX-dependency-tree.json
+        env:
+          GITHUB_EVENT: ${{ toJson(github.event) }}
+
+      - name: Get requested packages from commits and workflow_dispatch inputs
+        id: list-packages-without-dependents
+        run: python scripts/list_package_versions.py
         env:
           GITHUB_EVENT: ${{ toJson(github.event) }}
 
   build:
     runs-on: ${{ matrix.config.build_machine }}
-    if: ${{ needs.find-all-packages.outputs.packages != '[]' }}
+    if: ${{ needs.find-all-packages.outputs.packages-with-dependents != '[]' }}
     name: ${{ matrix.package.package_reference }} - ${{ matrix.config.host_profile }}
     needs:
       - find-all-packages
     strategy:
       fail-fast: false
       matrix:
-        package: ${{ fromJson(needs.find-all-packages.outputs.packages) }}
+        package: ${{ fromJson(needs.find-all-packages.outputs.packages-with-dependents) }}
         config:
           - { build_machine: ubuntu-22.04, host_profile: ubuntu }
           - { build_machine: ubuntu-22.04, host_profile: android-23-armv8, ndk_version: 26.3.11579264 }
@@ -180,3 +187,59 @@ jobs:
         run: conan upload "*" --check --confirm --remote odr
 
       - run: ccache --show-stats
+
+  emulator-aosp_atd-target:
+    if: ${{ needs.find-all-packages.outputs.packages-without-dependents != '[]' }}
+    needs:
+      - find-all-packages
+      - build
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{ fromJson(needs.find-all-packages.outputs.packages-without-dependents) }}
+#        api_level: [34, 33, 32, 31, 30]
+        api_level: [34]
+        arch: [x86_64]
+        api_type_target: [aosp_atd]
+        include:
+          - api_level: 30
+            arch: x86
+            api_type_target: aosp_atd
+    uses: ./.github/workflows/emulator-test-inner.yml
+    with:
+      api_level: ${{ matrix.api_level }}
+      arch: ${{ matrix.arch }}
+      api_type_target: ${{ matrix.api_type_target }}
+      host_profile: android-21-${{ matrix.arch }}
+      ndk_version: "26.3.11579264"
+      conanfile: ${{ matrix.package.conanfile }}
+      test_conanfile: ${{ matrix.package.test_conanfile }}
+      package_version: ${{ matrix.package.version }}
+      package_reference: ${{ matrix.package.package_reference }}
+
+  emulator-default-target:
+    if: ${{ needs.find-all-packages.outputs.packages-without-dependents != '[]' }}
+    needs:
+      - find-all-packages
+      - build
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{ fromJson(needs.find-all-packages.outputs.packages-without-dependents) }}
+#        api_level: [29, 28, 27, 26, 25, 24, 23, 22, 21]
+        api_level: [21]
+        arch:
+          - x86_64
+          - x86
+        api_type_target: [default]
+    uses: ./.github/workflows/emulator-test-inner.yml
+    with:
+      api_level: ${{ matrix.api_level }}
+      arch: ${{ matrix.arch }}
+      api_type_target: ${{ matrix.api_type_target }}
+      host_profile: android-21-${{ matrix.arch }}
+      ndk_version: "26.3.11579264"
+      conanfile: ${{ matrix.package.conanfile }}
+      test_conanfile: ${{ matrix.package.test_conanfile }}
+      package_version: ${{ matrix.package.version }}
+      package_reference: ${{ matrix.package.package_reference }}
