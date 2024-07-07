@@ -2,23 +2,73 @@ name: android emulator test
 
 on:
   push:
-#  workflow_dispatch:
-#    inputs:
-#      package:
-#        description: "Package name"
-#        type: string
-#        required: true
-#      version:
-#        description: "Package version"
-#        type: string
-#        required: true
+  workflow_dispatch:
+    inputs:
+      package_name:
+        description: Package name
+        type: choice
+        options:
+          - all
+          - odrcore
+          - pdf2htmlex
+          - fontforge
+          - poppler
+          - poppler-data
+          - cairo
+          - openlibm
+          - fontconfig
+          - glib
+      package_version:
+        description: Package version (leave empty to build all versions)
+        required: false
 
 jobs:
+  find-all-packages:
+    runs-on: ubuntu-22.04
+    outputs:
+      packages: ${{ steps.list-packages.outputs.packages }}
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          # Fetch whole git history.
+          # Required to parse modified packages
+          fetch-depth: 0
+
+      - name: setup python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+      - name: install python dependencies
+        run: pip install --upgrade pip conan
+
+      - name: conan config
+        run: conan config install .github/config/ubuntu-22.04/conan
+
+      - name: Conan export all packages
+        run: python scripts/conan_export_all_packages.py
+
+      # Generate dependency graphs for all disjoint packages
+      - run: conan graph info recipes/odrcore/all/conanfile.py --version=4.0.0 --profile:host=android-21-armv8 --format=json | tee odrcore-dependency-tree.json
+        shell: bash # bash shell needed to pipefail on error
+      - run: conan graph info recipes/pdf2htmlex/all/conanfile.py --version=0.18.8.rc1-20240619-git --profile:host=android-21-armv8 --format=json | tee pdf2htmlEX-dependency-tree.json
+        shell: bash # bash shell needed to pipefail on error
+
+      - name: Get requested packages from commits and workflow_dispatch inputs
+        id: list-packages
+        run: python scripts/list_package_versions.py
+        env:
+          GITHUB_EVENT: ${{ toJson(github.event) }}
+
   aosp_atd-target:
+    if: ${{ needs.find-all-packages.outputs.packages != '[]' }}
+    needs:
+      - find-all-packages
 #    name: ${{ matrix.api_level }} on ${{ matrix.arch }} (${{ matrix.api_type_target }})
     strategy:
       fail-fast: false
       matrix:
+        package: ${{ fromJson(needs.find-all-packages.outputs.packages) }}
 #        api_level: [34, 33, 32, 31, 30]
         api_level: [34]
         arch: [x86_64]
@@ -34,11 +84,15 @@ jobs:
       api_type_target: ${{ matrix.api_type_target }}
       host_profile: android-21-${{ matrix.arch }}
       ndk_version: "26.3.11579264"
-      conanfile: "recipes/pdf2htmlex/all/conanfile.py"
-      test_conanfile: "recipes/pdf2htmlex/all/test_package/conanfile.py"
-      package_version: "0.18.8.rc1-20240619-git"
+      conanfile: ${{ matrix.package.conanfile }}
+      test_conanfile: ${{ matrix.package.test_conanfile }}
+      package_version: ${{ matrix.package.version }}
+      package_reference: ${{ matrix.package.package_reference }}
 
   default-target:
+    if: ${{ needs.find-all-packages.outputs.packages != '[]' }}
+    needs:
+      - find-all-packages
 #    name: android-${{ matrix.api_level }} on ${{ matrix.arch }} (${{ matrix.api_type_target }})
     strategy:
       fail-fast: false
@@ -56,6 +110,7 @@ jobs:
       api_type_target: ${{ matrix.api_type_target }}
       host_profile: android-21-${{ matrix.arch }}
       ndk_version: "26.3.11579264"
-      conanfile: "recipes/pdf2htmlex/all/conanfile.py"
-      test_conanfile: "recipes/pdf2htmlex/all/test_package/conanfile.py"
-      package_version: "0.18.8.rc1-20240619-git"
+      conanfile: ${{ matrix.package.conanfile }}
+      test_conanfile: ${{ matrix.package.test_conanfile }}
+      package_version: ${{ matrix.package.version }}
+      package_reference: ${{ matrix.package.package_reference }}

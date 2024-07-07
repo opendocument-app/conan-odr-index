@@ -27,6 +27,9 @@ on:
       package_version:
         required: true
         type: string
+      package_reference:
+        required: true
+        type: string
 jobs:
   instrumentedTests:
     runs-on: ubuntu-22.04
