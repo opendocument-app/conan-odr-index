@@ -57,7 +57,7 @@ jobs:
       # Generate dependency graphs for all disjoint packages
       - run: conan graph info recipes/odrcore/all/conanfile.py --version=4.0.0 --profile:host=android-21-armv8 --format=json | tee odrcore-dependency-tree.json
         shell: bash # bash shell needed to pipefail on error
-      - run: conan graph info recipes/poppler-data/all/conanfile.py --version=0.4.12 --profile:host=android-21-armv8 --format=json | tee pdf2htmlEX-dependency-tree.json
+      - run: conan graph info recipes/pdf2htmlex/all/conanfile.py --version=0.18.8.rc1-20240619-git --profile:host=android-21-armv8 --format=json | tee pdf2htmlEX-dependency-tree.json
         shell: bash # bash shell needed to pipefail on error
 
       - name: Get requested packages from commits and workflow_dispatch inputs
@@ -126,6 +126,9 @@ jobs:
           python-version: 3.12
       - name: install python dependencies
         run: pip install --upgrade pip conan
+
+      - name: install python setuptools (required to build GLib)
+        run: pip install --upgrade setuptools
 
       - name: install NDK
         if: startsWith(matrix.config.host_profile, 'android')

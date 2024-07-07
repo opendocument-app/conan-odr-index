@@ -1,0 +1,59 @@
+name: android emulator test
+
+on:
+  push:
+#  workflow_dispatch:
+#    inputs:
+#      package:
+#        description: "Package name"
+#        type: string
+#        required: true
+#      version:
+#        description: "Package version"
+#        type: string
+#        required: true
+
+jobs:
+  aosp_atd-target:
+#    name: ${{ matrix.api_level }} on ${{ matrix.arch }} (${{ matrix.api_type_target }})
+    strategy:
+      fail-fast: false
+      matrix:
+#        api_level: [34, 33, 32, 31, 30]
+        api_level: [34]
+        arch: [x86_64]
+        api_type_target: [aosp_atd]
+        include:
+          - api_level: 30
+            arch: x86
+            api_type_target: aosp_atd
+    uses: ./.github/workflows/android-emulator-test-inner.yml
+    with:
+      api_level: ${{ matrix.api_level }}
+      arch: ${{ matrix.arch }}
+      api_type_target: ${{ matrix.api_type_target }}
+      host_profile: android-21-${{ matrix.arch }}
+      ndk_version: "26.3.11579264"
+      package_name: "pdf2htmlex"
+      package_version: "0.18.8.rc1-20240619-git"
+
+  default-target:
+#    name: android-${{ matrix.api_level }} on ${{ matrix.arch }} (${{ matrix.api_type_target }})
+    strategy:
+      fail-fast: false
+      matrix:
+#        api_level: [29, 28, 27, 26, 25, 24, 23, 22, 21]
+        api_level: [21]
+        arch:
+          - x86_64
+          - x86
+        api_type_target: [default]
+    uses: ./.github/workflows/android-emulator-test-inner.yml
+    with:
+      api_level: ${{ matrix.api_level }}
+      arch: ${{ matrix.arch }}
+      api_type_target: ${{ matrix.api_type_target }}
+      host_profile: android-21-${{ matrix.arch }}
+      ndk_version: "26.3.11579264"
+      package_name: "pdf2htmlex"
+      package_version: "0.18.8.rc1-20240619-git"
