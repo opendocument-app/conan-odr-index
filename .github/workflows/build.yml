@@ -87,10 +87,8 @@ jobs:
 
   build:
     runs-on: ${{ matrix.config.build_machine }}
-    # @TODO: debug
-#    if: ${{ needs.find-all-packages.outputs.packages-with-dependents != '[]' }}
-    if: false
-    name: ${{ matrix.package.package_reference }} - ${{ matrix.config.host_profile }}
+    if: ${{ needs.find-all-packages.outputs.packages-with-dependents != '[]' }}
+    name: b ${{ matrix.package.package_reference }} - ${{ matrix.config.host_profile }}
     needs:
       - generate-matrices
     strategy:
@@ -200,8 +198,7 @@ jobs:
     name: e ${{ matrix.package.package_reference }} ${{ matrix.emulator.arch }}/${{ matrix.emulator.emulator_api_level }}/${{matrix.emulator.build_api_level}} 
     needs:
       - generate-matrices
-#      @TODO: temporarily commented out
-#      - build
+      - build
     strategy:
       fail-fast: false
       matrix:
