@@ -83,7 +83,7 @@ jobs:
 
       - name: Generate matrix of emulator images
         id: generate-emulator-matrix
-        run : python scripts/emulator_matrix_generator.py
+        run: python scripts/emulator_matrix_generator.py
 
   build:
     runs-on: ${{ matrix.config.build_machine }}
