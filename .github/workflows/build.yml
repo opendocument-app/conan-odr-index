@@ -82,7 +82,9 @@ jobs:
 
   build:
     runs-on: ${{ matrix.config.build_machine }}
-    if: ${{ needs.find-all-packages.outputs.packages-with-dependents != '[]' }}
+    # @TODO: debug
+#    if: ${{ needs.find-all-packages.outputs.packages-with-dependents != '[]' }}
+    if: false
     name: ${{ matrix.package.package_reference }} - ${{ matrix.config.host_profile }}
     needs:
       - find-all-packages
@@ -204,6 +206,7 @@ jobs:
         build_api_level: [23, 21]
         arch: [x86_64]
         api_type_target: [aosp_atd]
+        # 30 x86
     uses: ./.github/workflows/emulator-test-inner.yml
     with:
       emulator_api_level: ${{ matrix.emulator_api_level }}
