@@ -1,0 +1,134 @@
+name: emulator
+
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      package_name:
+        description: Package name
+        type: choice
+        options:
+          - all
+          - odrcore
+          - pdf2htmlex
+          - fontforge
+          - poppler
+          - poppler-data
+          - cairo
+          - openlibm
+          - fontconfig
+          - glib
+      package_version:
+        description: Package version (leave empty to build all versions)
+        required: false
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  generate-matrices:
+    runs-on: ubuntu-22.04
+    outputs:
+      packages-without-dependents: ${{ steps.list-packages-without-dependents.outputs.packages }}
+      emulator: ${{ steps.generate-emulator-matrix.outputs.matrix }}
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          # Fetch whole git history.
+          # Required to parse modified packages
+          fetch-depth: 0
+
+      - name: setup python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+      - name: install python dependencies
+        run: pip install --upgrade pip conan
+
+      - name: conan config
+        run: conan config install .github/config/ubuntu-22.04/conan
+
+      - name: Conan export all packages
+        run: python scripts/conan_export_all_packages.py
+
+      # Generate dependency graphs for all disjoint packages
+      - run: conan graph info recipes/odrcore/all/conanfile.py --version=4.0.0 --profile:host=android-21-armv8 --format=json | tee odrcore-dependency-tree.json
+        shell: bash # bash shell needed to pipefail on error
+      - run: conan graph info recipes/pdf2htmlex/all/conanfile.py --version=0.18.8.rc1-20240619-git --profile:host=android-21-armv8 --format=json | tee pdf2htmlEX-dependency-tree.json
+        shell: bash # bash shell needed to pipefail on error
+
+      - name: Get requested packages from commits and workflow_dispatch inputs
+        id: list-packages-without-dependents
+        run: python scripts/list_package_versions.py
+        env:
+          GITHUB_EVENT: ${{ toJson(github.event) }}
+
+      - name: Generate matrix of emulator images
+        id: generate-emulator-matrix
+        run: python scripts/emulator_matrix_generator.py
+
+  emulator:
+    if: ${{ needs.generate-matrices.outputs.packages-without-dependents != '[]' && needs.generate-matrices.outputs.emulator != '[]' }}
+    name: e ${{ matrix.package.package_reference }} ${{ matrix.emulator.arch }}/${{ matrix.emulator.emulator_api_level }}/${{matrix.emulator.build_api_level}} 
+    needs:
+      - generate-matrices
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{ fromJson(needs.generate-matrices.outputs.packages-without-dependents) }}
+        emulator: ${{ fromJson(needs.generate-matrices.outputs.emulator) }}
+    runs-on: ubuntu-22.04
+    env:
+      ndk_version: 26.3.11579264
+      conan_host_profile: android-${{ matrix.emulator.build_api_level }}-${{ matrix.emulator.arch }}
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: setup python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+      - name: install python dependencies and setuptools (required to build GLib)
+        run: pip install --upgrade pip conan setuptools
+
+      - name: install NDK
+        run: echo "y" | sudo ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install "ndk;${{ env.ndk_version }}"
+
+      - name: conan remote
+        run: conan remote add --index 0 odr https://artifactory.opendocument.app/artifactory/api/conan/conan
+      - name: conan config
+        run: conan config install .github/config/ubuntu-22.04/conan
+
+      # Multiple unpublished packages in this repo have inter-dependencies
+      # Can't build them until the deps are published to artifactory or at least exported
+      - name: Conan export all packages
+        run: python scripts/conan_export_all_packages.py
+
+      - name: conan install
+        run: conan install ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --build missing --profile:host ${{ env.conan_host_profile }} --profile:build ubuntu
+      - name: conan source
+        run: conan source ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }}
+      - name: conan build
+        run: conan build ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --profile:host ${{ env.conan_host_profile }} --profile:build ubuntu
+      - name: conan export
+        run: conan export ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }}
+      - name: conan export-pkg
+        run: conan export-pkg ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --profile:host ${{ env.conan_host_profile }} --profile:build ubuntu
+
+      - name: Enable KVM group perms
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - uses: reactivecircus/android-emulator-runner@v2
+        with:
+          force-avd-creation: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -no-snapshot-save
+          api-level: ${{ matrix.emulator.emulator_api_level }}
+          arch: ${{ matrix.emulator.arch }}
+          target: ${{ matrix.emulator.api_type_target }}
+          script: conan test ${{ matrix.package.test_conanfile }} ${{ matrix.package.package_reference }} --build missing --profile:host ${{ env.conan_host_profile }} --profile:build ubuntu 
