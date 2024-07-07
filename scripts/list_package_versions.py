@@ -28,7 +28,7 @@ def get_package_infos():
             infos.append(
                 {
                     "version": version,
-                    "folder": Path(details["folder"]),
+                    "folder": details["folder"],
                 }
             )
 
