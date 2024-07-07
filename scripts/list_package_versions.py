@@ -118,15 +118,12 @@ def main():
     # Check if any packages were modified in git commits
     for commit_id in args.COMMIT_ID or list():
         print("commit {} requested as argument". format(commit_id))
-        requested_packages.add(get_packages_in_commit(commit_id))
+        requested_packages.update(get_packages_in_commit(commit_id))
 
-    #@TODO: instrumentation
-    print("commits:")
-    pprint(github_event.get("commits", list()))
     for commit in github_event.get("commits", list()):
-        if not str.lower(commit["message"]).find('[skipci]'):
+        if -1 == str.lower(commit["message"]).find('[skipci]'):
             print("Found commit without [skipci]: {} - {}".format(commit["id"], commit["message"]))
-            requested_packages.add(get_packages_in_commit(commit["id"]))
+            requested_packages.update(get_packages_in_commit(commit["id"]))
 
     # Check if any packages were asked to be rebuilt
     if args.request_package:
