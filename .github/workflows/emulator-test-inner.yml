@@ -3,7 +3,7 @@ name: Android emulator inner
 on:
   workflow_call:
     inputs:
-      api_level:
+      emulator_api_level:
         required: true
         type: string
       arch:
@@ -78,7 +78,7 @@ jobs:
         with:
           force-avd-creation: false
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -no-snapshot-save
-          api-level: ${{ inputs.api_level }}
+          api-level: ${{ inputs.emulator_api_level }}
           arch: ${{ inputs.arch }}
           target: ${{ inputs.api_type_target }}
           script: conan test ${{ inputs.test_conanfile }} ${{ inputs.package_reference }} --build missing --profile:host ${{ inputs.host_profile }} --profile:build ubuntu 

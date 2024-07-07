@@ -192,25 +192,24 @@ jobs:
     if: ${{ needs.find-all-packages.outputs.packages-without-dependents != '[]' }}
     needs:
       - find-all-packages
-      - build
+#      @TODO: temporarily commented out
+#      - build
     strategy:
       fail-fast: false
       matrix:
         package: ${{ fromJson(needs.find-all-packages.outputs.packages-without-dependents) }}
-#        api_level: [34, 33, 32, 31, 30]
-        api_level: [34]
+#        @TODO: temporarily commented out
+#        emulator_api_level: [34, 33, 32, 31, 30]
+        emulator_api_level: [34]
+        build_api_level: [23, 21]
         arch: [x86_64]
         api_type_target: [aosp_atd]
-        include:
-          - api_level: 30
-            arch: x86
-            api_type_target: aosp_atd
     uses: ./.github/workflows/emulator-test-inner.yml
     with:
-      api_level: ${{ matrix.api_level }}
+      emulator_api_level: ${{ matrix.emulator_api_level }}
       arch: ${{ matrix.arch }}
       api_type_target: ${{ matrix.api_type_target }}
-      host_profile: android-21-${{ matrix.arch }}
+      host_profile: android-${{ matrix.build_api_level }}-${{ matrix.arch }}
       ndk_version: "26.3.11579264"
       conanfile: ${{ matrix.package.conanfile }}
       test_conanfile: ${{ matrix.package.test_conanfile }}
@@ -221,23 +220,29 @@ jobs:
     if: ${{ needs.find-all-packages.outputs.packages-without-dependents != '[]' }}
     needs:
       - find-all-packages
-      - build
+# @TODO: temporarily commented out
+#      - build
     strategy:
       fail-fast: false
       matrix:
         package: ${{ fromJson(needs.find-all-packages.outputs.packages-without-dependents) }}
-#        api_level: [29, 28, 27, 26, 25, 24, 23, 22, 21]
-        api_level: [21]
-        arch:
-          - x86_64
-          - x86
+#         @TODO: temporarily commented out
+#        emulator_api_level: [29, 28, 27, 26, 25, 24, 23, 22, 21]
+        emulator_api_level: [23, 22, 21]
+        build_api_level: [23, 21]
         api_type_target: [default]
+        arch: [x86_64, x86]
+        exclude:
+          - build_api_level: 23
+            emulator_api_level: 21
+          - build_api_level: 23
+            emulator_api_level: 22
     uses: ./.github/workflows/emulator-test-inner.yml
     with:
-      api_level: ${{ matrix.api_level }}
+      emulator_api_level: ${{ matrix.emulator_api_level }}
       arch: ${{ matrix.arch }}
       api_type_target: ${{ matrix.api_type_target }}
-      host_profile: android-21-${{ matrix.arch }}
+      host_profile: android-${{ matrix.build_api_level }}-${{ matrix.arch }}
       ndk_version: "26.3.11579264"
       conanfile: ${{ matrix.package.conanfile }}
       test_conanfile: ${{ matrix.package.test_conanfile }}
