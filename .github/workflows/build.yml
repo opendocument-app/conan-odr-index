@@ -10,7 +10,14 @@ on:
         options:
           - all
           - odrcore
+          - pdf2htmlex
+          - fontforge
+          - poppler
           - poppler-data
+          - cairo
+          - openlibm
+          - fontconfig
+          - glib
       package_version:
         description: Package version (leave empty to build all versions)
         required: false
