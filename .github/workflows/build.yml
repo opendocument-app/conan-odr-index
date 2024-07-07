@@ -197,7 +197,7 @@ jobs:
 
   emulator:
     if: ${{ needs.generate-matrices.outputs.packages-without-dependents != '[]' && needs.generate-matrices.outputs.emulator != '[]' }}
-    name: e ${{ matrix.package.package_reference }} ${{ matrix.emulator.arch }}/${{ matrix.emulator.emulator_api_level }} minSdk-${{matrix.emulator.build_api_level}} 
+    name: e ${{ matrix.package.package_reference }} ${{ matrix.emulator.arch }}/${{ matrix.emulator.emulator_api_level }}/${{matrix.emulator.build_api_level}} 
     needs:
       - generate-matrices
 #      @TODO: temporarily commented out
