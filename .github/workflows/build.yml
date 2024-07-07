@@ -124,11 +124,8 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: 3.12
-      - name: install python dependencies
-        run: pip install --upgrade pip conan
-
-      - name: install python setuptools (required to build GLib)
-        run: pip install --upgrade setuptools
+      - name: install python dependencies and setuptools (required to build GLib)
+        run: pip install --upgrade pip conan setuptools
 
       - name: install NDK
         if: startsWith(matrix.config.host_profile, 'android')

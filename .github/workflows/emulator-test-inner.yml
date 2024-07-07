@@ -18,7 +18,10 @@ on:
       ndk_version:
         required: true
         type: string
-      package_name:
+      conanfile:
+        required: true
+        type: string
+      test_conanfile:
         required: true
         type: string
       package_version:
@@ -26,7 +29,7 @@ on:
         type: string
 jobs:
   instrumentedTests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -52,15 +55,15 @@ jobs:
         run: python scripts/conan_export_all_packages.py
 
       - name: conan install
-        run: conan install recipes/${{ inputs.package_name }}/all/conanfile.py --version ${{ inputs.package_version }} --build missing --profile:host ${{ inputs.host_profile }}
+        run: conan install ${{ inputs.conanfile }} --version ${{ inputs.package_version }} --build missing --profile:host ${{ inputs.host_profile }} --profile:build ubuntu
       - name: conan source
-        run: conan source recipes/${{ inputs.package_name }}/all/conanfile.py --version ${{ inputs.package_version }}
+        run: conan source ${{ inputs.conanfile }} --version ${{ inputs.package_version }}
       - name: conan build
-        run: conan build recipes/${{ inputs.package_name }}/all/conanfile.py --version ${{ inputs.package_version }} --profile:host ${{ inputs.host_profile }}
+        run: conan build ${{ inputs.conanfile }} --version ${{ inputs.package_version }} --profile:host ${{ inputs.host_profile }} --profile:build ubuntu
       - name: conan export
-        run: conan export recipes/${{ inputs.package_name }}/all/conanfile.py --version ${{ inputs.package_version }}
+        run: conan export ${{ inputs.conanfile }} --version ${{ inputs.package_version }}
       - name: conan export-pkg
-        run: conan export-pkg recipes/${{ inputs.package_name }}/all/conanfile.py --version ${{ inputs.package_version }} --profile:host ${{ inputs.host_profile }}
+        run: conan export-pkg ${{ inputs.conanfile }} --version ${{ inputs.package_version }} --profile:host ${{ inputs.host_profile }} --profile:build ubuntu
 
       - name: Enable KVM group perms
         run: |
@@ -75,4 +78,4 @@ jobs:
           api-level: ${{ inputs.api_level }}
           arch: ${{ inputs.arch }}
           target: ${{ inputs.api_type_target }}
-          script: conan test recipes/${{ inputs.package_name }}/all/test_package/conanfile.py ${{ inputs.package_name }}/${{ inputs.package_version }} --build missing --profile:host ${{ inputs.host_profile }}
+          script: conan test ${{ inputs.test_conanfile }} ${{ inputs.package_reference }} --build missing --profile:host ${{ inputs.host_profile }} --profile:build ubuntu 

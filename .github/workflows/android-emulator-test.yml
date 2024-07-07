@@ -27,14 +27,15 @@ jobs:
           - api_level: 30
             arch: x86
             api_type_target: aosp_atd
-    uses: ./.github/workflows/android-emulator-test-inner.yml
+    uses: ./.github/workflows/emulator-test-inner.yml
     with:
       api_level: ${{ matrix.api_level }}
       arch: ${{ matrix.arch }}
       api_type_target: ${{ matrix.api_type_target }}
       host_profile: android-21-${{ matrix.arch }}
       ndk_version: "26.3.11579264"
-      package_name: "pdf2htmlex"
+      conanfile: "recipes/pdf2htmlex/all/conanfile.py"
+      test_conanfile: "recipes/pdf2htmlex/all/test_package/conanfile.py"
       package_version: "0.18.8.rc1-20240619-git"
 
   default-target:
@@ -55,5 +56,6 @@ jobs:
       api_type_target: ${{ matrix.api_type_target }}
       host_profile: android-21-${{ matrix.arch }}
       ndk_version: "26.3.11579264"
-      package_name: "pdf2htmlex"
+      conanfile: "recipes/pdf2htmlex/all/conanfile.py"
+      test_conanfile: "recipes/pdf2htmlex/all/test_package/conanfile.py"
       package_version: "0.18.8.rc1-20240619-git"
