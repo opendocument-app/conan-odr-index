@@ -14,10 +14,6 @@ on:
       package_version:
         description: Package version (leave empty to build all versions)
         required: false
-      build_downstream_packages:
-        type: boolean
-        default: true
-        description: Include dependants of requested or modified packages
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
