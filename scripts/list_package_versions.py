@@ -15,24 +15,31 @@ recipes_path = root_path / "recipes"
 def get_package_infos():
     package_infos = {}
 
-    for recipe_path in recipes_path.iterdir():
-        if not recipe_path.is_dir():
+    for package_path in recipes_path.iterdir():
+        if not package_path.is_dir():
             continue
 
-        infos = []
+        config_file = package_path / "config.yml"
+        if not config_file.is_file():
+            continue
 
-        with open(recipe_path / "config.yml") as f:
+        with open(config_file) as f:
             config = yaml.safe_load(f)
 
+        infos = []
+        package_name = package_path.name
         for version, details in config["versions"].items():
             infos.append(
                 {
+                    "package": package_name,
                     "version": version,
-                    "folder": details["folder"],
+                    "package_reference": "{}/{}".format(package_name, version),
+                    "conanfile": str((package_path / details["folder"] / "conanfile.py").relative_to(root_path)),
+                    "test_conanfile": str((package_path / details["folder"] / "test_package" / "conanfile.py").relative_to(root_path)),
                 }
             )
 
-        package_infos[recipe_path.name] = infos
+        package_infos[package_name] = infos
 
     return package_infos
 
@@ -143,12 +150,16 @@ def main():
             for dependency in downstream_deps.get(package, list()):
                 filtered_packages[dependency] = package_infos[dependency]
 
+    print("packages=" + ' '.join(filtered_packages))
     gh_output = os.environ.get('GITHUB_OUTPUT')
     if gh_output:
         with open(gh_output, 'w') as out:
-            print("packages=" + json.dumps(filtered_packages), file=out)
-
-    print("packages=" + ' '.join(filtered_packages))
+            result = [
+                infos
+                for package in sorted(filtered_packages.keys())
+                for infos in sorted(filtered_packages[package], key=lambda x: x["version"], reverse=True)
+            ]
+            print("packages=" + json.dumps(result), file=out)
 
 
 if __name__ == "__main__":
