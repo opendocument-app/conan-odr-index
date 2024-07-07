@@ -165,11 +165,11 @@ jobs:
         run: conan test ${{ matrix.package.test_conanfile }} ${{ matrix.package.package_reference }} --build missing --profile:host ${{ matrix.config.host_profile }} --profile:build ubuntu
 
       - name: conan login
-        if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' && github.event.inputs.artifactory
+        if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' && github.event.inputs.upload_to_artifactory
         run: conan remote login odr admin --password ${{ secrets.ARTIFACTORY }}
 
       - name: conan upload
-        if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' && github.event.inputs.artifactory
+        if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' && github.event.inputs.upload_to_artifactory
         run: conan upload "*" --check --confirm --remote odr
 
       - run: ccache --show-stats
