@@ -45,7 +45,7 @@ def main():
     gh_output = os.environ.get('GITHUB_OUTPUT')
     if gh_output:
         with open(gh_output, 'w') as out:
-            print("emulator=" + json.dumps(matrix), file=out)
+            print("matrix=" + json.dumps(matrix), file=out)
 
 
 if __name__ == "__main__":
