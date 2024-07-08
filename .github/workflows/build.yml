@@ -34,11 +34,10 @@ env:
   CCACHE_DIR: ${{ github.workspace }}/ccache
   CCACHE_MAXSIZE: 500M
   CCACHE_KEY_SUFFIX: r1
-  BUILD_MACHINE: ubuntu-22.04
 
 jobs:
   generate-matrices:
-    runs-on: ${{ env.BUILD_MACHINE }}
+    runs-on: ubuntu-22.04
     outputs:
       packages-with-dependents: ${{ steps.list-packages-with-dependents.outputs.packages }}
     steps:
@@ -57,7 +56,7 @@ jobs:
         run: pip install --upgrade pip conan
 
       - name: conan config
-        run: conan config install .github/config/${{ env.BUILD_MACHINE }}/conan
+        run: conan config install .github/config/ubuntu-22.04/conan
 
       - name: Conan export all packages
         run: python scripts/conan_export_all_packages.py
@@ -75,7 +74,7 @@ jobs:
           GITHUB_EVENT: ${{ toJson(github.event) }}
 
   build:
-    runs-on: ${{ env.BUILD_MACHINE }}
+    runs-on: ${{ matrix.config.build_machine }}
     if: ${{ needs.generate-matrices.outputs.packages-with-dependents != '[]' }}
     name: b ${{ matrix.package.package_reference }} - ${{ matrix.config.host_profile }}
     needs:
@@ -85,34 +84,34 @@ jobs:
       matrix:
         package: ${{ fromJson(needs.generate-matrices.outputs.packages-with-dependents) }}
         config:
-          - { host_profile: ubuntu }
-          - { host_profile: android-23-armv8, ndk_version: 26.3.11579264 }
-          - { host_profile: android-23-armv7, ndk_version: 26.3.11579264 }
-          - { host_profile: android-23-x86, ndk_version: 26.3.11579264 }
-          - { host_profile: android-23-x86_64, ndk_version: 26.3.11579264 }
-          - { host_profile: android-21-armv8, ndk_version: 26.3.11579264 }
-          - { host_profile: android-21-armv7, ndk_version: 26.3.11579264 }
-          - { host_profile: android-21-x86, ndk_version: 26.3.11579264 }
-          - { host_profile: android-21-x86_64, ndk_version: 26.3.11579264 }
+          - { build_machine: ubuntu-22.04, host_profile: ubuntu }
+          - { build_machine: ubuntu-22.04, host_profile: android-23-armv8, ndk_version: 26.3.11579264 }
+          - { build_machine: ubuntu-22.04, host_profile: android-23-armv7, ndk_version: 26.3.11579264 }
+          - { build_machine: ubuntu-22.04, host_profile: android-23-x86, ndk_version: 26.3.11579264 }
+          - { build_machine: ubuntu-22.04, host_profile: android-23-x86_64, ndk_version: 26.3.11579264 }
+          - { build_machine: ubuntu-22.04, host_profile: android-21-armv8, ndk_version: 26.3.11579264 }
+          - { build_machine: ubuntu-22.04, host_profile: android-21-armv7, ndk_version: 26.3.11579264 }
+          - { build_machine: ubuntu-22.04, host_profile: android-21-x86, ndk_version: 26.3.11579264 }
+          - { build_machine: ubuntu-22.04, host_profile: android-21-x86_64, ndk_version: 26.3.11579264 }
         # Known not working build configurations
         # Would be cool to actually solve odrcore/1.0.0 for Android
         exclude:
           - package: { "package_reference": "odrcore/1.0.0", "package": "odrcore", "version": "1.0.0", "conanfile": "recipes/odrcore/all/conanfile.py", "test_conanfile": "recipes/odrcore/all/test_package/conanfile.py" }
-            config: { host_profile: android-23-armv8, ndk_version: 26.3.11579264 }
+            config: { build_machine: ubuntu-22.04, host_profile: android-23-armv8, ndk_version: 26.3.11579264 }
           - package: { "package_reference": "odrcore/1.0.0", "package": "odrcore", "version": "1.0.0", "conanfile": "recipes/odrcore/all/conanfile.py", "test_conanfile": "recipes/odrcore/all/test_package/conanfile.py" }
-            config: { host_profile: android-23-armv7, ndk_version: 26.3.11579264 }
+            config: { build_machine: ubuntu-22.04, host_profile: android-23-armv7, ndk_version: 26.3.11579264 }
           - package: { "package_reference": "odrcore/1.0.0", "package": "odrcore", "version": "1.0.0", "conanfile": "recipes/odrcore/all/conanfile.py", "test_conanfile": "recipes/odrcore/all/test_package/conanfile.py" }
-            config: { host_profile: android-23-x86, ndk_version: 26.3.11579264 }
+            config: { build_machine: ubuntu-22.04, host_profile: android-23-x86, ndk_version: 26.3.11579264 }
           - package: { "package_reference": "odrcore/1.0.0", "package": "odrcore", "version": "1.0.0", "conanfile": "recipes/odrcore/all/conanfile.py", "test_conanfile": "recipes/odrcore/all/test_package/conanfile.py" }
-            config: { host_profile: android-23-x86_64, ndk_version: 26.3.11579264 }
+            config: { build_machine: ubuntu-22.04, host_profile: android-23-x86_64, ndk_version: 26.3.11579264 }
           - package: { "package_reference": "odrcore/1.0.0", "package": "odrcore", "version": "1.0.0", "conanfile": "recipes/odrcore/all/conanfile.py", "test_conanfile": "recipes/odrcore/all/test_package/conanfile.py" }
-            config: { host_profile: android-21-armv8, ndk_version: 26.3.11579264 }
+            config: { build_machine: ubuntu-22.04, host_profile: android-21-armv8, ndk_version: 26.3.11579264 }
           - package: { "package_reference": "odrcore/1.0.0", "package": "odrcore", "version": "1.0.0", "conanfile": "recipes/odrcore/all/conanfile.py", "test_conanfile": "recipes/odrcore/all/test_package/conanfile.py" }
-            config: { host_profile: android-21-armv7, ndk_version: 26.3.11579264 }
+            config: { build_machine: ubuntu-22.04, host_profile: android-21-armv7, ndk_version: 26.3.11579264 }
           - package: { "package_reference": "odrcore/1.0.0", "package": "odrcore", "version": "1.0.0", "conanfile": "recipes/odrcore/all/conanfile.py", "test_conanfile": "recipes/odrcore/all/test_package/conanfile.py" }
-            config: { host_profile: android-21-x86, ndk_version: 26.3.11579264 }
+            config: { build_machine: ubuntu-22.04, host_profile: android-21-x86, ndk_version: 26.3.11579264 }
           - package: { "package_reference": "odrcore/1.0.0", "package": "odrcore", "version": "1.0.0", "conanfile": "recipes/odrcore/all/conanfile.py", "test_conanfile": "recipes/odrcore/all/test_package/conanfile.py" }
-            config: { host_profile: android-21-x86_64, ndk_version: 26.3.11579264 }
+            config: { build_machine: ubuntu-22.04, host_profile: android-21-x86_64, ndk_version: 26.3.11579264 }
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -142,7 +141,7 @@ jobs:
       - name: conan remote
         run: conan remote add --index 0 odr https://artifactory.opendocument.app/artifactory/api/conan/conan
       - name: conan config
-        run: conan config install .github/config/${{ env.BUILD_MACHINE }}/conan
+        run: conan config install .github/config/${{ matrix.config.build_machine }}/conan
 
       # Export all recipes to local conan cache, to make sure all changes in all dependencies are picked up
       - name: Conan export all packages
@@ -154,9 +153,9 @@ jobs:
           path: |
             ~/.ccache
             /Users/runner/Library/Caches/ccache
-          key: ${{ env.BUILD_MACHINE }}-${{ matrix.config.host_profile }}-${{ env.CCACHE_KEY_SUFFIX }}
+          key: ${{ matrix.config.build_machine }}-${{ matrix.config.host_profile }}-${{ env.CCACHE_KEY_SUFFIX }}
           restore-keys: |
-            ${{ env.BUILD_MACHINE }}-${{ matrix.config.host_profile }}-
+            ${{ matrix.config.build_machine }}-${{ matrix.config.host_profile }}-
 
       - name: conan install
         run: conan install ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --build missing --profile:host ${{ matrix.config.host_profile }} --profile:build ubuntu
