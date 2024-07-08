@@ -30,7 +30,3 @@ freetype/*:with_bzip2=False
 freetype/*:with_brotli=False
 poppler/*:with_tiff=False
 fontforge/*:with_tiff=False
-
-[replace_requires]
-libjpeg/9e: libjpeg/9f
-libdeflate/1.19: libdeflate/1.20
