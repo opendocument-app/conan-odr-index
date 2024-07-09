@@ -80,7 +80,7 @@ jobs:
   build:
     runs-on: ${{ matrix.config.build_machine }}
     if: ${{ needs.generate-matrices.outputs.packages-with-dependents != '[]' }}
-    name: b ${{ matrix.config.host_profile }} ${{ matrix.package.package_reference }}
+    name: ${{ matrix.config.host_profile }} ${{ matrix.package.package_reference }}
     needs:
       - generate-matrices
     strategy:
