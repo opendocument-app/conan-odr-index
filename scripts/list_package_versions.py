@@ -41,7 +41,7 @@ def get_package_infos():
                 }
             )
 
-        package_infos[package_name] = infos
+        package_infos[package_name] = sorted(infos, key=lambda x: x["version"], reverse=True)
 
     return package_infos
 
@@ -104,7 +104,9 @@ def main():
     parser.add_argument("--request-package-version", action='store',
                         help="Used together with --request-package, ignored when building all packages. "
                              "Requested package version will also be obtained from "
-                             "$ENV[GITHUB_EVENT][inputs][package_version]")
+                             "$ENV[GITHUB_EVENT][inputs][package_version]."
+                             "Specify 'newest' or leave empty to request the newest version. "
+                             "Specify 'all' to request all versions.")
     parser.add_argument("--dependency-graph", nargs='+', dest="CONAN_DEPENDENCY_GRAPH.json",
                         help="Used to calculate downstream dependents of requested packages")
 
@@ -127,40 +129,57 @@ def main():
 
     # Check if any packages were asked to be rebuilt
     if args.request_package:
-        print("Requested package: " + args.request_package)
-        if args.request_package_version and args.request_package != 'all':
-            requested_packages.add("{}/{}".format(args.request_package, args.request_package_version))
+        if args.request_package == "all":
+            requested_packages.add("all")
         else:
-            requested_packages.add(args.request_package)
+            requested = "{}/{}".format(args.request_package, args.request_package_version or "newest")
+            print("Requested package: " + requested)
+            requested_packages.add(requested)
     elif inputs.get('package_name'):
-        print("Requested package: " + inputs.get('package_name'))
-        if inputs.get('package_version') and inputs.get('package_name') != 'all':
-            requested_packages.add("{}/{}".format(inputs.get('package_name'), inputs.get('package_version')))
+        if inputs.get('package_name') == "all":
+            requested_packages.add("all")
         else:
-            requested_packages.add(inputs.get('package_name'))
+            requested = "{}/{}".format(inputs.get('package_name'), inputs.get('package_version', "newest"))
+            print("Requested package: " + requested)
+            requested_packages.add(requested)
 
     package_infos = get_package_infos()
     filtered_packages = {}
 
     if 'all' in requested_packages:
-        filtered_packages = package_infos
+        for package in package_infos:
+            filtered_packages[package] = package_infos[package]
+            # Request only the newest version, first in the array
+            filtered_packages[package] = filtered_packages[package][:1]
     else:
         dependency_graph_files = getattr(args, 'CONAN_DEPENDENCY_GRAPH.json') or list()
         downstream_deps = get_downstream_dependencies(dependency_graph_files, package_infos)
         for package in requested_packages:
-            filtered_packages[package] = package_infos[package]
-            for dependency in downstream_deps.get(package, list()):
-                filtered_packages[dependency] = package_infos[dependency]
+            if -1 == package.find('/'):
+                package += "/newest"
 
-    print("packages=" + ' '.join(filtered_packages))
+            pkg_name, pkg_version = package.split('/')
+
+            if pkg_version == "newest" or pkg_version == "":
+                filtered_packages[pkg_name] = package_infos[pkg_name][:1]
+            elif pkg_version == "all":
+                filtered_packages[pkg_name] = package_infos[pkg_name]
+            else:
+                filtered_packages[pkg_name] = filter(lambda x: x["version"] == pkg_version, package_infos[pkg_name])
+
+            for dependency in downstream_deps.get(pkg_name, list()):
+                filtered_packages[dependency] = package_infos[dependency][:1]
+
+    result = [
+        infos
+        for package in sorted(filtered_packages.keys())
+        for infos in filtered_packages[package]
+    ]
+    print("packages=" + ' '.join(map(lambda x: x['package_reference'], result)))
+
     gh_output = os.environ.get('GITHUB_OUTPUT')
     if gh_output:
         with open(gh_output, 'w') as out:
-            result = [
-                infos
-                for package in sorted(filtered_packages.keys())
-                for infos in sorted(filtered_packages[package], key=lambda x: x["version"], reverse=True)
-            ]
             print("packages=" + json.dumps(result), file=out)
 
 
