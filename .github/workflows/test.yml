@@ -1,4 +1,4 @@
-name: Android emulator
+name: Test Android
 
 on:
   push:
