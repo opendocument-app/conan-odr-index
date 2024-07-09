@@ -43,20 +43,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: 3.12
-      - name: install python dependencies
-        run: pip install --upgrade pip conan
-
-      - name: conan config
-        run: conan config install .github/config/ubuntu-22.04/conan
-
-      - name: Conan export all packages
-        run: python scripts/conan_export_all_packages.py
-
-      # Generate dependency graphs for all disjoint packages
-      - run: conan graph info recipes/odrcore/all/conanfile.py --version=4.0.0 --profile:host=android-21-armv8 --format=json | tee odrcore-dependency-tree.json
-        shell: bash # bash shell needed to pipefail on error
-      - run: conan graph info recipes/pdf2htmlex/all/conanfile.py --version=0.18.8.rc1-20240619-git --profile:host=android-21-armv8 --format=json | tee pdf2htmlEX-dependency-tree.json
-        shell: bash # bash shell needed to pipefail on error
 
       - name: Get requested packages from commits and workflow_dispatch inputs
         id: list-packages-without-dependents
