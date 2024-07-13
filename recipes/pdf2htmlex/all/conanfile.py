@@ -29,6 +29,7 @@ class pdf2htmlEXConan(ConanFile):
             "with_cairo": True,
             "with_glib": True,
             "shared": False,
+        })
         self.requires("cairo/1.18.0", options={
             # Don't pull in xorg dependencies.
             "with_xlib": False,
