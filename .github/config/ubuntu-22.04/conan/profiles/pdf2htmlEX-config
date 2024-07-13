@@ -3,7 +3,6 @@
 cairo/*:with_xlib=False
 cairo/*:with_xlib_xrender=False
 cairo/*:with_xcb=False
-cairo/*:with_symbol_lookup=False
 
 # Unused functionality in GLib
 glib/*:with_elf=False
