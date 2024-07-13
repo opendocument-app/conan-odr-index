@@ -1,6 +1,5 @@
 [options]
 # @TODO: Fix linker errors caused by the absense of these options
-glib/*:with_mount=False
 freetype/*:with_bzip2=False
 freetype/*:with_brotli=False
 poppler/*:with_tiff=False
