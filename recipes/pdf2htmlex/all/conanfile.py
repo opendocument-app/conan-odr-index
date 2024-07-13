@@ -29,8 +29,12 @@ class pdf2htmlEXConan(ConanFile):
             "with_cairo": True,
             "with_glib": True,
             "shared": False,
+        self.requires("cairo/1.18.0", options={
+            # Don't pull in xorg dependencies.
+            "with_xlib": False,
+            "with_xlib_xrender": False,
+            "with_xcb": False,
         })
-        self.requires("cairo/1.18.0")
         self.requires("freetype/2.13.2")
         self.requires("fontforge/20240423-git", options={
             "install_private_headers": True,

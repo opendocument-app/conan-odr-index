@@ -1,9 +1,4 @@
 [options]
-# We are not using xorg functionality in cairo
-cairo/*:with_xlib=False
-cairo/*:with_xlib_xrender=False
-cairo/*:with_xcb=False
-
 # Unused functionality in GLib
 glib/*:with_elf=False
 glib/*:with_mount=False

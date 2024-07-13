@@ -45,9 +45,17 @@ class CairoConan(ConanFile):
         "fPIC": True,
         "with_freetype": True,
         "with_fontconfig": True,
-        "with_xlib": True,
-        "with_xlib_xrender": True,
-        "with_xcb": True,
+
+        # Cairo on Ubuntu depends on Xorg by default.
+        # A lot of dependencies to build and requires a lot -devel packages.
+        # Just skip them. Don't upstream this change though.
+        "with_xlib": False,
+        "with_xlib_xrender": False,
+        "with_xcb": False,
+        # "with_xlib": True,
+        # "with_xlib_xrender": True,
+        # "with_xcb": True,
+
         "with_glib": True,
         "with_lzo": True,
         "with_zlib": True,
