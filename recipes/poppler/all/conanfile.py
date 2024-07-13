@@ -64,7 +64,9 @@ class PopplerConan(ConanFile):
         "with_libjpeg": "libjpeg",
         "with_png": True,
         "with_nss": False,
-        "with_tiff": True,
+        # @TODO: re-enable libtiff by default
+        "with_tiff": False,
+        # "with_tiff": True,
         "with_libcurl": False,
         "with_zlib": True,
         "float": False,

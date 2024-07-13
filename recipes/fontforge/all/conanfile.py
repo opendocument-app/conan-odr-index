@@ -32,7 +32,9 @@ class FontForgeConan(ConanFile):
         "shared": False,
         "fPIC": True,
         "install_private_headers": True,
-        "with_tiff": True,
+        # @TODO: re-enable libtiff by default
+        "with_tiff": False,
+        # "with_tiff": True,
     }
 
     def requirements(self):

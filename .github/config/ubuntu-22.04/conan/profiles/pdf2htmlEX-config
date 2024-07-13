@@ -2,5 +2,3 @@
 # @TODO: Fix linker errors caused by the absense of these options
 freetype/*:with_bzip2=False
 freetype/*:with_brotli=False
-poppler/*:with_tiff=False
-fontforge/*:with_tiff=False
