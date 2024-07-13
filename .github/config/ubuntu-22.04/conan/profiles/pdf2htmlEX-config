@@ -1,10 +1,6 @@
 [options]
-# Unused functionality in GLib
-glib/*:with_elf=False
+# @TODO: Fix linker errors caused by the absense of these options
 glib/*:with_mount=False
-glib/*:with_selinux=False
-
-# @TODO: These dependencies are currently problematic
 freetype/*:with_bzip2=False
 freetype/*:with_brotli=False
 poppler/*:with_tiff=False
