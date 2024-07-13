@@ -55,7 +55,7 @@ class PopplerConan(ConanFile):
         "with_cairo": False,
         "splash": True,
         "with_glib": False,
-        "with_gobject_introspection": True,
+        "with_gobject_introspection": False,
         "with_qt": False,
         "with_gtk": False,
         "with_libiconv": True,
