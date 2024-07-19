@@ -75,7 +75,8 @@ jobs:
       # Generating graphs for both 21 and 23 would be more self-explanatory, but conan graph generation takes a few seconds.
       - name: Generate odrcore dependency tree
         id: odrcore-dependency-tree
-        if: ${{ github.event.inputs.build_dependants != "false" }}
+        # github.event.inputs will be null when workflow is triggered by a push event. Include all dependents on push
+        if: ${{ github.event.inputs == null || github.event.inputs.build_dependants != "false" }}
         shell: bash # bash shell needed to pipefail on error
         run: |
           conan graph info recipes/odrcore/all/conanfile.py --version=4.0.0 --profile:host=android-21-armv8 --format=json | tee odrcore-dependency-tree.json
@@ -84,7 +85,8 @@ jobs:
       # Once odrcore depends on pdf2htmlex, pdf2htmlEX-dependency-tree.json generation and usage can be removed
       - name: Generate odrcore dependency tree
         id: pdf2htmlex-dependency-tree
-        if: ${{ github.event.inputs.build_dependants != "false" }}
+        # github.event.inputs will be null when workflow is triggered by a push event. Include all dependents on push
+        if: ${{ github.event.inputs == null || github.event.inputs.build_dependants != "false" }}
         shell: bash # bash shell needed to pipefail on error
         run: |
           conan graph info recipes/pdf2htmlex/all/conanfile.py --version=0.18.8.rc1-20240619-git --profile:host=android-21-armv8 --format=json | tee pdf2htmlEX-dependency-tree.json
