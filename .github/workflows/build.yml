@@ -82,7 +82,7 @@ jobs:
           echo "graph_file=odrcore-dependency-tree.json" >> $GITHUB_OUTPUT
 
       # Once odrcore depends on pdf2htmlex, pdf2htmlEX-dependency-tree.json generation and usage can be removed
-      - name: Generate odrcore dependency tree
+      - name: Generate pdf2htmlex dependency tree
         id: pdf2htmlex-dependency-tree
         if: ${{ github.event.inputs.build_dependants != 'false' }}
         shell: bash # bash shell needed to pipefail on error
