@@ -25,6 +25,10 @@ on:
         description: Upload built packages to artifactory
         type: boolean
         default: false
+      build_from_source:
+        description: Build all dependencies from source (conan install --build=* instead of --build=missing)
+        type: boolean
+        default: false
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -161,8 +165,17 @@ jobs:
           restore-keys: |
             ${{ matrix.config.build_machine }}-${{ matrix.config.host_profile }}-
 
+      - name: Parse build from source option
+        id: build_from_source
+        run: |
+          if [ ${{ github.event.inputs.build_from_source }} == "true" ]; then
+            echo argument=--build=* >> $GITHUB_OUTPUT
+          else
+            echo argument=--build=missing >> $GITHUB_OUTPUT
+          fi
+
       - name: conan install
-        run: conan install ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --build missing --profile:host ${{ matrix.config.host_profile }} --profile:build ubuntu
+        run: conan install ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} ${{ steps.build_from_source.outputs.argument }} --profile:host ${{ matrix.config.host_profile }} --profile:build ubuntu
       - name: conan source
         run: conan source ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }}
       - name: conan build
