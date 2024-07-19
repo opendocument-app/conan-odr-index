@@ -106,7 +106,7 @@ def main():
                              "$ENV[GITHUB_EVENT][inputs][package_version]."
                              "Specify 'newest' or leave empty to request the newest version. "
                              "Specify 'all' to request all versions.")
-    parser.add_argument("--dependency-graph", nargs='+', dest="CONAN_DEPENDENCY_GRAPH.json",
+    parser.add_argument("--dependency-graph", nargs='*', dest="CONAN_DEPENDENCY_GRAPH.json",
                         help="Used to calculate downstream dependents of requested packages")
 
     args = parser.parse_args()
