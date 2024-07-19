@@ -76,7 +76,7 @@ jobs:
       - name: Generate odrcore dependency tree
         id: odrcore-dependency-tree
         # github.event.inputs will be null when workflow is triggered by a push event. Include all dependents on push
-        if: ${{ github.event.inputs == null || github.event.inputs.build_dependants != "false" }}
+        if: ${{ github.event.inputs == null || github.event.inputs.build_dependants != 'false' }}
         shell: bash # bash shell needed to pipefail on error
         run: |
           conan graph info recipes/odrcore/all/conanfile.py --version=4.0.0 --profile:host=android-21-armv8 --format=json | tee odrcore-dependency-tree.json
@@ -86,7 +86,7 @@ jobs:
       - name: Generate odrcore dependency tree
         id: pdf2htmlex-dependency-tree
         # github.event.inputs will be null when workflow is triggered by a push event. Include all dependents on push
-        if: ${{ github.event.inputs == null || github.event.inputs.build_dependants != "false" }}
+        if: ${{ github.event.inputs == null || github.event.inputs.build_dependants != 'false' }}
         shell: bash # bash shell needed to pipefail on error
         run: |
           conan graph info recipes/pdf2htmlex/all/conanfile.py --version=0.18.8.rc1-20240619-git --profile:host=android-21-armv8 --format=json | tee pdf2htmlEX-dependency-tree.json
