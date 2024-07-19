@@ -94,7 +94,7 @@ jobs:
 
       - name: Get requested packages and dependants from commits and workflow_dispatch inputs
         id: list-packages-with-dependents
-        run: python scripts/list_package_versions.py --dependency-graph ${{ steps.odrcore-dependency-tree.outputs.graph_file }} ${{ steps.pdf2htmlex.outputs.graph_file }}
+        run: python scripts/list_package_versions.py --dependency-graph ${{ steps.odrcore-dependency-tree.outputs.graph_file }} ${{ steps.pdf2htmlex-dependency-tree.outputs.graph_file }}
         env:
           GITHUB_EVENT: ${{ toJson(github.event) }}
 
