@@ -26,7 +26,7 @@ on:
         type: boolean
         default: false
       build_dependants:
-        description: Parse conan dependency tree and build not just requested package, but also all dependants of it
+        description: Parse conan dependency tree and build not just the requested package, but also all dependants of it
         type: boolean
         default: true
       build_from_source:
