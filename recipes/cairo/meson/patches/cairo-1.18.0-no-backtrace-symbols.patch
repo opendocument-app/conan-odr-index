@@ -1,0 +1,10 @@
+--- util/meson.build
++++ util/meson.build
+@@ -42,6 +42,6 @@
+   )
+ endforeach
+ 
+-if conf.get('CAIRO_HAS_DLSYM', 0) == 1 and cc.has_header('execinfo.h')
++if conf.get('CAIRO_HAS_DLSYM', 0) == 1 and cc.has_header('execinfo.h') and cc.has_function('backtrace_symbols', prefix: '#include <execinfo.h>')
+   libmallocstats = library('malloc-stats', 'malloc-stats.c', dependencies : dl_dep)
+ endif

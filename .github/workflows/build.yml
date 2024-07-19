@@ -1,8 +1,30 @@
-name: build_test
+name: build
 
 on:
-  workflow_dispatch:
   push:
+  workflow_dispatch:
+    inputs:
+      package_name:
+        description: Package name
+        type: choice
+        options:
+          - all
+          - odrcore
+          - pdf2htmlex
+          - fontforge
+          - poppler
+          - poppler-data
+          - cairo
+          - openlibm
+          - fontconfig
+          - glib
+      package_version:
+        description: Package version. Specify 'newest' or leave empty to request the newest version. Specify 'all' to request all versions.
+        required: false
+      upload_to_artifactory:
+        description: Upload built packages to artifactory
+        type: boolean
+        default: false
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -14,37 +36,57 @@ env:
   CCACHE_KEY_SUFFIX: r1
 
 jobs:
-  find-all-packages:
+  generate-matrices:
     runs-on: ubuntu-22.04
     outputs:
-      packages: ${{ steps.list-packages.outputs.packages }}
+      packages-with-dependents: ${{ steps.list-packages-with-dependents.outputs.packages }}
     steps:
       - name: checkout
         uses: actions/checkout@v4
+        with:
+          # Fetch whole git history.
+          # Required to parse modified packages
+          fetch-depth: 0
 
       - name: setup python 3.12
         uses: actions/setup-python@v5
         with:
           python-version: 3.12
       - name: install python dependencies
-        run: pip install --upgrade pip pyyaml
+        run: pip install --upgrade pip conan
 
-      - name: List all packages
-        run: python scripts/list_package_versions.py
+      - name: conan config
+        run: conan config install .github/config/ubuntu-22.04/conan
 
-      - name: List all packages in GitHub Actions format
-        id: list-packages
-        run: python scripts/list_package_versions.py --github | tee $GITHUB_OUTPUT
+      - name: Conan export all packages
+        run: python scripts/conan_export_all_packages.py
+
+      # Generate dependency graphs for all disjoint packages
+      # Dependency graphs for android-21 and android-23 profiles are not identical.
+      # android-21 has an extra openlibm dependency. Android ABI does not matter for dependency graph, as long as it's still Android.
+      # Generating graphs for both 21 and 23 would be more self-explanatory, but conan graph generation takes a few seconds.
+      - run: conan graph info recipes/odrcore/all/conanfile.py --version=4.0.0 --profile:host=android-21-armv8 --format=json | tee odrcore-dependency-tree.json
+        shell: bash # bash shell needed to pipefail on error
+      # Once odrcore depends on pdf2htmlex, pdf2htmlEX-dependency-tree.json generation and usage can be removed
+      - run: conan graph info recipes/pdf2htmlex/all/conanfile.py --version=0.18.8.rc1-20240619-git --profile:host=android-21-armv8 --format=json | tee pdf2htmlEX-dependency-tree.json
+        shell: bash # bash shell needed to pipefail on error
+
+      - name: Get requested packages and dependants from commits and workflow_dispatch inputs
+        id: list-packages-with-dependents
+        run: python scripts/list_package_versions.py --dependency-graph odrcore-dependency-tree.json pdf2htmlEX-dependency-tree.json
+        env:
+          GITHUB_EVENT: ${{ toJson(github.event) }}
 
   build:
     runs-on: ${{ matrix.config.build_machine }}
-    name: ${{ matrix.package.package_reference }} - ${{ matrix.config.host_profile }}
+    if: ${{ needs.generate-matrices.outputs.packages-with-dependents != '[]' }}
+    name: ${{ matrix.config.host_profile }} ${{ matrix.package.package_reference }}
     needs:
-      - find-all-packages
+      - generate-matrices
     strategy:
       fail-fast: false
       matrix:
-        package: ${{ fromJson(needs.find-all-packages.outputs.packages) }}
+        package: ${{ fromJson(needs.generate-matrices.outputs.packages-with-dependents) }}
         config:
           - { build_machine: ubuntu-22.04, host_profile: ubuntu }
           - { build_machine: ubuntu-22.04, host_profile: android-23-armv8, ndk_version: 26.3.11579264 }
@@ -58,21 +100,21 @@ jobs:
         # Known not working build configurations
         # Would be cool to actually solve odrcore/1.0.0 for Android
         exclude:
-          - package: { "package_reference": "odrcore/1.0.0", "package": "odrcore", "version": "1.0.0", "conanfile": "recipes/odrcore/all/conanfile.py" }
+          - package: { "package_reference": "odrcore/1.0.0", "package": "odrcore", "version": "1.0.0", "conanfile": "recipes/odrcore/all/conanfile.py", "test_conanfile": "recipes/odrcore/all/test_package/conanfile.py" }
             config: { build_machine: ubuntu-22.04, host_profile: android-23-armv8, ndk_version: 26.3.11579264 }
-          - package: { "package_reference": "odrcore/1.0.0", "package": "odrcore", "version": "1.0.0", "conanfile": "recipes/odrcore/all/conanfile.py" }
+          - package: { "package_reference": "odrcore/1.0.0", "package": "odrcore", "version": "1.0.0", "conanfile": "recipes/odrcore/all/conanfile.py", "test_conanfile": "recipes/odrcore/all/test_package/conanfile.py" }
             config: { build_machine: ubuntu-22.04, host_profile: android-23-armv7, ndk_version: 26.3.11579264 }
-          - package: { "package_reference": "odrcore/1.0.0", "package": "odrcore", "version": "1.0.0", "conanfile": "recipes/odrcore/all/conanfile.py" }
+          - package: { "package_reference": "odrcore/1.0.0", "package": "odrcore", "version": "1.0.0", "conanfile": "recipes/odrcore/all/conanfile.py", "test_conanfile": "recipes/odrcore/all/test_package/conanfile.py" }
             config: { build_machine: ubuntu-22.04, host_profile: android-23-x86, ndk_version: 26.3.11579264 }
-          - package: { "package_reference": "odrcore/1.0.0", "package": "odrcore", "version": "1.0.0", "conanfile": "recipes/odrcore/all/conanfile.py" }
+          - package: { "package_reference": "odrcore/1.0.0", "package": "odrcore", "version": "1.0.0", "conanfile": "recipes/odrcore/all/conanfile.py", "test_conanfile": "recipes/odrcore/all/test_package/conanfile.py" }
             config: { build_machine: ubuntu-22.04, host_profile: android-23-x86_64, ndk_version: 26.3.11579264 }
-          - package: { "package_reference": "odrcore/1.0.0", "package": "odrcore", "version": "1.0.0", "conanfile": "recipes/odrcore/all/conanfile.py" }
+          - package: { "package_reference": "odrcore/1.0.0", "package": "odrcore", "version": "1.0.0", "conanfile": "recipes/odrcore/all/conanfile.py", "test_conanfile": "recipes/odrcore/all/test_package/conanfile.py" }
             config: { build_machine: ubuntu-22.04, host_profile: android-21-armv8, ndk_version: 26.3.11579264 }
-          - package: { "package_reference": "odrcore/1.0.0", "package": "odrcore", "version": "1.0.0", "conanfile": "recipes/odrcore/all/conanfile.py" }
+          - package: { "package_reference": "odrcore/1.0.0", "package": "odrcore", "version": "1.0.0", "conanfile": "recipes/odrcore/all/conanfile.py", "test_conanfile": "recipes/odrcore/all/test_package/conanfile.py" }
             config: { build_machine: ubuntu-22.04, host_profile: android-21-armv7, ndk_version: 26.3.11579264 }
-          - package: { "package_reference": "odrcore/1.0.0", "package": "odrcore", "version": "1.0.0", "conanfile": "recipes/odrcore/all/conanfile.py" }
+          - package: { "package_reference": "odrcore/1.0.0", "package": "odrcore", "version": "1.0.0", "conanfile": "recipes/odrcore/all/conanfile.py", "test_conanfile": "recipes/odrcore/all/test_package/conanfile.py" }
             config: { build_machine: ubuntu-22.04, host_profile: android-21-x86, ndk_version: 26.3.11579264 }
-          - package: { "package_reference": "odrcore/1.0.0", "package": "odrcore", "version": "1.0.0", "conanfile": "recipes/odrcore/all/conanfile.py" }
+          - package: { "package_reference": "odrcore/1.0.0", "package": "odrcore", "version": "1.0.0", "conanfile": "recipes/odrcore/all/conanfile.py", "test_conanfile": "recipes/odrcore/all/test_package/conanfile.py" }
             config: { build_machine: ubuntu-22.04, host_profile: android-21-x86_64, ndk_version: 26.3.11579264 }
     steps:
       - name: checkout
@@ -93,8 +135,8 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: 3.12
-      - name: install python dependencies
-        run: pip install --upgrade pip conan
+      - name: install python dependencies and setuptools (required to build GLib)
+        run: pip install --upgrade pip conan setuptools
 
       - name: install NDK
         if: startsWith(matrix.config.host_profile, 'android')
@@ -131,16 +173,14 @@ jobs:
         run: conan export-pkg ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --profile:host ${{ matrix.config.host_profile }} --profile:build ubuntu
 
       - name: conan test
-        run: |
-          test_conanfile=$(dirname ${{ matrix.package.conanfile }})/test_package/conanfile.py
-          conan test $test_conanfile ${{ matrix.package.package_reference }} --build missing --profile:host ${{ matrix.config.host_profile }} --profile:build ubuntu
+        run: conan test ${{ matrix.package.test_conanfile }} ${{ matrix.package.package_reference }} --build missing --profile:host ${{ matrix.config.host_profile }} --profile:build ubuntu
 
       - name: conan login
-        if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+        if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' && github.event.inputs.upload_to_artifactory == 'true'
         run: conan remote login odr admin --password ${{ secrets.ARTIFACTORY }}
 
       - name: conan upload
-        if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+        if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' && github.event.inputs.upload_to_artifactory == 'true'
         run: conan upload "*" --check --confirm --remote odr
 
       - run: ccache --show-stats
