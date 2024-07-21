@@ -2,7 +2,6 @@
 
 import json
 import os
-from pprint import pprint
 
 
 def main():
@@ -36,11 +35,12 @@ def main():
                     matrix.append({
                         "emulator_api_level": emulator_api_level,
                         "build_api_level": build_api_level,
+                        "api_type_target": api_type_target,
                         "arch": arch,
-                        "api_type_target": api_type_target
                     })
 
-    pprint(matrix)
+    for i in matrix:
+        print('-', i)
 
     gh_output = os.environ.get('GITHUB_OUTPUT')
     if gh_output:
