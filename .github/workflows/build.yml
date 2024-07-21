@@ -2,6 +2,8 @@ name: build
 
 on:
   push:
+    paths:
+      - 'recipes/**'
   workflow_dispatch:
     inputs:
       package_name:
@@ -23,6 +25,14 @@ on:
         required: false
       upload_to_artifactory:
         description: Upload built packages to artifactory
+        type: boolean
+        default: false
+      build_dependants:
+        description: Parse conan dependency tree and build not just the requested package, but also all dependents of it
+        type: boolean
+        default: true
+      build_from_source:
+        description: Build all dependencies from source (conan install --build=* instead of --build=missing)
         type: boolean
         default: false
 
@@ -65,15 +75,26 @@ jobs:
       # Dependency graphs for android-21 and android-23 profiles are not identical.
       # android-21 has an extra openlibm dependency. Android ABI does not matter for dependency graph, as long as it's still Android.
       # Generating graphs for both 21 and 23 would be more self-explanatory, but conan graph generation takes a few seconds.
-      - run: conan graph info recipes/odrcore/all/conanfile.py --version=4.0.0 --profile:host=android-21-armv8 --format=json | tee odrcore-dependency-tree.json
+      - name: Generate odrcore dependency tree
+        id: odrcore-dependency-tree
+        if: ${{ github.event.inputs.build_dependants != 'false' }}
         shell: bash # bash shell needed to pipefail on error
+        run: |
+          conan graph info recipes/odrcore/all/conanfile.py --version=4.0.0 --profile:host=android-21-armv8 --format=json | tee odrcore-dependency-tree.json
+          echo "graph_file=odrcore-dependency-tree.json" >> $GITHUB_OUTPUT
+
       # Once odrcore depends on pdf2htmlex, pdf2htmlEX-dependency-tree.json generation and usage can be removed
-      - run: conan graph info recipes/pdf2htmlex/all/conanfile.py --version=0.18.8.rc1-20240619-git --profile:host=android-21-armv8 --format=json | tee pdf2htmlEX-dependency-tree.json
+      - name: Generate pdf2htmlex dependency tree
+        id: pdf2htmlex-dependency-tree
+        if: ${{ github.event.inputs.build_dependants != 'false' }}
         shell: bash # bash shell needed to pipefail on error
+        run: |
+          conan graph info recipes/pdf2htmlex/all/conanfile.py --version=0.18.8.rc1-20240619-git --profile:host=android-21-armv8 --format=json | tee pdf2htmlEX-dependency-tree.json
+          echo "graph_file=pdf2htmlEX-dependency-tree.json" >> $GITHUB_OUTPUT
 
       - name: Get requested packages and dependants from commits and workflow_dispatch inputs
         id: list-packages-with-dependents
-        run: python scripts/list_package_versions.py --dependency-graph odrcore-dependency-tree.json pdf2htmlEX-dependency-tree.json
+        run: python scripts/list_package_versions.py --dependency-graph ${{ steps.odrcore-dependency-tree.outputs.graph_file }} ${{ steps.pdf2htmlex-dependency-tree.outputs.graph_file }}
         env:
           GITHUB_EVENT: ${{ toJson(github.event) }}
 
@@ -161,8 +182,17 @@ jobs:
           restore-keys: |
             ${{ matrix.config.build_machine }}-${{ matrix.config.host_profile }}-
 
+      - name: Parse build from source option
+        id: build_from_source
+        run: |
+          if [ ${{ github.event.inputs.build_from_source }} == "true" ]; then
+            echo argument=--build=* >> $GITHUB_OUTPUT
+          else
+            echo argument=--build=missing >> $GITHUB_OUTPUT
+          fi
+
       - name: conan install
-        run: conan install ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --build missing --profile:host ${{ matrix.config.host_profile }} --profile:build ubuntu
+        run: conan install ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} ${{ steps.build_from_source.outputs.argument }} --profile:host ${{ matrix.config.host_profile }} --profile:build ubuntu
       - name: conan source
         run: conan source ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }}
       - name: conan build
