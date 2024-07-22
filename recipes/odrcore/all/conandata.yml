@@ -37,7 +37,10 @@ patches:
     - patch_file: "patches/1.0.0-0001-fix-cmake-install.patch"
       patch_description: "Fix header install in CMakeLists.txt"
       patch_type: "conan"
-    - patch_file: "patches/1.0.0-0002-fix-cryptopp-cpu-features.patch"
+    - patch_file: "patches/1.0.0-0002-fix-glog-stacktrace-misdetection.patch"
+      patch_description: "Glog checks if execinfo.h is available and if it is - expects backtrace to be there, but backtrace only available from Android API 33"
+      patch_type: "conan"
+    - patch_file: "patches/1.0.0-0003-fix-cryptopp-cpu-features.patch"
       patch_description: "Cryptopp expects cpu-features.h and .c to be in the source dir, prepare them"
       patch_type: "conan"
   "2.0.0":

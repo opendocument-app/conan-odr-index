@@ -1,0 +1,16 @@
+--- CMakeLists.txt
++++ CMakeLists.txt
+@@ -59,6 +59,13 @@
+ FetchContent_GetProperties(glog)
+ if(NOT glog_POPULATED)
+     FetchContent_Populate(glog)
++    file(READ ${glog_SOURCE_DIR}/CMakeLists.txt GLOG_CMAKELISTS)
++    string(REPLACE
++            "set (HAVE_STACKTRACE 1)"
++            "if (NOT DEFINED ANDROID)\nset (HAVE_STACKTRACE 1)\nendif(NOT DEFINED ANDROID)"
++            GLOG_CMAKELISTS
++            "${GLOG_CMAKELISTS}")
++    file(WRITE ${glog_SOURCE_DIR}/CMakeLists.txt "${GLOG_CMAKELISTS}")
+     set(BUILD_TESTING OFF CACHE BOOL "" FORCE)
+     add_subdirectory(${glog_SOURCE_DIR} ${glog_BINARY_DIR} EXCLUDE_FROM_ALL)
+ endif()
