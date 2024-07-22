@@ -204,9 +204,6 @@ jobs:
 
       - name: conan test
         run: conan test ${{ matrix.package.test_conanfile }} ${{ matrix.package.package_reference }} --build missing --profile:host ${{ matrix.config.host_profile }} --profile:build ubuntu
-        env:
-          # __pycache__ issue workaround ( https://github.com/conan-io/conan/issues/16707 )
-          PYTHONDONTWRITEBYTECODE: 1
 
       - name: conan login
         if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' && github.event.inputs.upload_to_artifactory == 'true'

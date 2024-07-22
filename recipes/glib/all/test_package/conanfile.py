@@ -24,5 +24,6 @@ class TestPackageConan(ConanFile):
         if can_run(self):
             bin_path = os.path.join(self.cpp.build.bindirs[0], "test_package")
             self.run(bin_path, env="conanrun")
-            if self.settings.os != "Windows":
-                self.run("gdbus-codegen -h", env="conanrun")
+            # https://github.com/conan-io/conan/issues/16707
+            # if self.settings.os != "Windows":
+            #    self.run("gdbus-codegen -h", env="conanrun")
