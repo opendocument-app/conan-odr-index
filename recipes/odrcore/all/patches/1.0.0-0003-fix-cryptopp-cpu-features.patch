@@ -1,0 +1,13 @@
+--- CMakeLists.txt
++++ CMakeLists.txt
+@@ -89,6 +89,10 @@
+     FetchContent_GetProperties(cryptopp)
+     if(NOT cryptopp_POPULATED)
+         FetchContent_Populate(cryptopp)
++        if (DEFINED CMAKE_ANDROID_NDK)
++            file(COPY ${CMAKE_ANDROID_NDK}/sources/android/cpufeatures/cpu-features.c DESTINATION ${cryptopp_SOURCE_DIR})
++            file(COPY ${CMAKE_ANDROID_NDK}/sources/android/cpufeatures/cpu-features.h DESTINATION ${cryptopp_SOURCE_DIR})
++        endif(DEFINED CMAKE_ANDROID_NDK)
+         set(BUILD_TESTING OFF CACHE BOOL "" FORCE)
+         add_subdirectory(${cryptopp_SOURCE_DIR} ${cryptopp_BINARY_DIR} EXCLUDE_FROM_ALL)
+     endif()
