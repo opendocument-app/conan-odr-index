@@ -6,8 +6,8 @@
      FetchContent_Populate(glog)
 +    file(READ ${glog_SOURCE_DIR}/CMakeLists.txt GLOG_CMAKELISTS)
 +    string(REPLACE
-+            "set (HAVE_STACKTRACE 1)"
-+            "if (NOT DEFINED ANDROID)\nset (HAVE_STACKTRACE 1)\nendif(NOT DEFINED ANDROID)"
++            "check_include_file (execinfo.h HAVE_EXECINFO_H)"
++            "if(NOT ANDROID)\n check_include_file (execinfo.h HAVE_EXECINFO_H)\n endif()"
 +            GLOG_CMAKELISTS
 +            "${GLOG_CMAKELISTS}")
 +    file(WRITE ${glog_SOURCE_DIR}/CMakeLists.txt "${GLOG_CMAKELISTS}")
