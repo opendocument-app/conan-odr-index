@@ -104,11 +104,11 @@ class CairoConan(ConanFile):
         if self.options.with_freetype:
             self.requires("freetype/2.13.2", transitive_headers=True, transitive_libs=True)
         if self.options.with_fontconfig:
-            self.requires("fontconfig/2.15.0", transitive_headers=True, transitive_libs=True)
+            self.requires("fontconfig/2.15.0-odr", transitive_headers=True, transitive_libs=True)
         if self.options.with_png:
             self.requires("libpng/[>=1.6 <2]")
         if self.options.with_glib:
-            self.requires("glib/2.78.3")
+            self.requires("glib/2.78.3-odr")
         if self.settings.os in ["Linux", "FreeBSD"]:
             if self.options.with_xlib or self.options.with_xlib_xrender or self.options.with_xcb:
                 self.requires("xorg/system", transitive_headers=True, transitive_libs=True)

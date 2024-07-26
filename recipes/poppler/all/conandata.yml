@@ -1,9 +1,9 @@
 sources:
-  "24.07.0":
+  "24.07.0-odr":
     url: "https://poppler.freedesktop.org/poppler-24.07.0.tar.xz"
     sha256: "19eb4f49198e4ae3fd9e5a6cf24d0fc7e674e8802046a7de14baab1e40cc2f1d"
 patches:
-  "24.07.0":
+  "24.07.0-odr":
     - patch_file: "patches/24/0004-add-POPPLER_DATADIR-environment-variable.patch"
     - patch_file: "patches/24/0007-cmake-use_conan_qt.patch"
     - patch_file: "patches/24/CheckFileOffsetBits.patch"

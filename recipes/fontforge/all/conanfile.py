@@ -72,7 +72,7 @@ class FontForgeConan(ConanFile):
         # self.requires("jbig/20160605")
         # self.requires("libdeflate/1.20")
 
-        self.requires("glib/2.78.3")
+        self.requires("glib/2.78.3-odr")
 
         if self.settings.os == "Android" and int(self.settings.os.get_safe("api_level")) < 23:
             self.requires("openlibm/0.8.3")

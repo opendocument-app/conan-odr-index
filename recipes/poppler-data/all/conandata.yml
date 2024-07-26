@@ -1,7 +1,7 @@
 sources:
-  "0.4.12":
+  "0.4.12-odr":
     url: "https://poppler.freedesktop.org/poppler-data-0.4.12.tar.gz"
     sha256: "c835b640a40ce357e1b83666aabd95edffa24ddddd49b8daff63adb851cdab74"
 patches:
-  "0.4.12":
+  "0.4.12-odr":
     - patch_file: "patches/0001-cmake-use-GNUInstallDirs.patch"
