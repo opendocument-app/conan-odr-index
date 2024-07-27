@@ -25,12 +25,12 @@ class pdf2htmlEXConan(ConanFile):
     default_options = {"shared": False, "fPIC": True}
 
     def requirements(self):
-        self.requires("poppler/24.07.0", options={
+        self.requires("poppler/24.07.0-odr", options={
             "with_cairo": True,
             "with_glib": True,
             "shared": False,
         })
-        self.requires("cairo/1.18.0", options={
+        self.requires("cairo/1.18.0-odr", options={
             # Don't pull in xorg dependencies.
             "with_xlib": False,
             "with_xlib_xrender": False,
@@ -41,7 +41,7 @@ class pdf2htmlEXConan(ConanFile):
             "install_private_headers": True,
         })
 
-        self.requires("glib/2.78.3")
+        self.requires("glib/2.78.3-odr")
 
         # self.requires("libtiff/4.6.0")
         # # jbig and libdeflate are required by libtiff

@@ -108,17 +108,17 @@ class PopplerConan(ConanFile):
         cmake_layout(self, src_folder="src")
 
     def requirements(self):
-        self.requires("poppler-data/0.4.12", transitive_headers=True, transitive_libs=True)
+        self.requires("poppler-data/0.4.12-odr", transitive_headers=True, transitive_libs=True)
         # https://gitlab.freedesktop.org/poppler/poppler/-/blob/poppler-22.04.0/splash/SplashFTFont.h#L30
         self.requires("freetype/2.13.2", transitive_headers=True, transitive_libs=True)
         if self.options.get_safe("with_libiconv"):
             self.requires("libiconv/1.17")
         if self.options.fontconfiguration == "fontconfig":
-            self.requires("fontconfig/2.15.0")
+            self.requires("fontconfig/2.15.0-odr")
         if self.options.with_cairo:
-            self.requires("cairo/1.18.0")
+            self.requires("cairo/1.18.0-odr")
         if self.options.get_safe("with_glib"):
-            self.requires("glib/2.78.3")
+            self.requires("glib/2.78.3-odr")
         if self.options.get_safe("with_gobject_introspection"):
             self.requires("gobject-introspection/1.72.0")
         if self.options.with_qt:

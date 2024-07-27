@@ -1,7 +1,7 @@
 sources:
-  "1.18.0":
+  "1.18.0-odr":
     sha256: "abf8fba4d510086a492783c3e0828e90b32734738fd80906595617d229d02bab"
     url: "https://gitlab.freedesktop.org/cairo/cairo/-/archive/1.18.0/cairo-1.18.0.tar.bz2"
 patches:
-  "1.18.0":
+  "1.18.0-odr":
     - patch_file: "patches/cairo-1.18.0-no-backtrace-symbols.patch"
