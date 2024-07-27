@@ -21,12 +21,10 @@ class PopplerDataConan(ConanFile):
 
     def package_id(self):
         self.info.settings.clear()
+        self.info.clear()
 
     def layout(self):
         cmake_layout(self)
-
-    def package_id(self):
-        self.info.clear()
 
     def source(self):
         get(self, **self.conan_data["sources"][self.version],
