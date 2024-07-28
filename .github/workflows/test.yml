@@ -98,14 +98,9 @@ jobs:
 
       - name: conan install
         run: conan install ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --build missing --profile:host ${{ env.conan_host_profile }} --profile:build ubuntu
-      - name: conan source
-        run: conan source ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }}
-      - name: conan build
-        run: conan build ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --profile:host ${{ env.conan_host_profile }} --profile:build ubuntu
-      - name: conan export
-        run: conan export ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }}
-      - name: conan export-pkg
-        run: conan export-pkg ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --profile:host ${{ env.conan_host_profile }} --profile:build ubuntu
+
+      - name: conan create
+        run: conan create ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --profile:host ${{ env.conan_host_profile }} --profile:build ubuntu
 
       - name: Enable KVM group perms
         run: |

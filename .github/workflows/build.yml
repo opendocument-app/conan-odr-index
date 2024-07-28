@@ -174,17 +174,9 @@ jobs:
 
       - name: conan install
         run: conan install ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} ${{ steps.build_from_source.outputs.argument }} --profile:host ${{ matrix.config.host_profile }} --profile:build ubuntu
-      - name: conan source
-        run: conan source ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }}
-      - name: conan build
-        run: conan build ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --profile:host ${{ matrix.config.host_profile }} --profile:build ubuntu
-      - name: conan export
-        run: conan export ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }}
-      - name: conan export-pkg
-        run: conan export-pkg ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --profile:host ${{ matrix.config.host_profile }} --profile:build ubuntu
 
-      - name: conan test
-        run: conan test ${{ matrix.package.test_conanfile }} ${{ matrix.package.package_reference }} --build missing --profile:host ${{ matrix.config.host_profile }} --profile:build ubuntu
+      - name: conan create
+        run: conan create ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --profile:host ${{ matrix.config.host_profile }} --profile:build ubuntu
 
       - name: conan login
         if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' && github.event.inputs.upload_to_artifactory == 'true'
