@@ -102,7 +102,7 @@ jobs:
       fail-fast: false
       matrix:
         package: ${{ fromJson(needs.generate-matrices.outputs.packages-with-dependents) }}
-    uses: .github/workflows/build_inner.yml
+    uses: ./.github/workflows/build_inner.yml
     with:
       conanfile: ${{ matrix.config.build_machine }}
       package_version: ${{ matrix.config.host_profile }}
