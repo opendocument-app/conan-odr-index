@@ -107,6 +107,6 @@ jobs:
       conanfile: ${{ matrix.config.build_machine }}
       package_version: ${{ matrix.config.host_profile }}
       build_dependencies_from_source: ${{ github.event.inputs.build_dependencies_from_source }}
-      upload_to_artifactory: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' && github.event.inputs.upload_to_artifactory == 'true'
+      upload_to_artifactory: ${{ github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' && github.event.inputs.upload_to_artifactory == 'true' }}
     secrets:
       ARTIFACTORY: ${{ secrets.ARTIFACTORY }}
