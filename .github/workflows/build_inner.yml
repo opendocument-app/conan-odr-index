@@ -1,0 +1,77 @@
+on:
+  workflow_call:
+    inputs:
+      conanfile:
+        required: true
+        type: string
+      package_version:
+        required: true
+        type: string
+      build_dependencies_from_source:
+        required: true
+        type: boolean
+      upload_to_artifactory:
+        required: true
+        type: boolean
+    secrets:
+      ARTIFACTORY:
+        required: true
+jobs:
+  build:
+    runs-on: ${{ matrix.config.build_machine }}
+    name: ${{ matrix.host_profile }}
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - { build_machine: ubuntu-22.04, host_profile: ubuntu }
+          - { build_machine: ubuntu-22.04, host_profile: android-23-armv8, ndk_version: 26.3.11579264 }
+          - { build_machine: ubuntu-22.04, host_profile: android-23-armv7, ndk_version: 26.3.11579264 }
+          - { build_machine: ubuntu-22.04, host_profile: android-23-x86, ndk_version: 26.3.11579264 }
+          - { build_machine: ubuntu-22.04, host_profile: android-23-x86_64, ndk_version: 26.3.11579264 }
+          - { build_machine: ubuntu-22.04, host_profile: android-21-armv8, ndk_version: 26.3.11579264 }
+          - { build_machine: ubuntu-22.04, host_profile: android-21-armv7, ndk_version: 26.3.11579264 }
+          - { build_machine: ubuntu-22.04, host_profile: android-21-x86, ndk_version: 26.3.11579264 }
+          - { build_machine: ubuntu-22.04, host_profile: android-21-x86_64, ndk_version: 26.3.11579264 }
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: setup python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+      - name: install python dependencies and setuptools (required to build GLib)
+        run: pip install --upgrade pip conan setuptools
+
+      - name: install NDK
+        if: startsWith(matrix.config.host_profile, 'android')
+        run: echo "y" | sudo ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install "ndk;${{ matrix.config.ndk_version }}"
+
+      - name: conan remote
+        run: conan remote add odr https://artifactory.opendocument.app/artifactory/api/conan/conan
+      - name: conan config
+        run: conan config install .github/config/${{ matrix.config.build_machine }}/conan
+
+      - name: Parse build from source option
+        id: build_from_source
+        run: |
+          if [ ${{ inputs.build_dependencies_from_source }} == "true" ]; then
+            echo argument=--build=* >> $GITHUB_OUTPUT
+          else
+            echo argument=--build=missing >> $GITHUB_OUTPUT
+          fi
+
+      - name: conan install
+        run: conan install ${{ inputs.conanfile }} --version ${{ inputs.package_version }} --profile:host ${{ matrix.config.host_profile }} --profile:build ubuntu ${{ steps.build_from_source.outputs.argument }}
+
+      - name: conan create
+        run: conan create ${{ inputs.conanfile }} --version ${{ inputs.package_version }} --profile:host ${{ matrix.config.host_profile }} --profile:build ubuntu
+
+      - name: conan login
+        if: inputs.upload_to_artifactory == 'true'
+        run: conan remote login odr admin --password ${{ secrets.ARTIFACTORY }}
+
+      - name: conan upload
+        if: inputs.upload_to_artifactory == 'true'
+        run: conan upload "*" --check --confirm --remote odr
