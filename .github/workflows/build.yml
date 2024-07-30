@@ -97,7 +97,7 @@ jobs:
           GITHUB_EVENT: ${{ toJson(github.event) }}
 
   build_0:
-    if: ${{ needs.generate-matrices.outputs.packages_0 != '[]' }}
+    if: ${{ needs.generate-matrices.outputs.packages_0 != '[]' && needs.generate-matrices.outputs.packages_0 != '' }}
     name: ${{ matrix.package.package_reference }}
     needs:
       - generate-matrices
@@ -115,7 +115,7 @@ jobs:
       ARTIFACTORY: ${{ secrets.ARTIFACTORY }}
 
   build_1:
-    if: ${{ needs.generate-matrices.outputs.packages_1 != '[]' }}
+    if: ${{ needs.generate-matrices.outputs.packages_1 != '[]' && needs.generate-matrices.outputs.packages_1 != '' }}
     name: ${{ matrix.package.package_reference }}
     needs:
       - generate-matrices
@@ -134,7 +134,7 @@ jobs:
       ARTIFACTORY: ${{ secrets.ARTIFACTORY }}
 
   build_2:
-    if: ${{ needs.generate-matrices.outputs.packages_2 != '[]' }}
+    if: ${{ needs.generate-matrices.outputs.packages_2 != '[]' && needs.generate-matrices.outputs.packages_2 != '' }}
     name: ${{ matrix.package.package_reference }}
     needs: build_1
     strategy:
@@ -151,7 +151,7 @@ jobs:
       ARTIFACTORY: ${{ secrets.ARTIFACTORY }}
 
   build_3:
-    if: ${{ needs.generate-matrices.outputs.packages_3 != '[]' }}
+    if: ${{ needs.generate-matrices.outputs.packages_3 != '[]' && needs.generate-matrices.outputs.packages_3 != '' }}
     name: ${{ matrix.package.package_reference }}
     needs:
       - generate-matrices

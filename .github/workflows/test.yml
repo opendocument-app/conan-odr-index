@@ -52,7 +52,7 @@ jobs:
         run: python scripts/emulator_matrix_generator.py
 
   emulator:
-    if: ${{ needs.generate-matrices.outputs.packages_0 != '[]' && needs.generate-matrices.outputs.emulator != '[]' }}
+    if: ${{ needs.generate-matrices.outputs.packages_0 != '[]' && needs.generate-matrices.outputs.packages_0 != '' && needs.generate-matrices.outputs.emulator != '[]' }}
     name: ${{ matrix.emulator.arch }}/${{ matrix.emulator.emulator_api_level }}/${{matrix.emulator.build_api_level}} ${{ matrix.package.package_reference }} 
     needs:
       - generate-matrices
