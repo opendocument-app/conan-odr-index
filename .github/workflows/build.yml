@@ -136,7 +136,9 @@ jobs:
   build_2:
     if: ${{ needs.generate-matrices.outputs.packages_2 != '[]' && needs.generate-matrices.outputs.packages_2 != '' }}
     name: ${{ matrix.package.package_reference }}
-    needs: build_1
+    needs:
+      - generate-matrices
+      - build_1
     strategy:
       fail-fast: false
       matrix:
