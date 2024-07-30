@@ -159,7 +159,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package: ${{ fromJson(needs.generate-matrices.outputs.packages_1) }}
+        package: ${{ fromJson(needs.generate-matrices.outputs.packages_3) }}
     uses: ./.github/workflows/build_inner.yml
     with:
       conanfile: ${{ matrix.package.conanfile }}
