@@ -62,6 +62,11 @@ jobs:
             echo argument=--build=missing >> $GITHUB_OUTPUT
           fi
 
+      # Multiple unpublished packages in this repo have inter-dependencies
+      # Can't build them until the deps are published to artifactory or at least exported
+      - name: Conan export all packages
+        run: python scripts/conan_export_all_packages.py
+
       - name: conan install
         run: conan install ${{ inputs.conanfile }} --version ${{ inputs.package_version }} --profile:host ${{ matrix.config.host_profile }} --profile:build ubuntu ${{ steps.build_from_source.outputs.argument }}
 
