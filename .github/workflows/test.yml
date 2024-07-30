@@ -1,9 +1,6 @@
 name: Test Android
 
 on:
-  push:
-    paths:
-      - 'recipes/**'
   workflow_dispatch:
     inputs:
       package_name:
@@ -36,10 +33,6 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
-        with:
-          # Fetch whole git history.
-          # Required to parse modified packages
-          fetch-depth: 0
 
       - name: setup python 3.12
         uses: actions/setup-python@v5
@@ -91,13 +84,8 @@ jobs:
       - name: conan config
         run: conan config install .github/config/ubuntu-22.04/conan
 
-      # Multiple unpublished packages in this repo have inter-dependencies
-      # Can't build them until the deps are published to artifactory or at least exported
-      - name: Conan export all packages
-        run: python scripts/conan_export_all_packages.py
-
       - name: conan install
-        run: conan install ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --build missing --profile:host ${{ env.conan_host_profile }} --profile:build ubuntu
+        run: conan install ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --profile:host ${{ env.conan_host_profile }} --profile:build ubuntu
 
       - name: conan create
         run: conan create ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --profile:host ${{ env.conan_host_profile }} --profile:build ubuntu
@@ -115,4 +103,4 @@ jobs:
           api-level: ${{ matrix.emulator.emulator_api_level }}
           arch: ${{ matrix.emulator.arch }}
           target: ${{ matrix.emulator.api_type_target }}
-          script: conan test ${{ matrix.package.test_conanfile }} ${{ matrix.package.package_reference }} --build missing --profile:host ${{ env.conan_host_profile }} --profile:build ubuntu 
+          script: conan test ${{ matrix.package.test_conanfile }} ${{ matrix.package.package_reference }} --profile:host ${{ env.conan_host_profile }} --profile:build ubuntu
