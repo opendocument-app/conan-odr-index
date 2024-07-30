@@ -28,7 +28,7 @@ jobs:
   generate-matrices:
     runs-on: ubuntu-22.04
     outputs:
-      packages-without-dependents: ${{ steps.list-packages-without-dependents.outputs.packages }}
+      packages: ${{ steps.list-packages-without-dependents.outputs.packages_0 }}
       emulator: ${{ steps.generate-emulator-matrix.outputs.matrix }}
     steps:
       - name: checkout
@@ -52,14 +52,14 @@ jobs:
         run: python scripts/emulator_matrix_generator.py
 
   emulator:
-    if: ${{ needs.generate-matrices.outputs.packages-without-dependents != '[]' && needs.generate-matrices.outputs.emulator != '[]' }}
+    if: ${{ needs.generate-matrices.outputs.packages_0 != '[]' && needs.generate-matrices.outputs.emulator != '[]' }}
     name: ${{ matrix.emulator.arch }}/${{ matrix.emulator.emulator_api_level }}/${{matrix.emulator.build_api_level}} ${{ matrix.package.package_reference }} 
     needs:
       - generate-matrices
     strategy:
       fail-fast: false
       matrix:
-        package: ${{ fromJson(needs.generate-matrices.outputs.packages-without-dependents) }}
+        package: ${{ fromJson(needs.generate-matrices.outputs.packages_0) }}
         emulator: ${{ fromJson(needs.generate-matrices.outputs.emulator) }}
     runs-on: ubuntu-22.04
     env:
