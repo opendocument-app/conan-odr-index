@@ -20,6 +20,7 @@ on:
         description: Package version. Specify 'newest' or leave empty to request the newest version. Specify 'all' to request all versions.
         required: false
 
+run-name: test ${{ inputs.package_name }}
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
