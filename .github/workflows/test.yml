@@ -81,14 +81,9 @@ jobs:
 
       - name: conan remote
         run: conan remote add odr https://artifactory.opendocument.app/artifactory/api/conan/conan
+
       - name: conan config
         run: conan config install .github/config/ubuntu-22.04/conan
-
-      - name: conan install
-        run: conan install ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --profile:host ${{ env.conan_host_profile }} --profile:build ubuntu
-
-      - name: conan create
-        run: conan create ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --profile:host ${{ env.conan_host_profile }} --profile:build ubuntu
 
       - name: Enable KVM group perms
         run: |
