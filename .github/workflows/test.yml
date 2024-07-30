@@ -85,6 +85,9 @@ jobs:
       - name: conan config
         run: conan config install .github/config/ubuntu-22.04/conan
 
+      - name: conan install
+        run: conan install ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --build missing --profile:host ${{ env.conan_host_profile }} --profile:build ubuntu
+
       - name: Enable KVM group perms
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
