@@ -19,7 +19,7 @@ on:
 jobs:
   build:
     runs-on: ${{ matrix.config.build_machine }}
-    name: ${{ matrix.host_profile }}
+    name : ${{ matrix.config.host_profile }}
     strategy:
       fail-fast: false
       matrix:
