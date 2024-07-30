@@ -62,9 +62,9 @@ jobs:
             echo argument=--build=missing >> $GITHUB_OUTPUT
           fi
 
-      # Multiple unpublished packages in this repo have inter-dependencies
-      # Can't build them until the deps are published to artifactory or at least exported
+      # No need to export local packages, if the previous build jobs in this chain already published to artifactory
       - name: Conan export all packages
+        if: inputs.upload_to_artifactory != 'true'
         run: python scripts/conan_export_all_packages.py
 
       - name: conan install
