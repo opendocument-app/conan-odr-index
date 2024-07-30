@@ -228,9 +228,6 @@ def main():
             for tier_index in range(TIER_COUNT):
                 packages_in_tier = result[tier_index] if len(result) > tier_index else list()
                 print(f"packages_{tier_index}={json.dumps(packages_in_tier)}", file=out)
-    for tier_index in range(TIER_COUNT):
-        packages_in_tier = result[tier_index] if len(result) > tier_index else list()
-        print(f"packages_{tier_index}={json.dumps(packages_in_tier)}")
 
 
 if __name__ == "__main__":
