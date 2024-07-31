@@ -56,10 +56,10 @@ jobs:
       - name: Parse build from source option
         id: build_from_source
         run: |
-          if [ ${{ inputs.build_dependencies_from_source == 'true' }} ]; then
-            echo argument=--build=* >> $GITHUB_OUTPUT
+          if [ ${{ inputs.build_dependencies_from_source }} == true ]; then
+            echo argument=--build=* | tee $GITHUB_OUTPUT
           else
-            echo argument=--build=missing >> $GITHUB_OUTPUT
+            echo argument=--build=missing | tee $GITHUB_OUTPUT
           fi
 
       # No need to export local packages, if the previous build jobs in this chain already published to artifactory
