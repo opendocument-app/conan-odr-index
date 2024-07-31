@@ -10,7 +10,7 @@ on:
       build_dependencies_from_source:
         required: true
         type: boolean
-      upload_to_artifactory:
+      artifactory_upload:
         required: true
         type: boolean
     secrets:
@@ -56,7 +56,7 @@ jobs:
       - name: Parse build from source option
         id: build_from_source
         run: |
-          if [ ${{ inputs.build_dependencies_from_source }} == "true" ]; then
+          if [ ${{ inputs.build_dependencies_from_source == 'true' }} ]; then
             echo argument=--build=* >> $GITHUB_OUTPUT
           else
             echo argument=--build=missing >> $GITHUB_OUTPUT
@@ -64,7 +64,7 @@ jobs:
 
       # No need to export local packages, if the previous build jobs in this chain already published to artifactory
       - name: Conan export all packages
-        if: inputs.upload_to_artifactory != 'true'
+        if: ${{ inputs.artifactory_upload != true }}
         run: python scripts/conan_export_all_packages.py
 
       - name: conan install
@@ -74,9 +74,9 @@ jobs:
         run: conan create ${{ inputs.conanfile }} --version ${{ inputs.package_version }} --profile:host ${{ matrix.config.host_profile }} --profile:build ubuntu
 
       - name: conan login
-        if: inputs.upload_to_artifactory == 'true'
+        if: ${{ inputs.artifactory_upload }}
         run: conan remote login odr admin --password ${{ secrets.ARTIFACTORY }}
 
       - name: conan upload
-        if: inputs.upload_to_artifactory == 'true'
+        if: ${{ inputs.artifactory_upload }}
         run: conan upload "*" --check --confirm --remote odr
