@@ -274,6 +274,10 @@ class PopplerConan(ConanFile):
         replace_in_file(self, os.path.join(self.source_folder, "CMakeLists.txt"),
                         "find_package(${_package_name} ${_package_version})", "find_package(${_package_name})")
 
+        replace_in_file(self, os.path.join(self.source_folder, "CMakeLists.txt"),
+                        "if(FONTCONFIG_FOUND)",
+                        "if(WITH_FONTCONFIGURATION_FONTCONFIG)")
+
     def build(self):
         cmake = CMake(self)
         cmake.configure()
