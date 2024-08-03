@@ -16,6 +16,7 @@ on:
           - openlibm
           - fontconfig
           - glib
+          - tmpfile
       package_version:
         description: Package version. Specify 'newest' or leave empty to request the newest version. Specify 'all' to request all versions.
         required: false
