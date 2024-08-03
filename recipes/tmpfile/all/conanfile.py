@@ -64,5 +64,6 @@ class TmpfileConan(ConanFile):
 
     def package_info(self):
         self.cpp_info.libs = ["tmpfile"]
+        self.cpp_info.system_libs = ["log"]
         self.cpp_info.includedirs = None
         self.cpp_info.bindirs = None
