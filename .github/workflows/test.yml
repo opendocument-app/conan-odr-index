@@ -1,9 +1,6 @@
 name: Test Android
 
 on:
-  push:
-    paths:
-      - 'recipes/**'
   workflow_dispatch:
     inputs:
       package_name:
@@ -19,10 +16,12 @@ on:
           - openlibm
           - fontconfig
           - glib
+          - tmpfile
       package_version:
         description: Package version. Specify 'newest' or leave empty to request the newest version. Specify 'all' to request all versions.
         required: false
 
+run-name: test ${{ inputs.package_name }}
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
@@ -31,15 +30,11 @@ jobs:
   generate-matrices:
     runs-on: ubuntu-22.04
     outputs:
-      packages-without-dependents: ${{ steps.list-packages-without-dependents.outputs.packages }}
+      packages: ${{ steps.list-packages-without-dependents.outputs.packages_0 }}
       emulator: ${{ steps.generate-emulator-matrix.outputs.matrix }}
     steps:
       - name: checkout
         uses: actions/checkout@v4
-        with:
-          # Fetch whole git history.
-          # Required to parse modified packages
-          fetch-depth: 0
 
       - name: setup python 3.12
         uses: actions/setup-python@v5
@@ -59,14 +54,14 @@ jobs:
         run: python scripts/emulator_matrix_generator.py
 
   emulator:
-    if: ${{ needs.generate-matrices.outputs.packages-without-dependents != '[]' && needs.generate-matrices.outputs.emulator != '[]' }}
+    if: ${{ needs.generate-matrices.outputs.packages != '[]' && needs.generate-matrices.outputs.packages != '' && needs.generate-matrices.outputs.emulator != '[]' }}
     name: ${{ matrix.emulator.arch }}/${{ matrix.emulator.emulator_api_level }}/${{matrix.emulator.build_api_level}} ${{ matrix.package.package_reference }} 
     needs:
       - generate-matrices
     strategy:
       fail-fast: false
       matrix:
-        package: ${{ fromJson(needs.generate-matrices.outputs.packages-without-dependents) }}
+        package: ${{ fromJson(needs.generate-matrices.outputs.packages) }}
         emulator: ${{ fromJson(needs.generate-matrices.outputs.emulator) }}
     runs-on: ubuntu-22.04
     env:
@@ -88,24 +83,12 @@ jobs:
 
       - name: conan remote
         run: conan remote add odr https://artifactory.opendocument.app/artifactory/api/conan/conan
+
       - name: conan config
         run: conan config install .github/config/ubuntu-22.04/conan
 
-      # Multiple unpublished packages in this repo have inter-dependencies
-      # Can't build them until the deps are published to artifactory or at least exported
-      - name: Conan export all packages
-        run: python scripts/conan_export_all_packages.py
-
       - name: conan install
         run: conan install ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --build missing --profile:host ${{ env.conan_host_profile }} --profile:build ubuntu
-      - name: conan source
-        run: conan source ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }}
-      - name: conan build
-        run: conan build ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --profile:host ${{ env.conan_host_profile }} --profile:build ubuntu
-      - name: conan export
-        run: conan export ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }}
-      - name: conan export-pkg
-        run: conan export-pkg ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --profile:host ${{ env.conan_host_profile }} --profile:build ubuntu
 
       - name: Enable KVM group perms
         run: |
@@ -120,4 +103,4 @@ jobs:
           api-level: ${{ matrix.emulator.emulator_api_level }}
           arch: ${{ matrix.emulator.arch }}
           target: ${{ matrix.emulator.api_type_target }}
-          script: conan test ${{ matrix.package.test_conanfile }} ${{ matrix.package.package_reference }} --build missing --profile:host ${{ env.conan_host_profile }} --profile:build ubuntu 
+          script: conan test ${{ matrix.package.test_conanfile }} ${{ matrix.package.package_reference }} --profile:host ${{ env.conan_host_profile }} --profile:build ubuntu

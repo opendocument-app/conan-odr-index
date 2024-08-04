@@ -4,6 +4,7 @@ import argparse
 import json
 import os
 import subprocess
+import sys
 from pathlib import Path
 
 import yaml
@@ -11,6 +12,7 @@ import yaml
 script_path = Path(__file__).resolve().parent
 root_path = script_path.parent
 recipes_path = root_path / "recipes"
+TIER_COUNT = 4
 
 
 def get_package_infos():
@@ -45,6 +47,13 @@ def get_package_infos():
     return package_infos
 
 
+def get_package_info(package_infos, package, version):
+    versions = package_infos[package]
+    for package_versioned in versions:
+        if package_versioned["version"] == version:
+            return package_versioned
+
+
 def get_files_in_commit(commit_id):
     files_in_commit = subprocess.run(
         ["git", "diff-tree", "--no-commit-id", "--name-only", "-r", commit_id],
@@ -56,15 +65,29 @@ def get_files_in_commit(commit_id):
 
 
 def get_packages_in_commit(commit_id):
-    packages = set()
+    packages = list()
     for file_in_commit in get_files_in_commit(commit_id):
         file_components = file_in_commit.split(os.sep)
         if len(file_components) >= 3 and file_components[0] == 'recipes':
-            packages.add(file_components[1])
+            package_name = file_components[1]
+            packages.append(package_name)
     return packages
 
 
-def get_downstream_dependencies(dependency_graph_files, package_infos):
+def get_modified_packages_in_commits(commit_id_list, commit_obj_list):
+    packages = list()
+    for commit_id in commit_id_list:
+        print(f"Commit {commit_id} requested as an argument")
+        packages += get_packages_in_commit(commit_id)
+
+    for commit in commit_obj_list:
+        if -1 == str.lower(commit["message"]).find('[skipci]'):
+            print(f"Found commit without [skipci]: {commit["id"]} - {commit["message"]}")
+            packages += get_packages_in_commit(commit["id"])
+    return packages
+
+
+def get_downstream_dependents(dependency_graph_files, package_infos):
     # downstream_packages dictionary key is package name,
     # value is a set of packages, which use this package
     downstream_packages = dict()
@@ -92,6 +115,10 @@ def get_downstream_dependencies(dependency_graph_files, package_infos):
     return downstream_packages
 
 
+def get_latest_package_version(package_infos, package_name):
+    return package_infos[package_name][0]['version']
+
+
 def main():
     parser = argparse.ArgumentParser(description="List package versions")
     parser.add_argument("--commit-ids", nargs='*', dest="COMMIT_ID",
@@ -110,76 +137,97 @@ def main():
                         help="Used to calculate downstream dependents of requested packages")
 
     args = parser.parse_args()
+    del parser
 
     github_event = json.loads(os.environ.get('GITHUB_EVENT', '{}'))
     inputs = github_event.get("inputs", dict())
 
-    requested_packages = set()
+    package_infos = get_package_infos()
+    requested_packages = dict()
 
-    # Check if any packages were modified in git commits
-    for commit_id in args.COMMIT_ID or list():
-        print("commit {} requested as argument". format(commit_id))
-        requested_packages.update(get_packages_in_commit(commit_id))
-
-    for commit in github_event.get("commits", list()):
-        if -1 == str.lower(commit["message"]).find('[skipci]'):
-            print("Found commit without [skipci]: {} - {}".format(commit["id"], commit["message"]))
-            requested_packages.update(get_packages_in_commit(commit["id"]))
+    commit_ids = args.COMMIT_ID or list()
+    commit_obj_list = github_event.get("commits", list())
+    for package in get_modified_packages_in_commits(commit_ids, commit_obj_list):
+        if package not in requested_packages.keys():
+            requested_packages[package] = set()
+        requested_packages[package].add(get_latest_package_version(package_infos, package))
+    del commit_ids, commit_obj_list
 
     # Check if any packages were asked to be rebuilt
-    if args.request_package:
-        if args.request_package == "all":
-            requested_packages.add("all")
-        else:
-            requested = "{}/{}".format(args.request_package, args.request_package_version or "newest")
-            print("Requested package: " + requested)
-            requested_packages.add(requested)
-    elif inputs.get('package_name'):
-        if inputs.get('package_name') == "all":
-            requested_packages.add("all")
-        else:
-            requested = "{}/{}".format(inputs.get('package_name'), inputs.get('package_version', "newest"))
-            print("Requested package: " + requested)
-            requested_packages.add(requested)
-
-    package_infos = get_package_infos()
-    filtered_packages = {}
-
-    if 'all' in requested_packages:
+    input_requested_package = args.request_package if args.request_package else inputs.get('package_name')
+    input_requested_version = args.request_package_version or inputs.get('package_version', 'newest')
+    if input_requested_package == 'all':
         for package in package_infos:
-            filtered_packages[package] = package_infos[package]
-            # Request only the newest version, first in the array
-            filtered_packages[package] = filtered_packages[package][:1]
-    else:
-        dependency_graph_files = getattr(args, 'CONAN_DEPENDENCY_GRAPH.json') or list()
-        downstream_deps = get_downstream_dependencies(dependency_graph_files, package_infos)
-        for package in requested_packages:
-            if -1 == package.find('/'):
-                package += "/newest"
+            if package not in requested_packages.keys():
+                requested_packages[package] = set()
+            requested_packages[package].add(get_latest_package_version(package_infos, package))
+    elif input_requested_package:
+        print(f"Requested package: {input_requested_package}/{input_requested_version}")
+        if input_requested_package not in requested_packages.keys():
+            requested_packages[input_requested_package] = set()
+        if input_requested_version == 'newest':
+            requested_packages[input_requested_package].add(get_latest_package_version(package_infos, input_requested_package))
+        elif input_requested_version == 'all':
+            for version in list(map(lambda v: v['version'], package_infos[input_requested_package])):
+                requested_packages[input_requested_package].add(version)
+        else:
+            requested_packages[input_requested_package].add(input_requested_version)
+    del input_requested_package, input_requested_version
 
-            pkg_name, pkg_version = package.split('/')
+    dependency_graph_files = getattr(args, 'CONAN_DEPENDENCY_GRAPH.json') or list()
+    downstream_dependents = get_downstream_dependents(dependency_graph_files, package_infos)
+    del dependency_graph_files
 
-            if pkg_version == "newest" or pkg_version == "":
-                filtered_packages[pkg_name] = package_infos[pkg_name][:1]
-            elif pkg_version == "all":
-                filtered_packages[pkg_name] = package_infos[pkg_name]
-            else:
-                filtered_packages[pkg_name] = filter(lambda x: x["version"] == pkg_version, package_infos[pkg_name])
+    dependents = set()
+    for package in requested_packages.keys():
+        for dependant in downstream_dependents.get(package, list()):
+            dependents.add(dependant)
+    for dependant in dependents:
+        if dependant not in requested_packages.keys():
+            requested_packages[dependant] = set()
+        requested_packages[dependant].add(get_latest_package_version(package_infos, dependant))
+    del dependents
 
-            for dependency in downstream_deps.get(pkg_name, list()):
-                filtered_packages[dependency] = package_infos[dependency][:1]
+    tiered_packages = [requested_packages]
+    del requested_packages
+    dependency_tier = 0
+    while dependency_tier < len(tiered_packages):
+        packages_from_this_tier = dict(tiered_packages[dependency_tier])
+        packages_to_add_in_next_tier = dict()
+        for package in packages_from_this_tier.keys():
+            for dependant in downstream_dependents.get(package, list()):
+                if dependant in packages_from_this_tier.keys():
+                    packages_to_add_in_next_tier[dependant] = packages_from_this_tier[dependant]
+                    if dependant in tiered_packages[dependency_tier].keys():
+                        del tiered_packages[dependency_tier][dependant]
+        if len(packages_to_add_in_next_tier):
+            tiered_packages.append(packages_to_add_in_next_tier)
+        dependency_tier += 1
 
-    result = [
-        infos
-        for package in sorted(filtered_packages.keys())
-        for infos in filtered_packages[package]
-    ]
-    print("packages=" + ' '.join(map(lambda x: x['package_reference'], result)))
+    if dependency_tier > TIER_COUNT:
+        this_file = Path(__file__).resolve().relative_to(root_path)
+        build_workflow = ".github/workflows/build.yml"
+        print(f"Dependency tier overflow. Increase TIER_COUNT in {this_file} and in {build_workflow}", file=sys.stderr)
+        sys.exit(1)
+
+    result = []
+    for tier in tiered_packages:
+        package_infos_in_this_tier = []
+        for package in tier.keys():
+            for version in tier[package]:
+                package_infos_in_this_tier.append(get_package_info(package_infos, package, version))
+        result.append(package_infos_in_this_tier)
+
+    for tier_index in range(TIER_COUNT):
+        packages_in_tier = result[tier_index] if len(result) > tier_index else list()
+        print(f"packages_{tier_index}=" + ' '.join(map(lambda x: x['package_reference'], packages_in_tier)))
 
     gh_output = os.environ.get('GITHUB_OUTPUT')
     if gh_output:
         with open(gh_output, 'w') as out:
-            print("packages=" + json.dumps(result), file=out)
+            for tier_index in range(TIER_COUNT):
+                packages_in_tier = result[tier_index] if len(result) > tier_index else list()
+                print(f"packages_{tier_index}={json.dumps(packages_in_tier)}", file=out)
 
 
 if __name__ == "__main__":

@@ -40,6 +40,7 @@ class FontForgeTestConan(ConanFile):
                 self.run(f"adb push {Path(Path(__file__).resolve().parent, "basic_text.pdf")} {uploaded_dir}/basic_text.pdf", env="conanrun")
                 self.run(f"adb shell \""
                          f"export FONTCONFIG_PATH={uploaded_dir}/fontconfig; "
+                         f"export TMPDIR=/data/local/tmp; "
                          f"cd {uploaded_dir}; "
                          f"./pdf2htmlEX basic_text.pdf basic_text.html "
                          f"--data-dir {uploaded_dir}/pdf2htmlex-data "
