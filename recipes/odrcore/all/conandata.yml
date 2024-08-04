@@ -38,7 +38,7 @@ sources:
   "4.1.1":
     source:
       url: "https://github.com/opendocument-app/OpenDocument.core/archive/refs/tags/v4.1.1.tar.gz"
-      sha256: "990211280a3461b8dc076f83e864263e9054b906c0de23e30a384db011c05cbe"
+      sha256: "c4721aa8a50ea0ce123aae7979380f7d515b0e4e66454307a9be94006801cadf"
 
 patches:
   "1.0.0":
