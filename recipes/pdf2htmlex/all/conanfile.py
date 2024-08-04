@@ -42,7 +42,7 @@ class pdf2htmlEXConan(ConanFile):
             "install_private_headers": True,
         })
 
-        self.requires("glib/2.78.3-odr")
+        self.requires("glib/2.81.0-odr")
 
         # self.requires("libtiff/4.6.0")
         # # jbig and libdeflate are required by libtiff
