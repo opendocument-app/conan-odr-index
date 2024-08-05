@@ -1,7 +1,7 @@
 sources:
   "0.18.8.rc1-20240805-git":
-    url: "https://github.com/ViliusSutkus89/pdf2htmlEX/archive/9012ef37fbf5e4bc2efd4acbef02386ff10be366.zip"
-    sha256: "6ed675786d859ec13f04cfe6b413685d3120aa86fb639789d827eba6e91ddf03"
+    url: "https://github.com/ViliusSutkus89/pdf2htmlEX/archive/58430bc9739306cd37d502fe39e3177c7952c6b0.zip"
+    sha256: "d537c76ab85f5a802a3977bbdb47317d9e10f846cf2b9723bb0c9e1232620179"
 patches:
   "0.18.8.rc1-20240805-git":
     - patch_file: "patches/0.18.8.rc1-20240805-git/conan.patch"
