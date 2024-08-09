@@ -45,9 +45,9 @@ jobs:
           # @TODO: maybe allow building tmpfile on other arches.
           # Even if it's not used
           - conanfile: 'recipes/tmpfile/all/conanfile.py'
-            config: { build_machine: macos-13, host_profile: default }
+            config: { build_machine: macos-13, host_profile: apple-clang-14 }
           - conanfile: 'recipes/tmpfile/all/conanfile.py'
-            config: { build_machine: macos-14, host_profile: default }
+            config: { build_machine: macos-14, host_profile: apple-armv8-clang-14 }
           - conanfile: 'recipes/tmpfile/all/conanfile.py'
             config: { build_machine: ubuntu-24.04, host_profile: gcc-12 }
           - conanfile: 'recipes/tmpfile/all/conanfile.py'
