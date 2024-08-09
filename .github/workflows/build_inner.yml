@@ -39,6 +39,9 @@ jobs:
           - { build_machine: ubuntu-24.04, host_profile: clang-16 }
           - { build_machine: windows-2022, host_profile: msvc-1940 }
         exclude:
+          # OpenLibm does not support Windows
+          - conanfile: 'recipes/openlibm/all/conanfile.py'
+            config: { build_machine: windows-2022, host_profile: msvc-1940 }
           # @TODO: maybe allow building tmpfile on other arches.
           # Even if it's not used
           - conanfile: 'recipes/tmpfile/all/conanfile.py'
