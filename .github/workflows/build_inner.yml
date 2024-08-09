@@ -33,7 +33,6 @@ jobs:
           - { build_machine: ubuntu-22.04, host_profile: android-21-armv7, ndk_version: 26.3.11579264 }
           - { build_machine: ubuntu-22.04, host_profile: android-21-x86, ndk_version: 26.3.11579264 }
           - { build_machine: ubuntu-22.04, host_profile: android-21-x86_64, ndk_version: 26.3.11579264 }
-          - { build_machine: ubuntu-22.04, host_profile: ubuntu }
           - { build_machine: macos-13, host_profile: apple-clang-14 }
           - { build_machine: macos-14, host_profile: apple-armv8-clang-14 }
           - { build_machine: ubuntu-24.04, host_profile: gcc-12 }
@@ -43,8 +42,6 @@ jobs:
         exclude:
           # @TODO: maybe allow building tmpfile on other arches.
           # Even if it's not used
-          - conanfile: 'recipes/tmpfile/all/conanfile.py'
-            config: { build_machine: ubuntu-22.04, host_profile: ubuntu }
           - conanfile: 'recipes/tmpfile/all/conanfile.py'
             config: { build_machine: macos-13, host_profile: default }
           - conanfile: 'recipes/tmpfile/all/conanfile.py'
