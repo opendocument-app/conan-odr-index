@@ -37,7 +37,6 @@ jobs:
           - { build_machine: macos-14, host_profile: apple-armv8-clang-14 }
           - { build_machine: ubuntu-24.04, host_profile: gcc-12 }
           - { build_machine: ubuntu-24.04, host_profile: clang-16 }
-          - { build_machine: windows-2022, host_profile: msvc-1939 }
           - { build_machine: windows-2022, host_profile: msvc-1940 }
         exclude:
           # @TODO: maybe allow building tmpfile on other arches.
@@ -50,8 +49,6 @@ jobs:
             config: { build_machine: ubuntu-24.04, host_profile: gcc-12 }
           - conanfile: 'recipes/tmpfile/all/conanfile.py'
             config: { build_machine: ubuntu-24.04, host_profile: clang-16 }
-          - conanfile: 'recipes/tmpfile/all/conanfile.py'
-            config: { build_machine: windows-2022, host_profile: msvc-1939 }
           - conanfile: 'recipes/tmpfile/all/conanfile.py'
             config: { build_machine: windows-2022, host_profile: msvc-1940 }
     steps:
