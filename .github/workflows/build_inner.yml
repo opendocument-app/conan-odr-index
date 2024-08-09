@@ -42,6 +42,35 @@ jobs:
           # OpenLibm does not support Windows
           - conanfile: 'recipes/openlibm/all/conanfile.py'
             config: { build_machine: windows-2022, host_profile: msvc-1940 }
+
+          # Cairo fails to compile on Windows
+          # https://github.com/conan-io/conan-center-index/issues/23786
+          # https://gitlab.freedesktop.org/cairo/cairo/-/issues/808
+          - conanfile: 'recipes/cairo/all/conanfile.py'
+            config: { build_machine: windows-2022, host_profile: msvc-1940 }
+
+          # No Cairo means no Poppler and no pdf2htmlEX
+          - conanfile: 'recipes/poppler/all/conanfile.py'
+            config: { build_machine: windows-2022, host_profile: msvc-1940 }
+          - conanfile: 'recipes/pdf2htmlex/all/conanfile.py'
+            config: { build_machine: windows-2022, host_profile: msvc-1940 }
+
+          # Fontforge build issue on msvc-1940
+          - conanfile: 'recipes/fontforge/all/conanfile.py'
+            config: { build_machine: windows-2022, host_profile: msvc-1940 }
+
+          # Fontforge libintl build issue for macos
+          - conanfile: 'recipes/fontforge/all/conanfile.py'
+            config: { build_machine: macos-13, host_profile: apple-clang-14 }
+          - conanfile: 'recipes/fontforge/all/conanfile.py'
+            config: { build_machine: macos-14, host_profile: apple-armv8-clang-14 }
+
+          # No Fontforge means no pdf2htmlEX
+          - conanfile: 'recipes/pdf2htmlex/all/conanfile.py'
+            config: { build_machine: macos-13, host_profile: apple-clang-14 }
+          - conanfile: 'recipes/pdf2htmlex/all/conanfile.py'
+            config: { build_machine: macos-14, host_profile: apple-armv8-clang-14 }
+
           # @TODO: maybe allow building tmpfile on other arches.
           # Even if it's not used
           - conanfile: 'recipes/tmpfile/all/conanfile.py'
