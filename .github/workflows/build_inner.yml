@@ -79,6 +79,7 @@ jobs:
 
       - name: Parse build from source option
         id: build_from_source
+        shell: bash
         run: |
           if [ ${{ inputs.build_dependencies_from_source }} == true ]; then
             echo argument=--build=* | tee $GITHUB_OUTPUT
