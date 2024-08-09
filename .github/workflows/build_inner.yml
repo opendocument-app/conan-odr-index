@@ -46,7 +46,7 @@ jobs:
           # Cairo fails to compile on Windows
           # https://github.com/conan-io/conan-center-index/issues/23786
           # https://gitlab.freedesktop.org/cairo/cairo/-/issues/808
-          - conanfile: 'recipes/cairo/all/conanfile.py'
+          - conanfile: 'recipes/cairo/meson/conanfile.py'
             config: { build_machine: windows-2022, host_profile: msvc-1940 }
 
           # No Cairo means no Poppler and no pdf2htmlEX
