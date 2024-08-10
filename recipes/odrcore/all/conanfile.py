@@ -63,7 +63,12 @@ class OpenDocumentCoreConan(ConanFile):
 
     def validate_build(self):
         if self.settings.get_safe("compiler.cppstd"):
-            check_min_cppstd(self, 17)
+            if Version(self.version) >= "4.0.0":
+                check_min_cppstd(self, 20)
+            elif Version(self.version) >= "2.0.0":
+                check_min_cppstd(self, 17)
+            else:
+                check_min_cppstd(self, 14)
 
     def source(self):
         get(self, **self.conan_data["sources"][self.version]["source"], strip_root=True)
