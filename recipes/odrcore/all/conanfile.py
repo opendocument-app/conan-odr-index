@@ -27,10 +27,12 @@ class OpenDocumentCoreConan(ConanFile):
         "fPIC": True,
     }
 
-    exports_sources = ["cli/*", "cmake/*", "src/*", "CMakeLists.txt"]
-
     def export_sources(self):
-        export_conandata_patches(self)
+        if self.conan_data is None:
+            for src in ["cli/*", "cmake/*", "src/*", "CMakeLists.txt"]:
+                copy(self, src, self.recipe_folder, self.export_sources_folder)
+        else:
+            export_conandata_patches(self)
 
     def config_options(self):
         if self.settings.os == "Windows":
