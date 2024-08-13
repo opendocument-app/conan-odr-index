@@ -5,7 +5,7 @@ on:
     paths:
       - 'recipes/**'
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '5 * * * *'
   workflow_dispatch:
     inputs:
       package_name:
