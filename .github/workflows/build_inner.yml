@@ -36,7 +36,11 @@ jobs:
           - { build_machine: macos-13, host_profile: apple-clang-14 }
           - { build_machine: macos-14, host_profile: apple-armv8-clang-14 }
           - { build_machine: ubuntu-24.04, host_profile: gcc-12 }
+          - { build_machine: ubuntu-24.04, host_profile: gcc-13 }
+          - { build_machine: ubuntu-24.04, host_profile: gcc-14 }
           - { build_machine: ubuntu-24.04, host_profile: clang-16 }
+          - { build_machine: ubuntu-24.04, host_profile: clang-17 }
+          - { build_machine: ubuntu-24.04, host_profile: clang-18 }
           - { build_machine: windows-2022, host_profile: msvc-1940 }
         exclude:
           # OpenLibm does not support Windows
@@ -79,7 +83,15 @@ jobs:
           - conanfile: 'recipes/tmpfile/all/conanfile.py'
             config: { build_machine: ubuntu-24.04, host_profile: gcc-12 }
           - conanfile: 'recipes/tmpfile/all/conanfile.py'
+            config: { build_machine: ubuntu-24.04, host_profile: gcc-13 }
+          - conanfile: 'recipes/tmpfile/all/conanfile.py'
+            config: { build_machine: ubuntu-24.04, host_profile: gcc-14 }
+          - conanfile: 'recipes/tmpfile/all/conanfile.py'
             config: { build_machine: ubuntu-24.04, host_profile: clang-16 }
+          - conanfile: 'recipes/tmpfile/all/conanfile.py'
+            config: { build_machine: ubuntu-24.04, host_profile: clang-17 }
+          - conanfile: 'recipes/tmpfile/all/conanfile.py'
+            config: { build_machine: ubuntu-24.04, host_profile: clang-18 }
           - conanfile: 'recipes/tmpfile/all/conanfile.py'
             config: { build_machine: windows-2022, host_profile: msvc-1940 }
 
@@ -105,7 +117,17 @@ jobs:
           - conanfile: 'recipes/poppler-data/all/conanfile.py'
             config: { build_machine: macos-14, host_profile: apple-armv8-clang-14 }
           - conanfile: 'recipes/poppler-data/all/conanfile.py'
+            config: { build_machine: ubuntu-24.04, host_profile: gcc-12 }
+          - conanfile: 'recipes/poppler-data/all/conanfile.py'
+            config: { build_machine: ubuntu-24.04, host_profile: gcc-13 }
+          - conanfile: 'recipes/poppler-data/all/conanfile.py'
+            config: { build_machine: ubuntu-24.04, host_profile: gcc-14 }
+          - conanfile: 'recipes/poppler-data/all/conanfile.py'
             config: { build_machine: ubuntu-24.04, host_profile: clang-16 }
+          - conanfile: 'recipes/poppler-data/all/conanfile.py'
+            config: { build_machine: ubuntu-24.04, host_profile: clang-17 }
+          - conanfile: 'recipes/poppler-data/all/conanfile.py'
+            config: { build_machine: ubuntu-24.04, host_profile: clang-18 }
           - conanfile: 'recipes/poppler-data/all/conanfile.py'
             config: { build_machine: windows-2022, host_profile: msvc-1940 }
     steps:
