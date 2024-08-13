@@ -71,8 +71,7 @@ jobs:
           - conanfile: 'recipes/pdf2htmlex/all/conanfile.py'
             config: { build_machine: macos-14, host_profile: apple-armv8-clang-14 }
 
-          # @TODO: maybe allow building tmpfile on other arches.
-          # Even if it's not used
+          # tmpfile is needed only for Android
           - conanfile: 'recipes/tmpfile/all/conanfile.py'
             config: { build_machine: macos-13, host_profile: apple-clang-14 }
           - conanfile: 'recipes/tmpfile/all/conanfile.py'
@@ -82,6 +81,32 @@ jobs:
           - conanfile: 'recipes/tmpfile/all/conanfile.py'
             config: { build_machine: ubuntu-24.04, host_profile: clang-16 }
           - conanfile: 'recipes/tmpfile/all/conanfile.py'
+            config: { build_machine: windows-2022, host_profile: msvc-1940 }
+
+          # poppler-data is the same package for all configurations
+          - conanfile: 'recipes/poppler-data/all/conanfile.py'
+            config: { build_machine: ubuntu-22.04, host_profile: android-23-armv8, ndk_version: 26.3.11579264 }
+          - conanfile: 'recipes/poppler-data/all/conanfile.py'
+            config: { build_machine: ubuntu-22.04, host_profile: android-23-armv7, ndk_version: 26.3.11579264 }
+          - conanfile: 'recipes/poppler-data/all/conanfile.py'
+            config: { build_machine: ubuntu-22.04, host_profile: android-23-x86, ndk_version: 26.3.11579264 }
+          - conanfile: 'recipes/poppler-data/all/conanfile.py'
+            config: { build_machine: ubuntu-22.04, host_profile: android-23-x86_64, ndk_version: 26.3.11579264 }
+          - conanfile: 'recipes/poppler-data/all/conanfile.py'
+            config: { build_machine: ubuntu-22.04, host_profile: android-21-armv8, ndk_version: 26.3.11579264 }
+          - conanfile: 'recipes/poppler-data/all/conanfile.py'
+            config: { build_machine: ubuntu-22.04, host_profile: android-21-armv7, ndk_version: 26.3.11579264 }
+          - conanfile: 'recipes/poppler-data/all/conanfile.py'
+            config: { build_machine: ubuntu-22.04, host_profile: android-21-x86, ndk_version: 26.3.11579264 }
+          - conanfile: 'recipes/poppler-data/all/conanfile.py'
+            config: { build_machine: ubuntu-22.04, host_profile: android-21-x86_64, ndk_version: 26.3.11579264 }
+          - conanfile: 'recipes/poppler-data/all/conanfile.py'
+            config: { build_machine: macos-13, host_profile: apple-clang-14 }
+          - conanfile: 'recipes/poppler-data/all/conanfile.py'
+            config: { build_machine: macos-14, host_profile: apple-armv8-clang-14 }
+          - conanfile: 'recipes/poppler-data/all/conanfile.py'
+            config: { build_machine: ubuntu-24.04, host_profile: clang-16 }
+          - conanfile: 'recipes/poppler-data/all/conanfile.py'
             config: { build_machine: windows-2022, host_profile: msvc-1940 }
     steps:
       - name: checkout
