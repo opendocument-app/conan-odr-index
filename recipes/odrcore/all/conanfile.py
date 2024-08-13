@@ -80,7 +80,6 @@ class OpenDocumentCoreConan(ConanFile):
     def generate(self):
         tc = CMakeToolchain(self)
         tc.variables["CMAKE_PROJECT_VERSION"] = self.version
-        tc.variables["BUILD_SHARED_LIBS"] = self.options.shared
         tc.variables["ODR_TEST"] = False
         if Version(self.version) <= "4.0.0" and Version(self.version) != "0.0.0":
             tc.variables["CONAN_EXPORTED"] = True
