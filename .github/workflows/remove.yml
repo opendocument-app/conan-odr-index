@@ -1,0 +1,37 @@
+name: Remove package from artifactory
+
+on:
+  workflow_dispatch:
+    inputs:
+      package_name:
+        description: Package name
+        type: choice
+        options:
+          - odrcore
+          - pdf2htmlex
+          - fontforge
+          - poppler
+          - poppler-data
+          - cairo
+          - openlibm
+          - fontconfig
+          - glib
+          - tmpfile
+      package_version:
+        description: Package version. Specify 'newest' or leave empty to request the newest version. Specify 'all' to request all versions.
+        default: *
+        required: false
+
+jobs:
+  remove:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+      - run: pip install --upgrade conan
+
+      - run: conan remote add odr https://artifactory.opendocument.app/artifactory/api/conan/conan
+      - run: conan remote login odr admin --password ${{ secrets.ARTIFACTORY }}
+
+      - run: conan remove --remote=odr "${{ github.event.inputs.package_name }}/${{ github.event.inputs.package_name }}#*" --confirm --dry-run
