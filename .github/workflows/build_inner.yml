@@ -85,6 +85,8 @@ jobs:
           - conanfile: 'recipes/tmpfile/all/conanfile.py'
             config: { build_machine: ubuntu-24.04, host_profile: gcc-13 }
           - conanfile: 'recipes/tmpfile/all/conanfile.py'
+            config: { build_machine: ubuntu-24.04, host_profile: gcc-14 }
+          - conanfile: 'recipes/tmpfile/all/conanfile.py'
             config: { build_machine: ubuntu-24.04, host_profile: clang-16 }
           - conanfile: 'recipes/tmpfile/all/conanfile.py'
             config: { build_machine: ubuntu-24.04, host_profile: clang-17 }
