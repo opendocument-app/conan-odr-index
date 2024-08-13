@@ -36,4 +36,4 @@ jobs:
       - run: conan remote add odr https://artifactory.opendocument.app/artifactory/api/conan/conan
       - run: conan remote login odr admin --password ${{ secrets.ARTIFACTORY }}
 
-      - run: conan remove --remote=odr "${{ github.event.inputs.package_name }}/${{ github.event.inputs.package_version }}#*" --confirm --dry-run
+      - run: conan remove --remote=odr "${{ github.event.inputs.package_name }}/${{ github.event.inputs.package_version }}#*" --confirm
