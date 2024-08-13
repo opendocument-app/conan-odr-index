@@ -18,8 +18,8 @@ on:
           - glib
           - tmpfile
       package_version:
-        description: Package version. Specify 'newest' or leave empty to request the newest version. Specify 'all' to request all versions.
-        default: *
+        description: Package version. Leave empty for all versions
+        default: '*'
         required: false
 
 jobs:
