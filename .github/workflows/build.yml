@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - 'recipes/**'
+  schedule:
+    - cron: '/5 * * * *'
   workflow_dispatch:
     inputs:
       package_name:

@@ -153,6 +153,9 @@ def main():
         requested_packages[package].add(get_latest_package_version(package_infos, package))
     del commit_ids, commit_obj_list
 
+    if github_event.get("schedule", False):
+        requested_packages['all'] = 'newest'
+
     # Check if any packages were asked to be rebuilt
     input_requested_package = args.request_package if args.request_package else inputs.get('package_name')
     input_requested_version = args.request_package_version or inputs.get('package_version', 'newest')
