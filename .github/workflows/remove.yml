@@ -17,10 +17,6 @@ on:
           - fontconfig
           - glib
           - tmpfile
-      package_version:
-        description: Package version. * for all versions
-        default: '*'
-        required: true
 
 run-name: Remove ${{ inputs.package_name }} from artifactory
 
@@ -36,4 +32,4 @@ jobs:
       - run: conan remote add odr https://artifactory.opendocument.app/artifactory/api/conan/conan
       - run: conan remote login odr admin --password ${{ secrets.ARTIFACTORY }}
 
-      - run: conan remove --remote=odr "${{ github.event.inputs.package_name }}/${{ github.event.inputs.package_version }}#*" --confirm
+      - run: conan remove --remote=odr "${{ github.event.inputs.package_name }}/*#*" --confirm
