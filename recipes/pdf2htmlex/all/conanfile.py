@@ -90,7 +90,7 @@ class pdf2htmlEXConan(ConanFile):
         deps = CMakeDeps(self)
         deps.generate()
         tc = CMakeToolchain(self)
-        tc.extra_cxxflags = [ "-Wno-maybe-uninitialized" ]
+        tc.extra_cxxflags = ["-Wno-maybe-uninitialized"]
         tc.variables["PDF2HTMLEX_VERSION"] = self.version
         tc.generate()
 
@@ -100,10 +100,12 @@ class pdf2htmlEXConan(ConanFile):
         cmake.build()
 
     def package(self):
-        licensedir=os.path.join(self.package_folder, "licenses")
+        licensedir = os.path.join(self.package_folder, "licenses")
         copy(self, "LICENSE*", src=self.source_folder, dst=licensedir)
-        copy(self, "LICENSE", src=os.path.join(self.source_folder, "pdf2htmlEX", "share"), dst=os.path.join(licensedir, "share"))
-        copy(self, "LICENSE*", src=os.path.join(self.source_folder, "pdf2htmlEX", "logo"), dst=os.path.join(licensedir, "logo"))
+        copy(self, "LICENSE", src=os.path.join(self.source_folder, "pdf2htmlEX", "share"),
+             dst=os.path.join(licensedir, "share"))
+        copy(self, "LICENSE*", src=os.path.join(self.source_folder, "pdf2htmlEX", "logo"),
+             dst=os.path.join(licensedir, "logo"))
 
         cmake = CMake(self)
         cmake.install()
