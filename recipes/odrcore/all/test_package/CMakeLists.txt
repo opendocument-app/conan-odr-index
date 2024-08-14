@@ -1,7 +1,11 @@
-cmake_minimum_required(VERSION 3.1)
-project(test_package LANGUAGES CXX)
+cmake_minimum_required(VERSION 3.15)
 
-find_package(odrcore REQUIRED CONFIG)
+project(odr-test-downstream LANGUAGES C CXX)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
-add_executable(${PROJECT_NAME} test_package.cpp)
-target_link_libraries(${PROJECT_NAME} PRIVATE odrcore::odrcore)
+find_package(odrcore REQUIRED)
+
+add_executable(odr-test-downstream main.cpp)
+target_link_libraries(odr-test-downstream PRIVATE odrcore::odrcore)
