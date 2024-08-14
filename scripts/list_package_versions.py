@@ -156,7 +156,10 @@ def main():
     # Check if any packages were asked to be rebuilt
     input_requested_package = args.request_package if args.request_package else inputs.get('package_name')
     input_requested_version = args.request_package_version or inputs.get('package_version', 'newest')
-    if input_requested_package == 'all' or github_event.get("schedule", False):
+    if github_event.get("schedule", False):
+        print("Scheduled job, requesting all package rebuild")
+        input_requested_package = 'all'
+    if input_requested_package == 'all':
         for package in package_infos:
             if package not in requested_packages.keys():
                 requested_packages[package] = set()
