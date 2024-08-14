@@ -92,6 +92,8 @@ class pdf2htmlEXConan(ConanFile):
         tc = CMakeToolchain(self)
         tc.extra_cxxflags = ["-Wno-maybe-uninitialized"]
         tc.variables["PDF2HTMLEX_VERSION"] = self.version
+        # @TODO: figure out how to use POPPLER_DATA_DIR exported by poppler-data. It should JustWork^tm
+        tc.variables["POPPLER_DATA_DIR"] = self.dependencies['poppler-data'].cpp_info.resdirs[0]
         tc.generate()
 
     def build(self):
