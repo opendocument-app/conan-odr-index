@@ -36,7 +36,7 @@ class OpenDocumentCoreConan(ConanFile):
             # @TODO: ideally Windows should just default_options['with_pdf2htmlEX'] = False
             # But by the time config_options() is executed, default_options is already done parsed.
             del self.options.with_pdf2htmlEX
-        elif Version != "4.1.0-pdf2htmlex-20240815-git":
+        elif self.version != "4.1.0-pdf2htmlex-20240815-git":
             del self.options.with_pdf2htmlEX
 
     def configure(self):
