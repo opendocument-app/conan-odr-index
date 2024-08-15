@@ -7,5 +7,5 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(odrcore REQUIRED)
 
-add_executable(odr-test-downstream main.cpp)
+add_executable(odr-test-downstream test_package.cpp)
 target_link_libraries(odr-test-downstream PRIVATE odrcore::odrcore)
