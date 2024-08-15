@@ -22,15 +22,22 @@ class OpenDocumentCoreConan(ConanFile):
     options = {
         "shared": [True, False],
         "fPIC": [True, False],
+        "with_pdf2htmlEX": [True, False],
     }
     default_options = {
         "shared": False,
         "fPIC": True,
+        "with_pdf2htmlEX": True,
     }
 
     def config_options(self):
         if self.settings.os == "Windows":
             del self.options.fPIC
+            # @TODO: ideally Windows should just default_options['with_pdf2htmlEX'] = False
+            # But by the time config_options() is executed, default_options is already done parsed.
+            del self.options.with_pdf2htmlEX
+        elif Version != "4.1.0-pdf2htmlEX-20240815-git":
+            del self.options.with_pdf2htmlEX
 
     def configure(self):
         if self.options.shared:
@@ -47,6 +54,8 @@ class OpenDocumentCoreConan(ConanFile):
         self.requires("vincentlaucsb-csv-parser/2.1.3")
         self.requires("uchardet/0.0.7")
         self.requires("utfcpp/4.0.4")
+        if self.options.get_safe("with_pdf2htmlEX"):
+            self.requires("pdf2htmlex/0.18.8.rc1-20240814-git")
 
     def build_requirements(self):
         if Version(self.version) <= "2.0.0":
@@ -77,6 +86,7 @@ class OpenDocumentCoreConan(ConanFile):
         tc = CMakeToolchain(self)
         tc.variables["CMAKE_PROJECT_VERSION"] = self.version
         tc.variables["ODR_TEST"] = False
+        tc.variables["WITH_PDF2HTMLEX"] = self.options.get_safe("with_pdf2htmlEX", False)
         if Version(self.version) <= "4.0.0":
             tc.variables["CONAN_EXPORTED"] = True
         tc.generate()

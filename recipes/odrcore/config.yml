@@ -17,5 +17,7 @@ versions:
     folder: "all"
   "4.1.0":
     folder: "all"
+  "4.1.0-pdf2htmlEX-20240815-git":
+    folder: "all"
   "4.1.1":
     folder: "all"

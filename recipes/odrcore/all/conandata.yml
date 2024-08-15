@@ -35,6 +35,10 @@ sources:
     source:
       url: "https://github.com/opendocument-app/OpenDocument.core/archive/refs/tags/v4.1.0.tar.gz"
       sha256: "3608b1ac4723881b88d6212420bc725a0d758360d97155c1a5919271ae8f3c79"
+  "4.1.0-pdf2htmlEX-20240815-git":
+    source:
+      url: "https://github.com/opendocument-app/OpenDocument.core/archive/581767dd0362ffce23950e7c5a5be19dd91229f0.zip"
+      sha256: "bab8b5bdc132fc9d975b807bae7d765b8f964e665fd4ebdc399801c8b52043ee"
   "4.1.1":
     source:
       url: "https://github.com/opendocument-app/OpenDocument.core/archive/refs/tags/v4.1.1.tar.gz"
