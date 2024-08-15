@@ -12,7 +12,7 @@ import yaml
 script_path = Path(__file__).resolve().parent
 root_path = script_path.parent
 recipes_path = root_path / "recipes"
-TIER_COUNT = 4
+TIER_COUNT = 5
 
 
 def get_package_infos():
