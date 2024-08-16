@@ -35,11 +35,11 @@ jobs:
           - { build_machine: ubuntu-22.04, host_profile: android-21-x86_64, ndk_version: 26.3.11579264 }
           - { build_machine: macos-13, host_profile: apple-clang-14 }
           - { build_machine: macos-14, host_profile: apple-armv8-clang-14 }
-          - { build_machine: ubuntu-24.04, host_profile: gcc-12 }
+#          - { build_machine: ubuntu-24.04, host_profile: gcc-12 }
           - { build_machine: ubuntu-24.04, host_profile: gcc-13 }
           - { build_machine: ubuntu-24.04, host_profile: gcc-14 }
-          - { build_machine: ubuntu-24.04, host_profile: clang-16 }
-          - { build_machine: ubuntu-24.04, host_profile: clang-17 }
+#          - { build_machine: ubuntu-24.04, host_profile: clang-16 }
+#          - { build_machine: ubuntu-24.04, host_profile: clang-17 }
           - { build_machine: ubuntu-24.04, host_profile: clang-18 }
           - { build_machine: windows-2022, host_profile: msvc-1940 }
         exclude:
