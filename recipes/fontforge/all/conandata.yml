@@ -8,3 +8,4 @@ patches:
     - patch_file: "patches/20240423-git/InstallStaticLibrary.patch"
     - patch_file: "patches/20240423-git/gutils-fsys-get-home-dir.patch"
     - patch_file: "patches/20240423-git/Android-pre-23-complex-math.patch"
+    - patch_file: "patches/20240423-git/conan-find-freetype.patch"

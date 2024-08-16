@@ -38,25 +38,6 @@ class FontForgeConan(ConanFile):
     }
 
     def requirements(self):
-        # @TODO: Freetype's requires aren't sorted properly
-        # /usr/bin/ld: /home/user/.conan2/p/b/freet1d6ed4030d063/p/lib/libfreetype.a(src_sfnt_sfnt.c.o): in function `sfnt_init_face':
-        # sfnt.c:(.text+0x1389a): undefined reference to `BrotliDecoderDecompress'
-        # /usr/bin/ld: /home/user/.conan2/p/b/freet1d6ed4030d063/p/lib/libfreetype.a(src_bzip2_ftbzip2.c.o): in function `ft_bzip2_stream_close':
-        # ftbzip2.c:(.text+0x49): undefined reference to `BZ2_bzDecompressEnd'
-        # /usr/bin/ld: /home/user/.conan2/p/b/freet1d6ed4030d063/p/lib/libfreetype.a(src_bzip2_ftbzip2.c.o): in function `ft_bzip2_file_fill_output':
-        # ftbzip2.c:(.text+0xf7): undefined reference to `BZ2_bzDecompress'
-        # /usr/bin/ld: /home/user/.conan2/p/b/freet1d6ed4030d063/p/lib/libfreetype.a(src_bzip2_ftbzip2.c.o): in function `ft_bzip2_stream_io':
-        # ftbzip2.c:(.text+0x2ff): undefined reference to `BZ2_bzDecompressEnd'
-        # /usr/bin/ld: ftbzip2.c:(.text+0x355): undefined reference to `BZ2_bzDecompressInit'
-        # /usr/bin/ld: /home/user/.conan2/p/b/freet1d6ed4030d063/p/lib/libfreetype.a(src_bzip2_ftbzip2.c.o): in function `FT_Stream_OpenBzip2':
-        # ftbzip2.c:(.text+0x5d4): undefined reference to `BZ2_bzDecompressInit'
-        #
-        # with open(os.path.join(self.source_folder, "fontforge/CMakeLists.txt"), "a") as CMakeLists:
-        #     CMakeLists.writelines([
-        #         "find_package(brotli REQUIRED)\n",
-        #         "find_package(BZip2 REQUIRED)\n",
-        #         "target_link_libraries(fontforge PUBLIC brotli::brotli BZip2::BZip2)"
-        #     ])
         self.requires("freetype/2.13.2")
 
         self.requires("libxml2/2.12.7")
