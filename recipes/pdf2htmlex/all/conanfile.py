@@ -25,7 +25,7 @@ class pdf2htmlEXConan(ConanFile):
     default_options = {"shared": False, "fPIC": True}
 
     def requirements(self):
-        self.requires("poppler/24.07.0-odr", options={
+        self.requires("poppler/24.08.0-odr", options={
             "with_cairo": True,
             "with_glib": True,
             "shared": False,
