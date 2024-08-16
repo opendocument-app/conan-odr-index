@@ -37,7 +37,10 @@ class GLibConan(ConanFile):
         "shared": False,
         "fPIC": True,
         "with_elf": True,
-        "with_mount": True,
+        # libmount defaulted to false,
+        # because both libmount and fontforge have a function strconcat
+        # function not exported, but it's a problem with static libraries
+        "with_mount": False,
         "with_selinux": True,
     }
     short_paths = True
