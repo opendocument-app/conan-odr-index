@@ -85,7 +85,7 @@ jobs:
         if: ${{ github.event.inputs.build_dependents != 'false' }}
         shell: bash # bash shell needed to pipefail on error
         run: |
-          conan graph info recipes/odrcore/all/conanfile.py --version=4.1.0-pdf2htmlex-20240815-git --profile:host=android-21-armv8 --format=json | tee odrcore-dependency-tree.json
+          conan graph info recipes/odrcore/all/conanfile.py --version=4.1.0-pdf2htmlex-git --profile:host=android-21-armv8 --format=json | tee odrcore-dependency-tree.json
           echo "graph_file=odrcore-dependency-tree.json" >> $GITHUB_OUTPUT
 
       - name: Get requested packages and dependants from commits and workflow_dispatch inputs
