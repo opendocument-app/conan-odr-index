@@ -15,7 +15,7 @@ class LibgsfConan(ConanFile):
     name = "libgsf"
     package_type = "library"
 
-    license = ["lGPLv2.1"]
+    license = ["GPLv2"]
     homepage = "https://gitlab.gnome.org/GNOME/libgsf/"
     url = "https://github.com/opendocument-app/conan-odr-index"
     description = "The G Structured File Library"
