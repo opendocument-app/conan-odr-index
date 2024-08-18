@@ -94,6 +94,7 @@ class LibwmfConan(ConanFile):
             # "--enable-tools=no",
             # "--enable-manpages=no",
         ])
+        tc.extra_cflags.append("-Wno-incompatible-function-pointer-types")
         tc.generate()
         # generate pkg-config files of dependencies (useless if upstream configure.ac doesn't rely on PKG_CHECK_MODULES macro)
         tc = PkgConfigDeps(self)
