@@ -110,7 +110,7 @@ jobs:
       conanfile: ${{ matrix.package.conanfile }}
       package_version: ${{ matrix.package.version }}
       build_dependencies_from_source: ${{ github.event.inputs.build_dependencies_from_source == 'true' }}
-      artifactory_upload: ${{ github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' && github.event.inputs.upload_to_artifactory == 'true' }}
+      artifactory_upload: ${{ github.repository_owner == 'opendocument-app' && (github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.upload_to_artifactory == 'true')) }}
     secrets:
       ARTIFACTORY: ${{ secrets.ARTIFACTORY }}
 
@@ -129,7 +129,7 @@ jobs:
       conanfile: ${{ matrix.package.conanfile }}
       package_version: ${{ matrix.package.version }}
       build_dependencies_from_source: ${{ github.event.inputs.build_dependencies_from_source == 'true' }}
-      artifactory_upload: ${{ github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' && github.event.inputs.upload_to_artifactory == 'true' }}
+      artifactory_upload: ${{ github.repository_owner == 'opendocument-app' && (github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.upload_to_artifactory == 'true')) }}
     secrets:
       ARTIFACTORY: ${{ secrets.ARTIFACTORY }}
 
@@ -148,7 +148,7 @@ jobs:
       conanfile: ${{ matrix.package.conanfile }}
       package_version: ${{ matrix.package.version }}
       build_dependencies_from_source: ${{ github.event.inputs.build_dependencies_from_source == 'true' }}
-      artifactory_upload: ${{ github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' && github.event.inputs.upload_to_artifactory == 'true' }}
+      artifactory_upload: ${{ github.repository_owner == 'opendocument-app' && (github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.upload_to_artifactory == 'true')) }}
     secrets:
       ARTIFACTORY: ${{ secrets.ARTIFACTORY }}
 
@@ -167,7 +167,7 @@ jobs:
       conanfile: ${{ matrix.package.conanfile }}
       package_version: ${{ matrix.package.version }}
       build_dependencies_from_source: ${{ github.event.inputs.build_dependencies_from_source == 'true' }}
-      artifactory_upload: ${{ github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' && github.event.inputs.upload_to_artifactory == 'true' }}
+      artifactory_upload: ${{ github.repository_owner == 'opendocument-app' && (github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.upload_to_artifactory == 'true')) }}
     secrets:
       ARTIFACTORY: ${{ secrets.ARTIFACTORY }}
 
@@ -186,6 +186,6 @@ jobs:
       conanfile: ${{ matrix.package.conanfile }}
       package_version: ${{ matrix.package.version }}
       build_dependencies_from_source: ${{ github.event.inputs.build_dependencies_from_source == 'true' }}
-      artifactory_upload: ${{ github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' && github.event.inputs.upload_to_artifactory == 'true' }}
+      artifactory_upload: ${{ github.repository_owner == 'opendocument-app' && (github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.upload_to_artifactory == 'true')) }}
     secrets:
       ARTIFACTORY: ${{ secrets.ARTIFACTORY }}
