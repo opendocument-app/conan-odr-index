@@ -94,13 +94,17 @@ class LibgsfConan(ConanFile):
         # --fpic is automatically managed when 'fPIC'option is declared
         # --enable/disable-shared is automatically managed when 'shared' option is declared
         tc = AutotoolsToolchain(self)
+
+        if self.settings.os == "Android" and self.settings.arch in ['armv7', 'x86'] and int(self.settings.os.get_safe("api_level")) < 24:
+            tc.configure_args.append("--disable-largefile")
+
         # autotools usually uses 'yes' and 'no' to enable/disable options
-        def yes_no(v): return "yes" if v else "no"
-        tc.configure_args.extend([
+        #def yes_no(v): return "yes" if v else "no"
+        # tc.configure_args.extend([
             # f"--with-foobar={yes_no(self.options.with_foobar)}",
             # "--enable-tools=no",
             # "--enable-manpages=no",
-        ])
+        # ])
         tc.generate()
         # generate pkg-config files of dependencies (useless if upstream configure.ac doesn't rely on PKG_CHECK_MODULES macro)
         tc = PkgConfigDeps(self)
