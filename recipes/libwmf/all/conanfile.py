@@ -51,19 +51,10 @@ class LibwmfConan(ConanFile):
 
     def requirements(self):
         self.requires("freetype/2.13.2")
-        self.requires("expat/2.6.2")
         # self.requires("libjpeg-turbo/3.0.3")
-        self.requires("libjpeg/9f")
-        self.requires("libpng/1.6.43")
 
     # if another tool than the compiler or autotools is required to build the project (pkgconf, bison, flex etc)
     def build_requirements(self):
-        # Can't exec "autopoint": No such file or directory at /home/user/.conan2/p/autocf2af015330354/p/bin/../res/autoconf/Autom4te/FileUtils.pm line 293.
-        # self.tool_requires("gettext/0.22.5")
-        # Can't exec "gtkdocize": No such file or directory at /home/user/.conan2/p/autocf2af015330354/p/bin/../res/autoconf/Autom4te/FileUtils.pm line 293.
-        # autoreconf: error: gtkdocize failed with exit status: 
-        # self.tool_requires("gtk-doc-stub/cci.20181216")
-
         # only if we have to call autoreconf
         self.tool_requires("libtool/2.4.7")
         # only if upstream configure.ac relies on PKG_CHECK_MODULES macro
