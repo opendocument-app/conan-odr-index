@@ -50,6 +50,7 @@ class LibwmfConan(ConanFile):
         # basic_layout(self, src_folder="src")
 
     def requirements(self):
+        self.requires("expat/2.6.2")
         self.requires("freetype/2.13.2")
         # self.requires("libjpeg-turbo/3.0.3")
 
