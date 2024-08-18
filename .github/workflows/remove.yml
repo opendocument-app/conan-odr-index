@@ -17,6 +17,7 @@ on:
           - fontconfig
           - glib
           - tmpfile
+          - libgsf
 
 run-name: Remove ${{ inputs.package_name }} from artifactory
 

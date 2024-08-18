@@ -25,6 +25,7 @@ on:
           - fontconfig
           - glib
           - tmpfile
+          - libgsf
       package_version:
         description: Package version. Specify 'newest' or leave empty to request the newest version. Specify 'all' to request all versions.
         required: false
