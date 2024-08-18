@@ -18,6 +18,7 @@ on:
           - glib
           - tmpfile
           - libgsf
+          - libwmf
 
 run-name: Remove ${{ inputs.package_name }} from artifactory
 
