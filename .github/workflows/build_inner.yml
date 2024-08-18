@@ -128,6 +128,12 @@ jobs:
             config: { build_machine: ubuntu-24.04, host_profile: clang-18 }
           - conanfile: 'recipes/poppler-data/all/conanfile.py'
             config: { build_machine: windows-2022, host_profile: msvc-1940 }
+
+          # Autotools are problematic on Windowds
+          - conanfile: 'recipes/libgsf/all/conanfile.py'
+            config: { build_machine: windows-2022, host_profile: msvc-1940 }
+          - conanfile: 'recipes/libwmf/all/conanfile.py'
+            config: { build_machine: windows-2022, host_profile: msvc-1940 }
     steps:
       - name: checkout
         uses: actions/checkout@v4
