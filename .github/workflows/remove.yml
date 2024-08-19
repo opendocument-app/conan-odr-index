@@ -19,6 +19,7 @@ on:
           - tmpfile
           - libgsf
           - libwmf
+          - wvware
 
 run-name: Remove ${{ inputs.package_name }} from artifactory
 
