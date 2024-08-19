@@ -156,9 +156,4 @@ class LibgsfConan(ConanFile):
     def package_info(self):
         self.cpp_info.libs = ["gsf-1"]
         self.cpp_info.includedirs = [os.path.join("include", "libgsf-1")]
-
-        # if package provides a pkgconfig file (package.pc, usually installed in <prefix>/lib/pkgconfig/)
-        # self.cpp_info.set_property("pkg_config_name", "package")
-        # If they are needed on Linux, m, pthread and dl are usually needed on FreeBSD too
-        # if self.settings.os in ["Linux", "FreeBSD"]:
-        #     self.cpp_info.system_libs.extend(["dl", "m", "pthread"])
+        self.cpp_info.set_property('pkg_config_name', 'libgsf-1')
