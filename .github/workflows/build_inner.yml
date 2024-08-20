@@ -134,6 +134,8 @@ jobs:
             config: { build_machine: windows-2022, host_profile: msvc-1940 }
           - conanfile: 'recipes/libwmf/all/conanfile.py'
             config: { build_machine: windows-2022, host_profile: msvc-1940 }
+          - conanfile: 'recipes/wvware/all/conanfile.py'
+            config: { build_machine: windows-2022, host_profile: msvc-1940 }
     steps:
       - name: checkout
         uses: actions/checkout@v4
