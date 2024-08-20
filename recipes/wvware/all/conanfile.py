@@ -55,17 +55,13 @@ class wvWareConan(ConanFile):
         self.requires("glib/2.81.0-odr")
         self.requires("libiconv/1.17")
         self.requires("zlib/1.3.1")
+        self.requires("libpng/1.6.43")
 
         # Requirements not passed from libgsf
         self.requires("libxml2/2.12.7")
 
     # if another tool than the compiler or autotools is required to build the project (pkgconf, bison, flex etc)
     def build_requirements(self):
-        # Can't exec "autopoint": No such file or directory at /home/user/.conan2/p/autocf2af015330354/p/bin/../res/autoconf/Autom4te/FileUtils.pm line 293.
-        # self.tool_requires("gettext/0.22.5")
-        # # Can't exec "gtkdocize": No such file or directory at /home/user/.conan2/p/autocf2af015330354/p/bin/../res/autoconf/Autom4te/FileUtils.pm line 293.
-        # # autoreconf: error: gtkdocize failed with exit status: 
-        # self.tool_requires("gtk-doc-stub/cci.20181216")
 
         # only if we have to call autoreconf
         self.tool_requires("libtool/2.4.7")
@@ -102,10 +98,6 @@ class wvWareConan(ConanFile):
         # --fpic is automatically managed when 'fPIC'option is declared
         # --enable/disable-shared is automatically managed when 'shared' option is declared
         tc = AutotoolsToolchain(self)
-
-        # if self.settings.os == "Android" and self.settings.arch in ['armv7', 'x86'] and int(self.settings.os.get_safe("api_level")) < 24:
-        #     tc.configure_args.append("--disable-largefile")
-
         # autotools usually uses 'yes' and 'no' to enable/disable options
         #def yes_no(v): return "yes" if v else "no"
         # tc.configure_args.extend([
@@ -156,17 +148,13 @@ class wvWareConan(ConanFile):
         # some files extensions and folders are not allowed. Please, read the FAQs to get informed.
         rm(self, "*.la", os.path.join(self.package_folder, "lib"))
         rmdir(self, os.path.join(self.package_folder, "lib", "pkgconfig"))
-        rmdir(self, os.path.join(self.package_folder, "share"))
+        rmdir(self, os.path.join(self.package_folder, "share", "man"))
 
         # In shared lib/executable files, autotools set install_name (macOS) to lib dir absolute path instead of @rpath, it's not relocatable, so fix it
         fix_apple_shared_install_name(self)
 
-    # def package_info(self):
-        # self.cpp_info.libs = ["gsf-1"]
-        # self.cpp_info.includedirs = [os.path.join("include", "libgsf-1")]
-
-        # if package provides a pkgconfig file (package.pc, usually installed in <prefix>/lib/pkgconfig/)
-        # self.cpp_info.set_property("pkg_config_name", "package")
-        # If they are needed on Linux, m, pthread and dl are usually needed on FreeBSD too
-        # if self.settings.os in ["Linux", "FreeBSD"]:
-        #     self.cpp_info.system_libs.extend(["dl", "m", "pthread"])
+    def package_info(self):
+        self.cpp_info.libs = ["wv"]
+        self.cpp_info.includedirs = [os.path.join("include", "wv")]
+        self.cpp_info.system_libs = ["m"]
+        self.cpp_info.resdirs = [os.path.join("share", "wv")]

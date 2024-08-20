@@ -3,3 +3,9 @@ sources:
     url: "http://www.nl.abisource.com/downloads/wv/1.2.9/wv-1.2.9.tar.gz"
     sha256: "4c730d3b325c0785450dd3a043eeb53e1518598c4f41f155558385dd2635c19d"
 patches:
+  "1.2.9":
+    - patch_file: "patches/wv-1.2.9-gsf-meta-names.patch"
+    # https://gitweb.gentoo.org/repo/gentoo.git/tree/app-text/wv/files
+    - patch_file: "patches/wv-1.2.9-C99-decls.patch"
+    - patch_file: "patches/wv-1.2.9-format-security.patch"
+    - patch_file: "patches/wv-1.2.9-gcc14-build-fix.patch"
