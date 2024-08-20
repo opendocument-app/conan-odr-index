@@ -91,9 +91,17 @@ jobs:
           conan graph info recipes/odrcore/all/conanfile.py --version=4.1.0-pdf2htmlex-git --profile:host=android-21-armv8 --format=json | tee odrcore-dependency-tree.json
           echo "graph_file=odrcore-dependency-tree.json" >> $GITHUB_OUTPUT
 
+      - name: Generate wvware dependency tree
+        id: wvware-dependency-tree
+        if: ${{ github.event.inputs.build_dependents != 'false' }}
+        shell: bash # bash shell needed to pipefail on error
+        run: |
+          conan graph info recipes/wvware/all/conanfile.py --version=1.2.9 --profile:host=android-21-armv8 --format=json | tee wvware-dependency-tree.json
+          echo "graph_file=wvware-dependency-tree.json" >> $GITHUB_OUTPUT
+
       - name: Get requested packages and dependants from commits and workflow_dispatch inputs
         id: list-packages-with-dependents
-        run: python scripts/list_package_versions.py --dependency-graph ${{ steps.odrcore-dependency-tree.outputs.graph_file }}
+        run: python scripts/list_package_versions.py --dependency-graph ${{ steps.odrcore-dependency-tree.outputs.graph_file }} ${{ steps.wvware-dependency-tree.outputs.graph_file }}
         env:
           GITHUB_EVENT: ${{ toJson(github.event) }}
 
