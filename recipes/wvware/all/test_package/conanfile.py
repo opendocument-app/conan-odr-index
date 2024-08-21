@@ -14,8 +14,6 @@ class TestPackageConan(ConanFile):
 
     def requirements(self):
         self.requires(self.tested_reference_str)
-        self.requires("libgsf/1.14.52")
-        self.requires("glib/2.81.0-odr")
 
     def build(self):
         cmake = CMake(self)
