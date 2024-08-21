@@ -39,7 +39,7 @@ jobs:
           - { build_machine: ubuntu-24.04, host_profile: gcc-13 }
           - { build_machine: ubuntu-24.04, host_profile: gcc-14 }
 #          - { build_machine: ubuntu-24.04, host_profile: clang-16 }
-#          - { build_machine: ubuntu-24.04, host_profile: clang-17 }
+          - { build_machine: ubuntu-24.04, host_profile: clang-17 }
           - { build_machine: ubuntu-24.04, host_profile: clang-18 }
           - { build_machine: windows-2022, host_profile: msvc-1940 }
         exclude:
