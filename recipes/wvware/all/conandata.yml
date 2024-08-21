@@ -11,3 +11,5 @@ patches:
     - patch_file: "patches/wv-1.2.9-C99-decls.patch"
     - patch_file: "patches/wv-1.2.9-format-security.patch"
     - patch_file: "patches/wv-1.2.9-gcc14-build-fix.patch"
+
+    - patch_file: "patches/printf-redirect.patch"
