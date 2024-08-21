@@ -144,6 +144,7 @@ class wvWareConan(ConanFile):
         copy(self, "COPYING", self.source_folder, os.path.join(self.package_folder, "licenses"))
         autotools = Autotools(self)
         autotools.install()
+        copy(self, "config.h", self.build_folder, os.path.join(self.package_folder, "include", 'wv'))
 
         # some files extensions and folders are not allowed. Please, read the FAQs to get informed.
         rm(self, "*.la", os.path.join(self.package_folder, "lib"))
