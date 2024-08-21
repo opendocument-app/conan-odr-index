@@ -23,11 +23,13 @@ class OpenDocumentCoreConan(ConanFile):
         "shared": [True, False],
         "fPIC": [True, False],
         "with_pdf2htmlEX": [True, False],
+        "with_wvWare": [True, False],
     }
     default_options = {
         "shared": False,
         "fPIC": True,
         "with_pdf2htmlEX": True,
+        "with_wvWare": True,
     }
 
     def config_options(self):
@@ -36,8 +38,10 @@ class OpenDocumentCoreConan(ConanFile):
             # @TODO: ideally Windows should just default_options['with_pdf2htmlEX'] = False
             # But by the time config_options() is executed, default_options is already done parsed.
             del self.options.with_pdf2htmlEX
+            del self.options.with_wvWare
         elif self.version != "4.1.0-pdf2htmlex-git":
             del self.options.with_pdf2htmlEX
+            del self.options.with_wvWare
 
     def configure(self):
         if self.options.shared:
@@ -56,6 +60,8 @@ class OpenDocumentCoreConan(ConanFile):
         self.requires("utfcpp/4.0.4")
         if self.options.get_safe("with_pdf2htmlEX"):
             self.requires("pdf2htmlex/0.18.8.rc1-20240814-git")
+        if self.options.get_safe("with_wvWare"):
+            self.requires("wvware/1.2.9")
 
     def build_requirements(self):
         if Version(self.version) <= "2.0.0":
@@ -87,6 +93,7 @@ class OpenDocumentCoreConan(ConanFile):
         tc.variables["CMAKE_PROJECT_VERSION"] = self.version
         tc.variables["ODR_TEST"] = False
         tc.variables["WITH_PDF2HTMLEX"] = self.options.get_safe("with_pdf2htmlEX", False)
+        tc.variables["WITH_WVWARE"] = self.options.get_safe("with_wvWare", False)
         if Version(self.version) <= "4.0.0":
             tc.variables["CONAN_EXPORTED"] = True
         tc.generate()
