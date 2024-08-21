@@ -1,4 +1,4 @@
-#include <wv.h>
+#include <wv/wv.h>
 
 int main()
 {

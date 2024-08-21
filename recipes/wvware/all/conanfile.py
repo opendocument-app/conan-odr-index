@@ -155,6 +155,5 @@ class wvWareConan(ConanFile):
 
     def package_info(self):
         self.cpp_info.libs = ["wv"]
-        self.cpp_info.includedirs = [os.path.join("include", "wv")]
         self.cpp_info.system_libs = ["m"]
         self.cpp_info.resdirs = [os.path.join("share", "wv")]
