@@ -51,7 +51,7 @@ class LibwmfConan(ConanFile):
 
     def requirements(self):
         self.requires("expat/2.6.2")
-        self.requires("freetype/2.13.2")
+        self.requires("freetype/2.13.2", transitive_headers=True)
         # self.requires("libjpeg-turbo/3.0.3")
 
     # if another tool than the compiler or autotools is required to build the project (pkgconf, bison, flex etc)
