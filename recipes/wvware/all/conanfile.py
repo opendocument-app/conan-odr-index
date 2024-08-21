@@ -60,6 +60,9 @@ class wvWareConan(ConanFile):
         # Requirements not passed from libgsf
         self.requires("libxml2/2.12.7")
 
+        if self.settings.os == "Android":
+            self.requires("tmpfile/3.0.6")
+
     # if another tool than the compiler or autotools is required to build the project (pkgconf, bison, flex etc)
     def build_requirements(self):
 
