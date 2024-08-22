@@ -7,6 +7,7 @@ on:
         description: Package name
         type: choice
         options:
+          - all
           - odrcore
           - pdf2htmlex
           - fontforge
@@ -36,3 +37,7 @@ jobs:
       - run: conan remote login odr admin --password ${{ secrets.ARTIFACTORY }}
 
       - run: conan remove --remote=odr "${{ github.event.inputs.package_name }}/*#*" --confirm
+        if: ${{ github.event.inputs.package_name != 'all' }}
+
+      - run: conan remove --remote=odr '*' --confirm
+        if: ${{ github.event.inputs.package_name == 'all' }}
