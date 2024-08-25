@@ -109,12 +109,15 @@ class OpenDocumentCoreConan(ConanFile):
         cmake.build()
 
     def package(self):
-        copy(
-            self,
-            "*.hpp",
-            src=os.path.join(self.recipe_folder, "src"),
-            dst=os.path.join(self.export_sources_folder, "include"),
-        )
+        # Not needed with CMake changes in 4.1.0-pdf2htmlex-git
+        # Other versions may not need it too
+        if self.version != "4.1.0-pdf2htmlex-git":
+            copy(
+                self,
+                "*.hpp",
+                src=os.path.join(self.recipe_folder, "src"),
+                dst=os.path.join(self.export_sources_folder, "include"),
+            )
 
         cmake = CMake(self)
         cmake.install()
