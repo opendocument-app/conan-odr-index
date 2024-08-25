@@ -75,6 +75,10 @@ jobs:
           - conanfile: 'recipes/pdf2htmlex/all/conanfile.py'
             config: { build_machine: macos-14, host_profile: apple-armv8-clang-14 }
 
+          # pdf2htmlEX and wvWare not yet supported on Windows, GLib isn't needed then either
+          - conanfile: 'recipes/glib/all/conanfile.py'
+            config: { build_machine: windows-2022, host_profile: msvc-1940 }
+
           # tmpfile is needed only for Android
           - conanfile: 'recipes/tmpfile/all/conanfile.py'
             config: { build_machine: macos-13, host_profile: apple-clang-14 }
