@@ -97,6 +97,10 @@ class FontForgeConan(ConanFile):
         tc.generate()
 
     def build(self):
+        # Make sure msgfmt from build_tool gettext works properly (issue #16)
+        self.run("which msgfmt")
+        self.run("msgfmt --version")
+
         cmake = CMake(self)
         cmake.configure()
         cmake.build()
