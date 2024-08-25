@@ -161,4 +161,4 @@ class wvWareConan(ConanFile):
         self.cpp_info.libs = ["wv"]
         self.cpp_info.system_libs = ["m"]
         self.cpp_info.resdirs = [os.path.join("share", "wv")]
-        self.buildenv_info.define_path("WVDATADIR", os.path.join(self.package_folder, "share", "wv"))
+        self.runenv_info.define_path("WVDATADIR", os.path.join(self.package_folder, "share", "wv"))
