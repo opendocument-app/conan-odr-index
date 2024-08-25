@@ -35,11 +35,8 @@ jobs:
           - { build_machine: ubuntu-22.04, host_profile: android-21-x86_64, ndk_version: 26.3.11579264 }
           - { build_machine: macos-13, host_profile: apple-clang-14 }
           - { build_machine: macos-14, host_profile: apple-armv8-clang-14 }
-#          - { build_machine: ubuntu-24.04, host_profile: gcc-12 }
           - { build_machine: ubuntu-24.04, host_profile: gcc-13 }
           - { build_machine: ubuntu-24.04, host_profile: gcc-14 }
-#          - { build_machine: ubuntu-24.04, host_profile: clang-16 }
-          - { build_machine: ubuntu-24.04, host_profile: clang-17 }
           - { build_machine: ubuntu-24.04, host_profile: clang-18 }
           - { build_machine: windows-2022, host_profile: msvc-1940 }
         exclude:
@@ -63,6 +60,10 @@ jobs:
           - conanfile: 'recipes/fontforge/all/conanfile.py'
             config: { build_machine: windows-2022, host_profile: msvc-1940 }
 
+          # pdf2htmlEX and wvWare not yet supported on Windows, GLib isn't needed then either
+          - conanfile: 'recipes/glib/all/conanfile.py'
+            config: { build_machine: windows-2022, host_profile: msvc-1940 }
+
           # Fontforge libintl build issue for macos
           - conanfile: 'recipes/fontforge/all/conanfile.py'
             config: { build_machine: macos-13, host_profile: apple-clang-14 }
@@ -75,8 +76,12 @@ jobs:
           - conanfile: 'recipes/pdf2htmlex/all/conanfile.py'
             config: { build_machine: macos-14, host_profile: apple-armv8-clang-14 }
 
-          # pdf2htmlEX and wvWare not yet supported on Windows, GLib isn't needed then either
-          - conanfile: 'recipes/glib/all/conanfile.py'
+          # Autotools are problematic on Windowds
+          - conanfile: 'recipes/libgsf/all/conanfile.py'
+            config: { build_machine: windows-2022, host_profile: msvc-1940 }
+          - conanfile: 'recipes/libwmf/all/conanfile.py'
+            config: { build_machine: windows-2022, host_profile: msvc-1940 }
+          - conanfile: 'recipes/wvware/all/conanfile.py'
             config: { build_machine: windows-2022, host_profile: msvc-1940 }
 
           # tmpfile is needed only for Android
@@ -121,24 +126,10 @@ jobs:
           - conanfile: 'recipes/poppler-data/all/conanfile.py'
             config: { build_machine: macos-14, host_profile: apple-armv8-clang-14 }
           - conanfile: 'recipes/poppler-data/all/conanfile.py'
-            config: { build_machine: ubuntu-24.04, host_profile: gcc-12 }
-          - conanfile: 'recipes/poppler-data/all/conanfile.py'
             config: { build_machine: ubuntu-24.04, host_profile: gcc-13 }
-          - conanfile: 'recipes/poppler-data/all/conanfile.py'
-            config: { build_machine: ubuntu-24.04, host_profile: clang-16 }
-          - conanfile: 'recipes/poppler-data/all/conanfile.py'
-            config: { build_machine: ubuntu-24.04, host_profile: clang-17 }
           - conanfile: 'recipes/poppler-data/all/conanfile.py'
             config: { build_machine: ubuntu-24.04, host_profile: clang-18 }
           - conanfile: 'recipes/poppler-data/all/conanfile.py'
-            config: { build_machine: windows-2022, host_profile: msvc-1940 }
-
-          # Autotools are problematic on Windowds
-          - conanfile: 'recipes/libgsf/all/conanfile.py'
-            config: { build_machine: windows-2022, host_profile: msvc-1940 }
-          - conanfile: 'recipes/libwmf/all/conanfile.py'
-            config: { build_machine: windows-2022, host_profile: msvc-1940 }
-          - conanfile: 'recipes/wvware/all/conanfile.py'
             config: { build_machine: windows-2022, host_profile: msvc-1940 }
     steps:
       - name: checkout
