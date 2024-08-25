@@ -94,6 +94,8 @@ class OpenDocumentCoreConan(ConanFile):
         tc.variables["ODR_TEST"] = False
         tc.variables["WITH_PDF2HTMLEX"] = self.options.get_safe("with_pdf2htmlEX", False)
         tc.variables["WITH_WVWARE"] = self.options.get_safe("with_wvWare", False)
+        if self.options.get_safe("with_wvWare", False):
+            tc.variables["WVDATADIR"] = self.dependencies['wvware'].cpp_info.resdirs[0]
         if Version(self.version) <= "4.0.0":
             tc.variables["CONAN_EXPORTED"] = True
         tc.generate()
