@@ -47,12 +47,13 @@
  
  /*
  Released under GPL, written by Caolan.McNamara@ul.ie.
-@@ -290,220 +326,114 @@
+@@ -290,220 +326,116 @@
  static void wv_query_eps (const char* format);
  static void wv_suppress (const char* format);
  
 -char *charset = NULL;
--
++char *charset = "utf-8";
+ 
 -int
 -main (int argc, char **argv)
 -{
@@ -151,13 +152,19 @@
 -		return -1;
 -	    }
 -      }
--
++int wvHtml_convert(char *inputFile, char *outputDir, const char *password) {
++  int ret;
++  state_data myhandle;
++  expand_data expandhandle;
++  wvParseStruct ps;
+ 
 -    if (optind >= argc)
 -      {
 -	  fprintf (stderr, "No file name given to open\n");
 -	  return (-1);
 -      }
--
++  documentId++;
+ 
 -#if 0
 -    input = fopen (argv[optind], "rb");
 -    if (!input)
@@ -167,15 +174,21 @@
 -      }
 -    fclose (input);
 -#endif
--
++  config = "wvHtml.xml";
+ 
 -    getcwd (wv_cwd,4096);
 -    wv_cwd[4096] = 0;
--
++  getcwd (wv_cwd,4096);
++  wv_cwd[4096] = 0;
+ 
 -    wvInit ();
 -    ret = wvInitParser (&ps, argv[optind]);
 -    ps.filename = argv[optind];
 -    ps.dir = dir;
--
++  wvInit ();
++  ret = wvInitParser (&ps, inputFile);
++  ps.dir = outputDir;
+ 
 -    if (ret & 0x8000)		/* Password protected? */
 -      {
 -	  if ((ret & 0x7fff) == WORD8)
@@ -217,24 +230,8 @@
 -		  }
 -	    }
 -      }
-+char *charset = "utf-8";
- 
+-
 -    if (ret)
-+int wvHtml_convert(char *inputFile, char *outputDir, const char *password) {
-+  int ret;
-+  state_data myhandle;
-+  expand_data expandhandle;
-+  wvParseStruct ps;
-+
-+  config = "wvHtml.xml";
-+
-+  getcwd (wv_cwd,4096);
-+  wv_cwd[4096] = 0;
-+
-+  wvInit ();
-+  ret = wvInitParser (&ps, inputFile);
-+  ps.dir = outputDir;
-+
 +  if (ret & 0x8000)		/* Password protected? */
 +  {
 +    if ((ret & 0x7fff) == WORD8)
@@ -358,7 +355,7 @@
      expand_data *data = (expand_data *) ps->userData;
      data->anSttbfAssoc = &ps->anSttbfAssoc;
      data->lfo = &ps->lfo;
-@@ -602,6 +532,7 @@
+@@ -602,6 +534,7 @@
  mydochandler (wvParseStruct * ps, wvTag tag)
  {
      static int i;
@@ -366,7 +363,7 @@
      expand_data *data = (expand_data *) ps->userData;
      data->anSttbfAssoc = &ps->anSttbfAssoc;
      data->lfo = &ps->lfo;
-@@ -1290,6 +1221,7 @@
+@@ -1290,6 +1223,7 @@
  mySpecCharProc (wvParseStruct * ps, U16 eachchar, CHP * achp)
  {
      static int message;
@@ -374,7 +371,7 @@
      PICF picf;
      FSPA *fspa;
      expand_data *data = (expand_data *) ps->userData;
-@@ -1607,33 +1539,24 @@
+@@ -1607,33 +1541,24 @@
  int
  wvOpenConfig (state_data *myhandle,char *config)
  {
@@ -420,7 +417,7 @@
      myhandle->path = config;
      myhandle->fp = tmp;
      return (tmp == NULL ? 0 : 1);
-@@ -1642,7 +1565,9 @@
+@@ -1642,7 +1567,9 @@
  char * figure_name (wvParseStruct * ps)
  {
    static int number;
@@ -430,7 +427,7 @@
    char * f_name = 0;
    char buffer[10];
  
-@@ -1703,7 +1628,9 @@
+@@ -1703,7 +1630,9 @@
  char * name_to_url (char * name)
  {
    static char * url = 0;
