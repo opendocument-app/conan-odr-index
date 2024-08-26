@@ -13,4 +13,4 @@ patches:
     - patch_file: "patches/wv-1.2.9-gcc14-build-fix.patch"
 
     - patch_file: "patches/printf-redirect.patch"
-    - patch_file: "patches/wvWare-data-dir.patch"
+    - patch_file: "patches/wvWare-library.patch"
