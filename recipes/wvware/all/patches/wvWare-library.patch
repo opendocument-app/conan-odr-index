@@ -1,10 +1,29 @@
 --- wvWare.c
 +++ wvWare.c
-@@ -35,6 +35,17 @@
- extern char *str_copy(char *d, size_t n, char *s);
- extern char *str_append(char *d, size_t n, char *s);
+@@ -32,8 +32,44 @@
+ /* strdup isn't declared in <string.h> for `gcc -ansi'; declare it here */
+ extern char *strdup (const char *);
  
-+extern int documentId;
+-extern char *str_copy(char *d, size_t n, char *s);
+-extern char *str_append(char *d, size_t n, char *s);
++#include <stdarg.h>
++
++FILE * g_htmlOutputFileHandle = NULL;
++
++int printfRedirect(const char *fmt, ...) {
++  int retVal;
++  va_list args;
++  va_start(args, fmt);
++  if (NULL != g_htmlOutputFileHandle) {
++    retVal = vfprintf(g_htmlOutputFileHandle, fmt, args);
++  } else {
++    retVal = vprintf(fmt, args);
++  }
++  va_end(args);
++  return retVal;
++}
++
++int documentId = 0;
 +#define static_reinit( variable, defaultValue ) { \
 +  static int staticVarValue = 0; \
 +  if (staticVarValue != documentId) { \
@@ -13,12 +32,22 @@
 +  } \
 +}
 +
-+extern char * strdup_and_append_twice(const char * a, const char * b, const char * c);
++char *strdup_and_append_twice(const char *a, const char *b, const char *c) {
++  const size_t szA = strlen(a);
++  const size_t szB = strlen(b);
++  const size_t szC = strlen(c);
 +
++  char *buf = malloc(szA + szB + szC + 1);
++  strcpy(buf, a);
++  strcpy(buf + szA, b);
++  strcpy(buf + szA + szB, c);
++  buf[szA + szB + szC] = '\0';
++  return buf;
++}
+ 
  /*
  Released under GPL, written by Caolan.McNamara@ul.ie.
- 
-@@ -290,220 +301,14 @@
+@@ -290,220 +326,114 @@
  static void wv_query_eps (const char* format);
  static void wv_suppress (const char* format);
  
@@ -188,13 +217,38 @@
 -		  }
 -	    }
 -      }
--
++char *charset = "utf-8";
+ 
 -    if (ret)
--      {
++int wvHtml_convert(char *inputFile, char *outputDir, const char *password) {
++  int ret;
++  state_data myhandle;
++  expand_data expandhandle;
++  wvParseStruct ps;
++
++  config = "wvHtml.xml";
++
++  getcwd (wv_cwd,4096);
++  wv_cwd[4096] = 0;
++
++  wvInit ();
++  ret = wvInitParser (&ps, inputFile);
++  ps.dir = outputDir;
++
++  if (ret & 0x8000)		/* Password protected? */
++  {
++    if ((ret & 0x7fff) == WORD8)
++    {
++      ret = 0;
++      if (password == NULL || password[0] == '\0')
+       {
 -	  wvError (("startup error #%d\n", ret));
 -	  wvOLEFree (&ps);
 -	  return (-1);
--      }
++        fprintf (stderr,
++                 "Password required, this is an encrypted document\n");
++        return 100;
+       }
 -
 -    wvSetElementHandler (&ps, myelehandler);
 -    wvSetDocumentHandler (&ps, mydochandler);
@@ -204,34 +258,96 @@
 -    wvInitStateData (&myhandle);
 -
 -    if (wvOpenConfig (&myhandle,config) == 0)
--      {
++      else
+       {
 -	  wvError (("config file not found\n"));
 -	  return (-1);
--      }
++        wvSetPassword (password, &ps);
++        if (wvDecrypt97 (&ps))
++        {
++          wvError (("Incorrect Password\n"));
++          return 101;
++        }
+       }
 -    else
--      {
++    }
++    else if (((ret & 0x7fff) == WORD7) || ((ret & 0x7fff) == WORD6))
++    {
++      ret = 0;
++      if (password == NULL || password[0] == '\0')
+       {
 -	  wvTrace (("x for FILE is %x\n", myhandle.fp));
 -	  ret = wvParseConfig (&myhandle);
--      }
++        fprintf (stderr,
++                 "Password required, this is an encrypted document\n");
++        return 100;
+       }
 -
 -    if (!ret)
--      {
++      else
+       {
 -	  expandhandle.sd = &myhandle;
 -	  ps.userData = &expandhandle;
 -	  ret = wvHtml (&ps);
--      }
++        wvSetPassword (password, &ps);
++        if (wvDecrypt95 (&ps))
++        {
++          wvError (("Incorrect Password\n"));
++          return 101;
++        }
+       }
 -    wvReleaseStateData (&myhandle);
--
++    }
++  }
+ 
 -    if (ret == 2)
 -	return (2);
 -    else if (ret != 0)
 -	ret = -1;
--    wvOLEFree (&ps);
++  if (ret)
++  {
++    wvError (("startup error #%d\n", ret));
+     wvOLEFree (&ps);
 -    wvShutdown ();
--
++    return (-1);
++  }
++
++  wvSetElementHandler (&ps, myelehandler);
++  wvSetDocumentHandler (&ps, mydochandler);
++  wvSetCharHandler (&ps, myCharProc);
++  wvSetSpecialCharHandler (&ps, mySpecCharProc);
++
++  wvInitStateData (&myhandle);
++
++  if (wvOpenConfig (&myhandle,config) == 0)
++  {
++    wvError (("config file not found\n"));
++    return (-1);
++  }
++  else
++  {
++    wvTrace (("x for FILE is %x\n", myhandle.fp));
++    ret = wvParseConfig (&myhandle);
++  }
++
++  if (!ret)
++  {
++    expandhandle.sd = &myhandle;
++    ps.userData = &expandhandle;
++    ret = wvHtml (&ps);
++  }
++  wvReleaseStateData (&myhandle);
++
++  if (ret == 2)
++    return (2);
++  else if (ret != 0)
++    ret = -1;
++  wvOLEFree (&ps);
++  wvShutdown ();
+ 
 -    return (ret);
--}
-+char *charset = "utf-8";
++  return (ret);
+ }
  
  int
  myelehandler (wvParseStruct * ps, wvTag tag, void *props, int dirty)
@@ -242,7 +358,7 @@
      expand_data *data = (expand_data *) ps->userData;
      data->anSttbfAssoc = &ps->anSttbfAssoc;
      data->lfo = &ps->lfo;
-@@ -602,6 +407,7 @@
+@@ -602,6 +532,7 @@
  mydochandler (wvParseStruct * ps, wvTag tag)
  {
      static int i;
@@ -250,7 +366,7 @@
      expand_data *data = (expand_data *) ps->userData;
      data->anSttbfAssoc = &ps->anSttbfAssoc;
      data->lfo = &ps->lfo;
-@@ -1290,6 +1096,7 @@
+@@ -1290,6 +1221,7 @@
  mySpecCharProc (wvParseStruct * ps, U16 eachchar, CHP * achp)
  {
      static int message;
@@ -258,7 +374,7 @@
      PICF picf;
      FSPA *fspa;
      expand_data *data = (expand_data *) ps->userData;
-@@ -1607,33 +1414,24 @@
+@@ -1607,33 +1539,24 @@
  int
  wvOpenConfig (state_data *myhandle,char *config)
  {
@@ -304,7 +420,7 @@
      myhandle->path = config;
      myhandle->fp = tmp;
      return (tmp == NULL ? 0 : 1);
-@@ -1642,7 +1440,9 @@
+@@ -1642,7 +1565,9 @@
  char * figure_name (wvParseStruct * ps)
  {
    static int number;
@@ -314,7 +430,7 @@
    char * f_name = 0;
    char buffer[10];
  
-@@ -1703,7 +1503,9 @@
+@@ -1703,7 +1628,9 @@
  char * name_to_url (char * name)
  {
    static char * url = 0;
@@ -343,3 +459,20 @@
  	winmmap.c \
  	list.c \
  	stylesheet.c \
+--- wv.h
++++ wv.h
+@@ -10,6 +10,14 @@
+ extern "C" {
+ #endif
+ 
++extern FILE * g_htmlOutputFileHandle;
++int printfRedirect(const char* __fmt, ...);
++#define printf printfRedirect
++
++extern int no_graphics;
++
++int wvHtml_convert(char *inputFile, char *outputDir, const char *password);
++
+ /* The structure below is used to refer to a wvStream.  Usually,
+  * kind = GSF_STREAM,
+  * but if we can't open a file using LibGSF, we fall back to the old file-based
