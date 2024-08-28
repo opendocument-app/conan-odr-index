@@ -53,5 +53,5 @@ class PopplerDataConan(ConanFile):
         self.cpp_info.libdirs = []
         self.cpp_info.bindirs = []
 
-        poppler_data_dir = os.path.join(self.package_folder, "res", "share", "poppler")
+        poppler_data_dir = os.path.join(self.package_folder, "share", "poppler")
         self.runenv_info.define_path("POPPLER_DATA_DIR", poppler_data_dir)
