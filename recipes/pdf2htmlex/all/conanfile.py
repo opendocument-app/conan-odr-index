@@ -117,3 +117,6 @@ class pdf2htmlEXConan(ConanFile):
     def package_info(self):
         self.cpp_info.libs = ["pdf2htmlEX"]
         self.cpp_info.resdirs = ["share/pdf2htmlEX"]
+
+        pdf2htmlEX_data_dir = os.path.join(self.package_folder, "res", "share", "pdf2htmlEX")
+        self.runenv_info.define_path("PDF2HTMLEX_DATA_DIR", pdf2htmlEX_data_dir)
