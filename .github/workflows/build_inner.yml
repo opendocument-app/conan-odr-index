@@ -76,7 +76,7 @@ jobs:
           - conanfile: 'recipes/pdf2htmlex/all/conanfile.py'
             config: { build_machine: macos-14, host_profile: apple-armv8-clang-14 }
 
-          # Autotools are problematic on Windowds
+          # Autotools are problematic on Windows
           - conanfile: 'recipes/libgsf/all/conanfile.py'
             config: { build_machine: windows-2022, host_profile: msvc-1940 }
           - conanfile: 'recipes/libwmf/all/conanfile.py'
