@@ -1,0 +1,19 @@
+diff --git a/pdf2htmlEX/src/HTMLRenderer/general.cc b/pdf2htmlEX/src/HTMLRenderer/general.cc
+index 7d43d13..1b04e0a 100644
+--- a/pdf2htmlEX/src/HTMLRenderer/general.cc
++++ b/pdf2htmlEX/src/HTMLRenderer/general.cc
+@@ -424,9 +424,12 @@ void HTMLRenderer::post_process(void)
+     }
+ 
+     // apply manifest
+-    ifstream manifest_fin((char*)str_fmt("%s/%s", param.data_dir.c_str(), MANIFEST_FILENAME.c_str()), ifstream::binary);
++    const char* manifest_file = str_fmt("%s/%s", param.data_dir.c_str(), MANIFEST_FILENAME.c_str());
++    if (param.debug)
++        std::cout << "Trying to open manifest file: " << manifest_file << std::endl;
++    ifstream manifest_fin = ifstream(manifest_file, ifstream::binary);
+     if(!manifest_fin)
+-        throw "Cannot open the manifest file";
++        throw std::runtime_error(std::string("Cannot open the manifest file: ") + manifest_file);
+ 
+     bool embed_string = false;
+     string line;
