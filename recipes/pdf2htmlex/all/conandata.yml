@@ -2,3 +2,6 @@ sources:
   "0.18.8.rc1-20240814-git":
     url: "https://github.com/ViliusSutkus89/pdf2htmlEX/archive/cf26cf4b98b25cda56792ce5626ee0563a589c7a.zip"
     sha256: "137e544afb0c9dffd3c8e86f9ce95dd7d1775d7ede93445268bf4910d1d0c418"
+patches:
+  "0.18.8.rc1-20240814-git":
+      - patch_file: "patches/manifest_file_debug.patch"
