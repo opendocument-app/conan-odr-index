@@ -1,6 +1,6 @@
 --- wvWare.c
 +++ wvWare.c
-@@ -32,8 +32,44 @@
+@@ -32,8 +32,45 @@
  /* strdup isn't declared in <string.h> for `gcc -ansi'; declare it here */
  extern char *strdup (const char *);
  
@@ -8,6 +8,7 @@
 -extern char *str_append(char *d, size_t n, char *s);
 +#include <stdarg.h>
 +
++const char * g_wvDataDir = NULL;
 +FILE * g_htmlOutputFileHandle = NULL;
 +
 +int printfRedirect(const char *fmt, ...) {
@@ -47,7 +48,7 @@
  
  /*
  Released under GPL, written by Caolan.McNamara@ul.ie.
-@@ -290,220 +326,116 @@
+@@ -290,220 +327,116 @@
  static void wv_query_eps (const char* format);
  static void wv_suppress (const char* format);
  
@@ -355,7 +356,7 @@
      expand_data *data = (expand_data *) ps->userData;
      data->anSttbfAssoc = &ps->anSttbfAssoc;
      data->lfo = &ps->lfo;
-@@ -602,6 +534,7 @@
+@@ -602,6 +535,7 @@
  mydochandler (wvParseStruct * ps, wvTag tag)
  {
      static int i;
@@ -363,7 +364,7 @@
      expand_data *data = (expand_data *) ps->userData;
      data->anSttbfAssoc = &ps->anSttbfAssoc;
      data->lfo = &ps->lfo;
-@@ -1290,6 +1223,7 @@
+@@ -1290,6 +1224,7 @@
  mySpecCharProc (wvParseStruct * ps, U16 eachchar, CHP * achp)
  {
      static int message;
@@ -371,7 +372,7 @@
      PICF picf;
      FSPA *fspa;
      expand_data *data = (expand_data *) ps->userData;
-@@ -1607,33 +1541,24 @@
+@@ -1607,33 +1542,26 @@
  int
  wvOpenConfig (state_data *myhandle,char *config)
  {
@@ -397,6 +398,8 @@
 +        free(buf);
 +      }
 +      const char *WV_DATA_DIR = getenv("WVDATADIR");
++      if (NULL == WV_DATA_DIR)
++        WV_DATA_DIR = g_wvDataDir;
 +      if (NULL != WV_DATA_DIR)
 +        buf = strdup_and_append_twice(WV_DATA_DIR, "/", config);
 +      else
@@ -417,7 +420,7 @@
      myhandle->path = config;
      myhandle->fp = tmp;
      return (tmp == NULL ? 0 : 1);
-@@ -1642,7 +1567,9 @@
+@@ -1642,7 +1570,9 @@
  char * figure_name (wvParseStruct * ps)
  {
    static int number;
@@ -427,7 +430,7 @@
    char * f_name = 0;
    char buffer[10];
  
-@@ -1703,7 +1630,9 @@
+@@ -1703,7 +1633,9 @@
  char * name_to_url (char * name)
  {
    static char * url = 0;
@@ -467,7 +470,7 @@
 +#define printf printfRedirect
 +
 +extern int no_graphics;
-+
++extern const char * g_wvDataDir;
 +int wvHtml_convert(char *inputFile, char *outputDir, const char *password);
 +
  /* The structure below is used to refer to a wvStream.  Usually,
