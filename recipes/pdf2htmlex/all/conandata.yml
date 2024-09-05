@@ -1,7 +1,4 @@
 sources:
-  "0.18.8.rc1-20240814-git":
-    url: "https://github.com/ViliusSutkus89/pdf2htmlEX/archive/cf26cf4b98b25cda56792ce5626ee0563a589c7a.zip"
-    sha256: "137e544afb0c9dffd3c8e86f9ce95dd7d1775d7ede93445268bf4910d1d0c418"
-patches:
-  "0.18.8.rc1-20240814-git":
-      - patch_file: "patches/manifest_file_debug.patch"
+  "0.18.8.rc1-20240905-git":
+    url: "https://github.com/ViliusSutkus89/pdf2htmlEX/archive/0bbd6686f7214c5ddb230fa3323b75e954f39418.zip"
+    sha256: "394a5a5555005a18ada6f810ef7ab693f6d916cd9302d874483cbc4956caf557"

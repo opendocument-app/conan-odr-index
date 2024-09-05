@@ -3,6 +3,7 @@ import stat
 
 from conan import ConanFile
 from conan.tools.cmake import CMakeToolchain, CMake, cmake_layout, CMakeDeps
+from conan.tools.env import Environment
 from conan.tools.files import apply_conandata_patches, copy, export_conandata_patches, get, rmdir
 from conans.errors import ConanInvalidConfiguration
 
@@ -92,8 +93,18 @@ class pdf2htmlEXConan(ConanFile):
         tc = CMakeToolchain(self)
         tc.extra_cxxflags = ["-Wno-maybe-uninitialized"]
         tc.variables["PDF2HTMLEX_VERSION"] = self.version
+
+        # Get runenv info, exported by package_info() of dependencies
+        # We need to obtain POPPLER_DATA_DIR and FONTCONFIG_PATH
+        runenv_info = Environment()
+        deps = self.dependencies.host.topological_sort
+        deps = [dep for dep in reversed(deps.values())]
+        for dep in deps:
+            runenv_info.compose_env(dep.runenv_info)
+        envvars = runenv_info.vars(self)
+        for v in ["POPPLER_DATA_DIR", "FONTCONFIG_PATH"]:
+            tc.variables[v] = envvars.get(v)
         # @TODO: figure out how to use POPPLER_DATA_DIR exported by poppler-data. It should JustWork^tm
-        tc.variables["POPPLER_DATA_DIR"] = self.dependencies['poppler-data'].cpp_info.resdirs[0]
         tc.generate()
 
     def build(self):
