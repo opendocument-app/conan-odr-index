@@ -31,13 +31,13 @@ class pdf2htmlEXConan(ConanFile):
             "with_glib": True,
             "shared": False,
             "fontconfiguration": "fontconfig",
-        })
+        }, transitive_headers=True, transitive_libs=True)
         self.requires("cairo/1.18.0-odr", options={
             # Don't pull in xorg dependencies.
             "with_xlib": False,
             "with_xlib_xrender": False,
             "with_xcb": False,
-        })
+        }, transitive_headers=True, transitive_libs=True)
         self.requires("freetype/2.13.2")
         self.requires("fontforge/20240423-git", options={
             "install_private_headers": True,
@@ -134,6 +134,7 @@ class pdf2htmlEXConan(ConanFile):
 
     def package_info(self):
         self.cpp_info.libs = ["pdf2htmlEX"]
+        self.cpp_info.includedirs = ["include", "include/pdf2htmlEX"]
         self.cpp_info.resdirs = ["share/pdf2htmlEX"]
 
         pdf2htmlEX_data_dir = os.path.join(self.package_folder, "share", "pdf2htmlEX")
