@@ -120,6 +120,13 @@ class pdf2htmlEXConan(ConanFile):
         copy(self, "LICENSE*", src=os.path.join(self.source_folder, "pdf2htmlEX", "logo"),
              dst=os.path.join(licensedir, "logo"))
 
+        copy(
+            self,
+            "*.h",
+            src=os.path.join(self.source_folder, "src"),
+            dst=os.path.join(self.export_sources_folder, "include", "pdf2htmlEX"),
+        )
+
         cmake = CMake(self)
         cmake.install()
 
