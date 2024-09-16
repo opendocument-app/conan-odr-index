@@ -85,7 +85,7 @@ class pdf2htmlEXConan(ConanFile):
                 'Dependency "fontforge" needs to be built with "install_private_headers" option')
 
     def layout(self):
-        cmake_layout(self)
+        cmake_layout(self, src_folder="src")
 
     def generate(self):
         deps = CMakeDeps(self)
@@ -123,8 +123,8 @@ class pdf2htmlEXConan(ConanFile):
         copy(
             self,
             "*.h",
-            src=os.path.join(self.source_folder, "src"),
-            dst=os.path.join(self.export_sources_folder, "include", "pdf2htmlEX"),
+            src=os.path.join(self.source_folder, "pdf2htmlEX", "src"),
+            dst=os.path.join(self.package_folder, "include", "pdf2htmlEX"),
         )
 
         cmake = CMake(self)
