@@ -16,6 +16,7 @@ on:
     secrets:
       ARTIFACTORY:
         required: true
+
 jobs:
   build:
     runs-on: ${{ matrix.config.build_machine }}

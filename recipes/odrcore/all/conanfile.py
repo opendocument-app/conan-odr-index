@@ -39,9 +39,6 @@ class OpenDocumentCoreConan(ConanFile):
             # But by the time config_options() is executed, default_options is already done parsed.
             del self.options.with_pdf2htmlEX
             del self.options.with_wvWare
-        elif self.version != "4.1.0-pdf2htmlex-git":
-            del self.options.with_pdf2htmlEX
-            del self.options.with_wvWare
 
     def configure(self):
         if self.options.shared:
@@ -59,7 +56,7 @@ class OpenDocumentCoreConan(ConanFile):
         self.requires("uchardet/0.0.8")
         self.requires("utfcpp/4.0.4")
         if self.options.get_safe("with_pdf2htmlEX"):
-            self.requires("pdf2htmlex/0.18.8.rc1-20240905-git")
+            self.requires("pdf2htmlex/0.18.8.rc1-git-6f85c88")
         if self.options.get_safe("with_wvWare"):
             self.requires("wvware/1.2.9")
 
@@ -107,16 +104,6 @@ class OpenDocumentCoreConan(ConanFile):
         cmake.build()
 
     def package(self):
-        # Not needed with CMake changes in 4.1.0-pdf2htmlex-git
-        # Other versions may not need it too
-        if self.version != "4.1.0-pdf2htmlex-git":
-            copy(
-                self,
-                "*.hpp",
-                src=os.path.join(self.recipe_folder, "src"),
-                dst=os.path.join(self.export_sources_folder, "include"),
-            )
-
         cmake = CMake(self)
         cmake.install()
 

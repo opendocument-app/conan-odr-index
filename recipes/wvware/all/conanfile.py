@@ -4,6 +4,7 @@ from pathlib import Path
 from conan import ConanFile
 from conan.tools.apple import fix_apple_shared_install_name
 from conan.tools.build import cross_building
+from conan.tools.layout import basic_layout
 from conan.tools.env import Environment, VirtualBuildEnv, VirtualRunEnv
 from conan.tools.files import apply_conandata_patches, copy, export_conandata_patches, get, rm, rmdir
 from conan.tools.gnu import Autotools, AutotoolsDeps, AutotoolsToolchain, PkgConfigDeps
@@ -55,7 +56,7 @@ class wvWareConan(ConanFile):
         self.requires("glib/2.81.0-odr")
         self.requires("libiconv/1.17")
         self.requires("zlib/1.3.1")
-        self.requires("libpng/1.6.43")
+        self.requires("libpng/[>=1.6 <2]")
 
         # Requirements not passed from libgsf
         self.requires("libxml2/2.12.7")
@@ -80,6 +81,9 @@ class wvWareConan(ConanFile):
         # not needed if libtool already in build requirements
         if is_msvc(self):
             self.tool_requires("automake/1.16.5")
+
+    def layout(self):
+        basic_layout(self, src_folder="src")
 
     def source(self):
         get(self, **self.conan_data["sources"][self.version], strip_root=True)

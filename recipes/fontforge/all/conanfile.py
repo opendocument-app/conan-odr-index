@@ -43,7 +43,7 @@ class FontForgeConan(ConanFile):
         self.requires("libxml2/2.12.7")
         self.requires("giflib/5.2.2")
         self.requires("libjpeg/9f")
-        self.requires("libpng/1.6.43")
+        self.requires("libpng/[>=1.6 <2]")
 
         if self.options.with_tiff:
             self.requires("libtiff/4.6.0")
@@ -80,7 +80,7 @@ class FontForgeConan(ConanFile):
         apply_conandata_patches(self)
 
     def layout(self):
-        cmake_layout(self)
+        cmake_layout(self, src_folder="src")
 
     def generate(self):
         deps = CMakeDeps(self)
@@ -94,6 +94,7 @@ class FontForgeConan(ConanFile):
         tc.variables["ENABLE_LIBTIFF"] = self.options.with_tiff
         tc.variables["ENABLE_LIBREADLINE"] = "OFF"
         tc.variables["INSTALL_PRIVATE_HEADERS"] = self.options.install_private_headers
+        tc.variables["CMAKE_INSTALL_INCLUDEDIR"] = "include/fontforge"
         tc.generate()
 
     def build(self):
@@ -149,3 +150,4 @@ class FontForgeConan(ConanFile):
 
     def package_info(self):
         self.cpp_info.libs = ["fontforge"]
+        self.cpp_info.includedirs = ["include", "include/fontforge"]
