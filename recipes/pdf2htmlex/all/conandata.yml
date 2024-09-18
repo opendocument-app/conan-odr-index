@@ -6,4 +6,5 @@ patches:
   "0.18.8.rc1-git-6f85c88":
     - patch_file: "patches/0.18.8.rc1-git-6f85c88/0001-Upgrade-Poppler-to-24.06.1.patch"
     - patch_file: "patches/0.18.8.rc1-git-6f85c88/0002-CI-Use-Ubuntu-22.04-upgrade-actions-checkout-and-act.patch"
-    - patch_file: "0003-Update-missing-font-workaround.patch"
+    - patch_file: "patches/0.18.8.rc1-git-6f85c88/0003-Update-missing-font-workaround.patch"
+    - patch_file: "patches/0.18.8.rc1-git-6f85c88/0004-use-find_package.patch"
