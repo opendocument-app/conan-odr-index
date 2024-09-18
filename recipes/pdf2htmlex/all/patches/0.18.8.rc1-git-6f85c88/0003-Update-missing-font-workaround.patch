@@ -1,0 +1,28 @@
+From 4753c1e17c815de7773be7ffd99cfbe947e8754a Mon Sep 17 00:00:00 2001
+From: Vilius Sutkus '89 <Vilius@ViliusSutkus89.com>
+Date: Mon, 5 Aug 2024 21:35:29 +0300
+Subject: [PATCH 3/3] Update missing font workaround
+
+---
+ pdf2htmlEX/src/HTMLRenderer/font.cc | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/pdf2htmlEX/src/HTMLRenderer/font.cc b/pdf2htmlEX/src/HTMLRenderer/font.cc
+index 9c3112b..ff27da2 100644
+--- a/pdf2htmlEX/src/HTMLRenderer/font.cc
++++ b/pdf2htmlEX/src/HTMLRenderer/font.cc
+@@ -1080,7 +1080,10 @@ static string general_font_family(GfxFont * font)
+ // TODO: this function is called when some font is unable to process, may use the name there as a hint
+ void HTMLRenderer::export_remote_default_font(long long fn_id) 
+ {
+-    f_css.fs << "." << CSS::FONT_FAMILY_CN << fn_id << "{font-family:sans-serif;visibility:hidden;}" << endl;
++//     Workaround for https://github.com/opendocument-app/pdf2htmlEX-Android/issues/94
++//     Workaround for https://github.com/opendocument-app/OpenDocument.droid/issues/348
++//    f_css.fs << "." << CSS::FONT_FAMILY_CN << fn_id << "{font-family:sans-serif;visibility:hidden;}" << endl;
++    f_css.fs << "." << CSS::FONT_FAMILY_CN << fn_id << "{font-family:sans-serif;visibility:visible;}" << endl;
+ }
+ 
+ void HTMLRenderer::export_local_font(const FontInfo & info, GfxFont * font, const string & original_font_name, const string & cssfont) 
+-- 
+2.39.3 (Apple Git-146)
+

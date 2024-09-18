@@ -1,4 +1,9 @@
 sources:
-  "0.18.8.rc1-20240905-git":
-    url: "https://github.com/ViliusSutkus89/pdf2htmlEX/archive/0bbd6686f7214c5ddb230fa3323b75e954f39418.zip"
-    sha256: "394a5a5555005a18ada6f810ef7ab693f6d916cd9302d874483cbc4956caf557"
+  "0.18.8.rc1-git-6f85c88":
+    url: "https://github.com/opendocument-app/pdf2htmlEX/archive/refs/tags/v0.18.8.rc1-git-6f85c88.tar.gz"
+    sha256: "cc19848576f84469d290e6e271e07dd17ffcc15f40357b8d7456e4f6d1b3ebcf"
+patches:
+  "0.18.8.rc1-git-6f85c88":
+    - patch_file: "patches/0.18.8.rc1-git-6f85c88/0001-Upgrade-Poppler-to-24.06.1.patch"
+    - patch_file: "patches/0.18.8.rc1-git-6f85c88/0002-CI-Use-Ubuntu-22.04-upgrade-actions-checkout-and-act.patch"
+    - patch_file: "0003-Update-missing-font-workaround.patch"

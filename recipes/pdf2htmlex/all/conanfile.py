@@ -25,6 +25,25 @@ class pdf2htmlEXConan(ConanFile):
     options = {"shared": [True, False], "fPIC": [True, False]}
     default_options = {"shared": False, "fPIC": True}
 
+    def config_options(self):
+        if self.settings.os == "Windows":
+            self.options.rm_safe("fPIC")
+
+    def configure(self):
+        if self.options.shared:
+            self.options.rm_safe("fPIC")
+
+    def validate(self):
+        if not self.dependencies["poppler"].options.with_cairo:
+            raise ConanInvalidConfiguration('Dependency "poppler" needs to be built with "with_cairo" option')
+        if not self.dependencies["poppler"].options.with_glib:
+            raise ConanInvalidConfiguration('Dependency "poppler" needs to be built with "with_glib" option')
+        if self.dependencies["poppler"].options.shared:
+            raise ConanInvalidConfiguration('Dependency "poppler" needs to be built as a static library (shared=False)')
+        if not self.dependencies["fontforge"].options.install_private_headers:
+            raise ConanInvalidConfiguration(
+                'Dependency "fontforge" needs to be built with "install_private_headers" option')
+
     def requirements(self):
         self.requires("poppler/24.08.0-odr", options={
             "with_cairo": True,
@@ -53,6 +72,9 @@ class pdf2htmlEXConan(ConanFile):
         # self.requires("libiconv/1.17")
         # self.requires("giflib/5.2.2")
 
+    def layout(self):
+        cmake_layout(self, src_folder="src")
+
     def export_sources(self):
         export_conandata_patches(self)
 
@@ -64,28 +86,6 @@ class pdf2htmlEXConan(ConanFile):
         for executable in ["build_css.sh", "build_js.sh"]:
             exe = os.path.join(self.source_folder, "pdf2htmlEX", "share", executable)
             os.chmod(exe, os.stat(exe).st_mode | stat.S_IEXEC)
-
-    def config_options(self):
-        if self.settings.os == "Windows":
-            self.options.rm_safe("fPIC")
-
-    def configure(self):
-        if self.options.shared:
-            self.options.rm_safe("fPIC")
-
-    def validate(self):
-        if not self.dependencies["poppler"].options.with_cairo:
-            raise ConanInvalidConfiguration('Dependency "poppler" needs to be built with "with_cairo" option')
-        if not self.dependencies["poppler"].options.with_glib:
-            raise ConanInvalidConfiguration('Dependency "poppler" needs to be built with "with_glib" option')
-        if self.dependencies["poppler"].options.shared:
-            raise ConanInvalidConfiguration('Dependency "poppler" needs to be built as a static library (shared=False)')
-        if not self.dependencies["fontforge"].options.install_private_headers:
-            raise ConanInvalidConfiguration(
-                'Dependency "fontforge" needs to be built with "install_private_headers" option')
-
-    def layout(self):
-        cmake_layout(self, src_folder="src")
 
     def generate(self):
         deps = CMakeDeps(self)
