@@ -1,10 +1,10 @@
 sources:
   "0.18.8.rc1-git-6f85c88":
     url: "https://github.com/opendocument-app/pdf2htmlEX/archive/refs/tags/v0.18.8.rc1-git-6f85c88.tar.gz"
-    sha256: "cc19848576f84469d290e6e271e07dd17ffcc15f40357b8d7456e4f6d1b3ebcf"
+    sha256: "b88c0897c26caaba62c84069a22043be703a495852af3d9af9d63e18fde2296e"
 patches:
   "0.18.8.rc1-git-6f85c88":
     - patch_file: "patches/0.18.8.rc1-git-6f85c88/0001-Upgrade-Poppler-to-24.06.1.patch"
-    - patch_file: "patches/0.18.8.rc1-git-6f85c88/0002-CI-Use-Ubuntu-22.04-upgrade-actions-checkout-and-act.patch"
-    - patch_file: "patches/0.18.8.rc1-git-6f85c88/0003-Update-missing-font-workaround.patch"
-    - patch_file: "patches/0.18.8.rc1-git-6f85c88/0004-use-find_package.patch"
+    - patch_file: "patches/0.18.8.rc1-git-6f85c88/0002-Update-missing-font-workaround.patch"
+    - patch_file: "patches/0.18.8.rc1-git-6f85c88/0003-use-find_package.patch"
+    - patch_file: "patches/0.18.8.rc1-git-6f85c88/0004-build-and-install-library.patch"

@@ -1,5 +1,5 @@
-#include <fontforge.h>
-#include "start.h"
+#include <fontforge/fontforge.h>
+#include "fontforge/start.h"
 
 int main()
 {

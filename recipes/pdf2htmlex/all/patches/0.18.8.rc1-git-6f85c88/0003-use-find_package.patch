@@ -1,7 +1,7 @@
-From 94215ff2eea295fa228c93eb0f1ff7b9165d8dbd Mon Sep 17 00:00:00 2001
+From 90261925551ebd76032324728b2ad52eb741902c Mon Sep 17 00:00:00 2001
 From: Andreas Stefl <stefl.andreas@gmail.com>
 Date: Wed, 18 Sep 2024 19:49:39 +0200
-Subject: [PATCH 4/4] use `find_package`
+Subject: [PATCH 3/4] use `find_package`
 
 ---
  pdf2htmlEX/CMakeLists.txt | 75 +++++++++++----------------------------
