@@ -1,0 +1,187 @@
+on:
+  workflow_call:
+    inputs:
+      conanfile:
+        required: true
+        type: string
+      package_version:
+        required: true
+        type: string
+      build_dependencies_from_source:
+        required: true
+        type: boolean
+      artifactory_upload:
+        required: true
+        type: boolean
+    secrets:
+      ARTIFACTORY:
+        required: true
+
+jobs:
+  build:
+    runs-on: ${{ matrix.config.build_machine }}
+    name : ${{ matrix.config.host_profile }}
+    strategy:
+      fail-fast: false
+      matrix:
+        conanfile: ${{ fromJSON(format('["{0}"]', inputs.conanfile)) }}
+        config:
+          - { build_machine: ubuntu-22.04, host_profile: android-23-armv8, ndk_version: 26.3.11579264 }
+          - { build_machine: ubuntu-22.04, host_profile: android-23-armv7, ndk_version: 26.3.11579264 }
+          - { build_machine: ubuntu-22.04, host_profile: android-23-x86, ndk_version: 26.3.11579264 }
+          - { build_machine: ubuntu-22.04, host_profile: android-23-x86_64, ndk_version: 26.3.11579264 }
+          - { build_machine: ubuntu-22.04, host_profile: android-21-armv8, ndk_version: 26.3.11579264 }
+          - { build_machine: ubuntu-22.04, host_profile: android-21-armv7, ndk_version: 26.3.11579264 }
+          - { build_machine: ubuntu-22.04, host_profile: android-21-x86, ndk_version: 26.3.11579264 }
+          - { build_machine: ubuntu-22.04, host_profile: android-21-x86_64, ndk_version: 26.3.11579264 }
+          - { build_machine: macos-13, host_profile: apple-clang-14 }
+          - { build_machine: macos-14, host_profile: apple-armv8-clang-14 }
+          - { build_machine: ubuntu-24.04, host_profile: gcc-13 }
+          - { build_machine: ubuntu-24.04, host_profile: gcc-14 }
+          - { build_machine: ubuntu-24.04, host_profile: clang-18 }
+#          - { build_machine: ubuntu-24.04, host_profile: clang-18-debug }
+          - { build_machine: windows-2022, host_profile: msvc-1940 }
+        exclude:
+          # OpenLibm does not support Windows
+          - conanfile: 'recipes/openlibm/all/conanfile.py'
+            config: { build_machine: windows-2022, host_profile: msvc-1940 }
+
+          # Cairo fails to compile on Windows
+          # https://github.com/conan-io/conan-center-index/issues/23786
+          # https://gitlab.freedesktop.org/cairo/cairo/-/issues/808
+          - conanfile: 'recipes/cairo/meson/conanfile.py'
+            config: { build_machine: windows-2022, host_profile: msvc-1940 }
+
+          # No Cairo means no Poppler and no pdf2htmlEX
+          - conanfile: 'recipes/poppler/all/conanfile.py'
+            config: { build_machine: windows-2022, host_profile: msvc-1940 }
+          - conanfile: 'recipes/pdf2htmlex/all/conanfile.py'
+            config: { build_machine: windows-2022, host_profile: msvc-1940 }
+
+          # Fontforge build issue on msvc-1940
+          - conanfile: 'recipes/fontforge/all/conanfile.py'
+            config: { build_machine: windows-2022, host_profile: msvc-1940 }
+
+          # pdf2htmlEX and wvWare not yet supported on Windows, GLib isn't needed then either
+          - conanfile: 'recipes/glib/all/conanfile.py'
+            config: { build_machine: windows-2022, host_profile: msvc-1940 }
+
+          # Fontforge libintl build issue for macos
+          - conanfile: 'recipes/fontforge/all/conanfile.py'
+            config: { build_machine: macos-13, host_profile: apple-clang-14 }
+          - conanfile: 'recipes/fontforge/all/conanfile.py'
+            config: { build_machine: macos-14, host_profile: apple-armv8-clang-14 }
+
+          # No Fontforge means no pdf2htmlEX
+          - conanfile: 'recipes/pdf2htmlex/all/conanfile.py'
+            config: { build_machine: macos-13, host_profile: apple-clang-14 }
+          - conanfile: 'recipes/pdf2htmlex/all/conanfile.py'
+            config: { build_machine: macos-14, host_profile: apple-armv8-clang-14 }
+
+          # Autotools are problematic on Windows
+          - conanfile: 'recipes/libgsf/all/conanfile.py'
+            config: { build_machine: windows-2022, host_profile: msvc-1940 }
+          - conanfile: 'recipes/libwmf/all/conanfile.py'
+            config: { build_machine: windows-2022, host_profile: msvc-1940 }
+          - conanfile: 'recipes/wvware/all/conanfile.py'
+            config: { build_machine: windows-2022, host_profile: msvc-1940 }
+
+          # tmpfile is needed only for Android
+          - conanfile: 'recipes/tmpfile/all/conanfile.py'
+            config: { build_machine: macos-13, host_profile: apple-clang-14 }
+          - conanfile: 'recipes/tmpfile/all/conanfile.py'
+            config: { build_machine: macos-14, host_profile: apple-armv8-clang-14 }
+          - conanfile: 'recipes/tmpfile/all/conanfile.py'
+            config: { build_machine: ubuntu-24.04, host_profile: gcc-12 }
+          - conanfile: 'recipes/tmpfile/all/conanfile.py'
+            config: { build_machine: ubuntu-24.04, host_profile: gcc-13 }
+          - conanfile: 'recipes/tmpfile/all/conanfile.py'
+            config: { build_machine: ubuntu-24.04, host_profile: gcc-14 }
+          - conanfile: 'recipes/tmpfile/all/conanfile.py'
+            config: { build_machine: ubuntu-24.04, host_profile: clang-16 }
+          - conanfile: 'recipes/tmpfile/all/conanfile.py'
+            config: { build_machine: ubuntu-24.04, host_profile: clang-17 }
+          - conanfile: 'recipes/tmpfile/all/conanfile.py'
+            config: { build_machine: ubuntu-24.04, host_profile: clang-18 }
+          - conanfile: 'recipes/tmpfile/all/conanfile.py'
+            config: { build_machine: ubuntu-24.04, host_profile: clang-18-debug }
+          - conanfile: 'recipes/tmpfile/all/conanfile.py'
+            config: { build_machine: windows-2022, host_profile: msvc-1940 }
+
+          # poppler-data is the same package for all configurations
+          - conanfile: 'recipes/poppler-data/all/conanfile.py'
+            config: { build_machine: ubuntu-22.04, host_profile: android-23-armv8, ndk_version: 26.3.11579264 }
+          - conanfile: 'recipes/poppler-data/all/conanfile.py'
+            config: { build_machine: ubuntu-22.04, host_profile: android-23-armv7, ndk_version: 26.3.11579264 }
+          - conanfile: 'recipes/poppler-data/all/conanfile.py'
+            config: { build_machine: ubuntu-22.04, host_profile: android-23-x86, ndk_version: 26.3.11579264 }
+          - conanfile: 'recipes/poppler-data/all/conanfile.py'
+            config: { build_machine: ubuntu-22.04, host_profile: android-23-x86_64, ndk_version: 26.3.11579264 }
+          - conanfile: 'recipes/poppler-data/all/conanfile.py'
+            config: { build_machine: ubuntu-22.04, host_profile: android-21-armv8, ndk_version: 26.3.11579264 }
+          - conanfile: 'recipes/poppler-data/all/conanfile.py'
+            config: { build_machine: ubuntu-22.04, host_profile: android-21-armv7, ndk_version: 26.3.11579264 }
+          - conanfile: 'recipes/poppler-data/all/conanfile.py'
+            config: { build_machine: ubuntu-22.04, host_profile: android-21-x86, ndk_version: 26.3.11579264 }
+          - conanfile: 'recipes/poppler-data/all/conanfile.py'
+            config: { build_machine: ubuntu-22.04, host_profile: android-21-x86_64, ndk_version: 26.3.11579264 }
+          - conanfile: 'recipes/poppler-data/all/conanfile.py'
+            config: { build_machine: macos-13, host_profile: apple-clang-14 }
+          - conanfile: 'recipes/poppler-data/all/conanfile.py'
+            config: { build_machine: macos-14, host_profile: apple-armv8-clang-14 }
+          - conanfile: 'recipes/poppler-data/all/conanfile.py'
+            config: { build_machine: ubuntu-24.04, host_profile: gcc-13 }
+          - conanfile: 'recipes/poppler-data/all/conanfile.py'
+            config: { build_machine: ubuntu-24.04, host_profile: clang-18 }
+          - conanfile: 'recipes/poppler-data/all/conanfile.py'
+            config: { build_machine: ubuntu-24.04, host_profile: clang-18-debug }
+          - conanfile: 'recipes/poppler-data/all/conanfile.py'
+            config: { build_machine: windows-2022, host_profile: msvc-1940 }
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: setup python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+      - name: install python dependencies and setuptools (required to build GLib)
+        run: pip install --upgrade pip conan setuptools
+
+      - name: install NDK
+        if: startsWith(matrix.config.host_profile, 'android')
+        run: echo "y" | sudo ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install "ndk;${{ matrix.config.ndk_version }}"
+
+      - name: conan remote
+        run: conan remote add odr https://artifactory.opendocument.app/artifactory/api/conan/conan
+      - name: conan config
+        run: conan config install .github/config/${{ matrix.config.build_machine }}/conan
+
+      - name: Parse build from source option
+        id: build_from_source
+        shell: bash
+        run: |
+          if [ ${{ inputs.build_dependencies_from_source }} == true ]; then
+            echo argument=--build=* | tee $GITHUB_OUTPUT
+          else
+            echo argument=--build=missing | tee $GITHUB_OUTPUT
+          fi
+
+      # No need to export local packages, if the previous build jobs in this chain already published to artifactory
+      - name: Conan export all packages
+        if: ${{ inputs.artifactory_upload != true }}
+        run: python scripts/conan_export_all_packages.py
+
+      - name: conan install
+        run: conan install ${{ inputs.conanfile }} --version ${{ inputs.package_version }} --profile:host ${{ matrix.config.host_profile }} --profile:build default ${{ steps.build_from_source.outputs.argument }}
+
+      - name: conan create
+        run: conan create ${{ inputs.conanfile }} --version ${{ inputs.package_version }} --profile:host ${{ matrix.config.host_profile }} --profile:build default
+
+      - name: conan login
+        if: ${{ inputs.artifactory_upload }}
+        run: conan remote login odr admin --password '${{ secrets.ARTIFACTORY }}'
+
+      - name: conan upload
+        if: ${{ inputs.artifactory_upload }}
+        run: conan upload "*" --check --confirm --remote odr
