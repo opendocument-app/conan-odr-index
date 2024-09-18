@@ -56,7 +56,7 @@ class wvWareConan(ConanFile):
         self.requires("glib/2.81.0-odr")
         self.requires("libiconv/1.17")
         self.requires("zlib/1.3.1")
-        self.requires("libpng/1.6.43")
+        self.requires("libpng/[>=1.6 <2]")
 
         # Requirements not passed from libgsf
         self.requires("libxml2/2.12.7")
