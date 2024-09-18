@@ -2,8 +2,6 @@ name: build
 
 on:
   push:
-    paths:
-      - 'recipes/**'
   schedule:
     # Executed daily, 9:37 is randomly picked time, not 00:00,
     # because 00:00 is used too frequently and GitHub asks to do cronjobs at less busy times
