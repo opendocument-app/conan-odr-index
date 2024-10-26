@@ -70,8 +70,8 @@ class CairoConan(ConanFile):
     def _settings_build(self):
         return getattr(self, "settings_build", self.settings)
 
-    def export_sources(self):
-        export_conandata_patches(self)
+
+    exports_sources = "patches/cairo-1.18.0-no-backtrace-symbols.patch"
 
     def config_options(self):
         if self.settings.os == "Windows":
