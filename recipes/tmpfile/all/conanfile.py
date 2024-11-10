@@ -1,9 +1,9 @@
 import os
 
 from conan import ConanFile
+from conan.errors import ConanInvalidConfiguration
 from conan.tools.cmake import CMakeToolchain, CMake, cmake_layout, CMakeDeps
 from conan.tools.files import apply_conandata_patches, copy, get
-from conans.errors import ConanInvalidConfiguration
 
 required_conan_version = ">=2.0.6"
 
