@@ -44,7 +44,7 @@ jobs:
         with:
           python-version: 3.12
       - name: install python dependencies
-        run: pip install --upgrade pip pyyaml
+        run: python -m pip install --upgrade pip pyyaml
 
       - name: Get requested packages from commits and workflow_dispatch inputs
         id: list-packages-without-dependents
@@ -79,7 +79,7 @@ jobs:
         with:
           python-version: 3.12
       - name: install python dependencies and setuptools (required to build GLib)
-        run: pip install --upgrade pip conan setuptools
+        run: python -m pip install --upgrade pip conan setuptools
 
       - name: install NDK
         run: echo "y" | sudo ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install "ndk;${{ env.ndk_version }}"
