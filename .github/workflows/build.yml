@@ -10,22 +10,8 @@ on:
     inputs:
       package_name:
         description: Package name
-        type: choice
-        options:
-          - default
-          - odrcore
-          - pdf2htmlex
-          - fontforge
-          - poppler
-          - poppler-data
-          - cairo
-          - openlibm
-          - fontconfig
-          - glib
-          - tmpfile
-          - libgsf
-          - libwmf
-          - wvware
+        type: string
+        default: default
       package_version:
         description: Package version. Specify 'newest' or leave empty to request the newest version. Specify 'all' to request all versions.
         required: false
