@@ -174,9 +174,7 @@ def main():
         dest="CONAN_DEPENDENCY_GRAPH.json",
         help="Used to calculate downstream dependents of requested packages",
     )
-
     args = parser.parse_args()
-    del parser
 
     github_event = json.loads(os.environ.get("GITHUB_EVENT", "{}"))
     inputs = github_event.get("inputs", dict())
@@ -193,7 +191,6 @@ def main():
         requested_packages[package].add(
             get_latest_package_version(package_infos, package)
         )
-    del commit_ids, commit_obj_list
 
     # Check if any packages were asked to be rebuilt
     input_requested_package = (
@@ -235,13 +232,11 @@ def main():
                 requested_packages[input_requested_package].add(version)
         else:
             requested_packages[input_requested_package].add(input_requested_version)
-    del input_requested_package, input_requested_version
 
     dependency_graph_files = getattr(args, "CONAN_DEPENDENCY_GRAPH.json") or list()
     downstream_dependents = get_downstream_dependents(
         dependency_graph_files, package_infos
     )
-    del dependency_graph_files
 
     dependents = set()
     for package in requested_packages.keys():
@@ -253,10 +248,8 @@ def main():
         requested_packages[dependant].add(
             get_latest_package_version(package_infos, dependant)
         )
-    del dependents
 
     tiered_packages = [requested_packages]
-    del requested_packages
     dependency_tier = 0
     while dependency_tier < len(tiered_packages):
         packages_from_this_tier = dict(tiered_packages[dependency_tier])
