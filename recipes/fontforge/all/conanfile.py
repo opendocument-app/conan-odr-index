@@ -62,6 +62,9 @@ class FontForgeConan(ConanFile):
         if self.settings.os == "Android":
             self.requires("tmpfile/3.0.6")
 
+    def build_requirements(self):
+        self.tool_requires("gettext/0.22.5")
+
     def config_options(self):
         if self.settings.os == "Windows":
             self.options.rm_safe("fPIC")
