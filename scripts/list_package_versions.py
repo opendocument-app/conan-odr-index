@@ -68,7 +68,7 @@ def get_packages_in_commit(commit_id):
     packages = list()
     for file_in_commit in get_files_in_commit(commit_id):
         file_components = file_in_commit.split(os.sep)
-        if len(file_components) >= 3 and file_components[0] == 'recipes':
+        if len(file_components) >= 3 and file_components[0] == "recipes":
             package_name = file_components[1]
             packages.append(package_name)
     return packages
@@ -81,7 +81,7 @@ def get_modified_packages_in_commits(commit_id_list, commit_obj_list):
         packages += get_packages_in_commit(commit_id)
 
     for commit in commit_obj_list:
-        if -1 == str.lower(commit["message"]).find('[skipci]'):
+        if -1 == str.lower(commit["message"]).find("[skipci]"):
             print(f"Found commit without [skipci]: {commit["id"]} - {commit["message"]}")
             packages += get_packages_in_commit(commit["id"])
     return packages
@@ -93,16 +93,16 @@ def get_downstream_dependents(dependency_graph_files, package_infos):
     downstream_packages = dict()
     for conan_dependency_graph_file in dependency_graph_files:
         print("Parsing dependencies in " + conan_dependency_graph_file)
-        with open(conan_dependency_graph_file, 'r') as dep_json:
-            nodes = json.load(dep_json)['graph']['nodes']
+        with open(conan_dependency_graph_file, "r") as dep_json:
+            nodes = json.load(dep_json)["graph"]["nodes"]
             for node in nodes:
-                node_name = nodes[node]['name']
+                node_name = nodes[node]["name"]
                 if node_name not in package_infos:
                     continue
 
-                for dependency in nodes[node]['dependencies']:
-                    dependency_ref = nodes[node]['dependencies'][dependency]['ref']
-                    dep_name = dependency_ref.split('/')[0]
+                for dependency in nodes[node]["dependencies"]:
+                    dependency_ref = nodes[node]["dependencies"][dependency]["ref"]
+                    dep_name = dependency_ref.split("/")[0]
 
                     # Not tracking external dependencies
                     if dep_name not in package_infos:
@@ -116,30 +116,30 @@ def get_downstream_dependents(dependency_graph_files, package_infos):
 
 
 def get_latest_package_version(package_infos, package_name):
-    return package_infos[package_name][0]['version']
+    return package_infos[package_name][0]["version"]
 
 
 def main():
     parser = argparse.ArgumentParser(description="List package versions")
-    parser.add_argument("--commit-ids", nargs='*', dest="COMMIT_ID",
+    parser.add_argument("--commit-ids", nargs="*", dest="COMMIT_ID",
                         help="Find packages modified by supplied commits. Commit ids will also be obtained from "
                              "$ENV[GITHUB_EVENT][commits]")
-    parser.add_argument("--request-package", action='store',
+    parser.add_argument("--request-package", action="store",
                         help="Requested package will also be obtained from "
                              "$ENV[GITHUB_EVENT][inputs][package_name]")
-    parser.add_argument("--request-package-version", action='store',
+    parser.add_argument("--request-package-version", action="store",
                         help="Used together with --request-package, ignored when building all packages. "
                              "Requested package version will also be obtained from "
                              "$ENV[GITHUB_EVENT][inputs][package_version]."
                              "Specify 'newest' or leave empty to request the newest version. "
                              "Specify 'all' to request all versions.")
-    parser.add_argument("--dependency-graph", nargs='*', dest="CONAN_DEPENDENCY_GRAPH.json",
+    parser.add_argument("--dependency-graph", nargs="*", dest="CONAN_DEPENDENCY_GRAPH.json",
                         help="Used to calculate downstream dependents of requested packages")
 
     args = parser.parse_args()
     del parser
 
-    github_event = json.loads(os.environ.get('GITHUB_EVENT', '{}'))
+    github_event = json.loads(os.environ.get("GITHUB_EVENT", "{}"))
     inputs = github_event.get("inputs", dict())
 
     package_infos = get_package_infos()
@@ -154,12 +154,12 @@ def main():
     del commit_ids, commit_obj_list
 
     # Check if any packages were asked to be rebuilt
-    input_requested_package = args.request_package if args.request_package else inputs.get('package_name')
-    input_requested_version = args.request_package_version or inputs.get('package_version', 'newest')
+    input_requested_package = args.request_package if args.request_package else inputs.get("package_name")
+    input_requested_version = args.request_package_version or inputs.get("package_version", "newest")
     if github_event.get("schedule", False):
         print("Scheduled job, requesting all package rebuild")
-        input_requested_package = 'all'
-    if input_requested_package == 'all':
+        input_requested_package = "all"
+    if input_requested_package == "all":
         for package in package_infos:
             if package not in requested_packages.keys():
                 requested_packages[package] = set()
@@ -168,16 +168,16 @@ def main():
         print(f"Requested package: {input_requested_package}/{input_requested_version}")
         if input_requested_package not in requested_packages.keys():
             requested_packages[input_requested_package] = set()
-        if input_requested_version == 'newest':
+        if input_requested_version == "newest":
             requested_packages[input_requested_package].add(get_latest_package_version(package_infos, input_requested_package))
-        elif input_requested_version == 'all':
-            for version in list(map(lambda v: v['version'], package_infos[input_requested_package])):
+        elif input_requested_version == "all":
+            for version in list(map(lambda v: v["version"], package_infos[input_requested_package])):
                 requested_packages[input_requested_package].add(version)
         else:
             requested_packages[input_requested_package].add(input_requested_version)
     del input_requested_package, input_requested_version
 
-    dependency_graph_files = getattr(args, 'CONAN_DEPENDENCY_GRAPH.json') or list()
+    dependency_graph_files = getattr(args, "CONAN_DEPENDENCY_GRAPH.json") or list()
     downstream_dependents = get_downstream_dependents(dependency_graph_files, package_infos)
     del dependency_graph_files
 
@@ -223,11 +223,11 @@ def main():
 
     for tier_index in range(TIER_COUNT):
         packages_in_tier = result[tier_index] if len(result) > tier_index else list()
-        print(f"packages_{tier_index}=" + ' '.join(map(lambda x: x['package_reference'], packages_in_tier)))
+        print(f"packages_{tier_index}=" + " ".join(map(lambda x: x["package_reference"], packages_in_tier)))
 
-    gh_output = os.environ.get('GITHUB_OUTPUT')
+    gh_output = os.environ.get("GITHUB_OUTPUT")
     if gh_output:
-        with open(gh_output, 'w') as out:
+        with open(gh_output, "w") as out:
             for tier_index in range(TIER_COUNT):
                 packages_in_tier = result[tier_index] if len(result) > tier_index else list()
                 print(f"packages_{tier_index}={json.dumps(packages_in_tier)}", file=out)
