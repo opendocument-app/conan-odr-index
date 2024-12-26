@@ -39,7 +39,6 @@ jobs:
           - { build_machine: ubuntu-24.04, host_profile: gcc-13 }
           - { build_machine: ubuntu-24.04, host_profile: gcc-14 }
           - { build_machine: ubuntu-24.04, host_profile: clang-18 }
-#          - { build_machine: ubuntu-24.04, host_profile: clang-18-debug }
           - { build_machine: windows-2022, host_profile: msvc-1940 }
         exclude:
           # OpenLibm does not support Windows
@@ -92,8 +91,6 @@ jobs:
           - conanfile: 'recipes/tmpfile/all/conanfile.py'
             config: { build_machine: ubuntu-24.04, host_profile: clang-18 }
           - conanfile: 'recipes/tmpfile/all/conanfile.py'
-            config: { build_machine: ubuntu-24.04, host_profile: clang-18-debug }
-          - conanfile: 'recipes/tmpfile/all/conanfile.py'
             config: { build_machine: windows-2022, host_profile: msvc-1940 }
 
           # poppler-data is the same package for all configurations
@@ -121,8 +118,6 @@ jobs:
             config: { build_machine: ubuntu-24.04, host_profile: gcc-13 }
           - conanfile: 'recipes/poppler-data/all/conanfile.py'
             config: { build_machine: ubuntu-24.04, host_profile: clang-18 }
-          - conanfile: 'recipes/poppler-data/all/conanfile.py'
-            config: { build_machine: ubuntu-24.04, host_profile: clang-18-debug }
           - conanfile: 'recipes/poppler-data/all/conanfile.py'
             config: { build_machine: windows-2022, host_profile: msvc-1940 }
     steps:
