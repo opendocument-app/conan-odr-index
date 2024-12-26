@@ -44,6 +44,7 @@ class FontForgeConan(ConanFile):
         self.requires("giflib/5.2.2")
         self.requires("libjpeg/9f")
         self.requires("libpng/[>=1.6 <2]")
+        self.requires("gettext/0.22.5")
 
         if self.options.with_tiff:
             self.requires("libtiff/4.6.0")
@@ -60,9 +61,6 @@ class FontForgeConan(ConanFile):
 
         if self.settings.os == "Android":
             self.requires("tmpfile/3.0.6")
-
-    def build_requirements(self):
-        self.tool_requires("gettext/0.22.5")
 
     def config_options(self):
         if self.settings.os == "Windows":
