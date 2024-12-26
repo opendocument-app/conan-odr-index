@@ -218,7 +218,7 @@ def main():
         for package, versions in default_packages.items():
             if package not in requested_packages.keys():
                 requested_packages[package] = set()
-            requested_packages[package].add(versions)
+            requested_packages[package].extend(versions)
     else:
         print(f"Requested package: {input_requested_package}/{input_requested_version}")
         if input_requested_package not in requested_packages.keys():
