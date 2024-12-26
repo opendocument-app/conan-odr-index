@@ -58,7 +58,7 @@ class OpenDocumentCoreConan(ConanFile):
         if self.options.get_safe("with_pdf2htmlEX"):
             self.requires("pdf2htmlex/0.18.8.rc1-git-6f85c88")
         if self.options.get_safe("with_wvWare"):
-            self.requires("wvware/1.2.9")
+            self.requires("wvware/1.2.9-vili")
 
     def build_requirements(self):
         if Version(self.version) <= "2.0.0":
