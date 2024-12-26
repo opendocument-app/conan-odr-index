@@ -12,8 +12,23 @@ import yaml
 script_path = Path(__file__).resolve().parent
 root_path = script_path.parent
 recipes_path = root_path / "recipes"
+default_packages_path = root_path / "default-packages-list.txt"
 TIER_COUNT = 5
 
+
+def get_default_packages():
+    with open(default_packages_path) as f:
+        list = f.read().splitlines()
+
+    result = dict()
+
+    for package_version in list:
+        package, version = package_version.split("/")
+        if package not in result:
+            result[package] = set()
+        result[package].add(version)
+
+    return result
 
 def get_package_infos():
     package_infos = {}
@@ -140,23 +155,17 @@ def main():
         "--commit-ids",
         nargs="*",
         dest="COMMIT_ID",
-        help="Find packages modified by supplied commits. Commit ids will also be obtained from "
-        "$ENV[GITHUB_EVENT][commits]",
+        help="Find packages modified by supplied commits. Commit ids will also be obtained from $ENV[GITHUB_EVENT][commits]",
     )
     parser.add_argument(
         "--request-package",
         action="store",
-        help="Requested package will also be obtained from "
-        "$ENV[GITHUB_EVENT][inputs][package_name]",
+        help="Requested package will also be obtained from $ENV[GITHUB_EVENT][inputs][package_name]",
     )
     parser.add_argument(
         "--request-package-version",
         action="store",
-        help="Used together with --request-package, ignored when building all packages. "
-        "Requested package version will also be obtained from "
-        "$ENV[GITHUB_EVENT][inputs][package_version]."
-        "Specify 'newest' or leave empty to request the newest version. "
-        "Specify 'all' to request all versions.",
+        help="Used together with --request-package, ignored when building default packages. Requested package version will also be obtained from $ENV[GITHUB_EVENT][inputs][package_version]. Specify 'latest' or leave empty to request the latest version. Specify 'all' to request all versions.",
     )
     parser.add_argument(
         "--dependency-graph",
@@ -172,6 +181,7 @@ def main():
     inputs = github_event.get("inputs", dict())
 
     package_infos = get_package_infos()
+    default_packages = get_default_packages()
     requested_packages = dict()
 
     commit_ids = args.COMMIT_ID or list()
@@ -189,13 +199,13 @@ def main():
         args.request_package if args.request_package else inputs.get("package_name")
     )
     input_requested_version = args.request_package_version or inputs.get(
-        "package_version", "newest"
+        "package_version", "latest"
     )
     if github_event.get("schedule", False):
-        print("Scheduled job, requesting all package rebuild")
-        input_requested_package = "all"
+        print("Scheduled job, requesting default package rebuild")
+        input_requested_package = "default"
     if (
-        input_requested_package != "all"
+        input_requested_package != "default"
         and input_requested_package not in package_infos.keys()
     ):
         print(
@@ -203,18 +213,16 @@ def main():
             file=sys.stderr,
         )
         return 1
-    if input_requested_package == "all":
-        for package in package_infos:
+    if input_requested_package == "default":
+        for package, versions in default_packages.items():
             if package not in requested_packages.keys():
                 requested_packages[package] = set()
-            requested_packages[package].add(
-                get_latest_package_version(package_infos, package)
-            )
+            requested_packages[package].add(versions)
     else:
         print(f"Requested package: {input_requested_package}/{input_requested_version}")
         if input_requested_package not in requested_packages.keys():
             requested_packages[input_requested_package] = set()
-        if input_requested_version == "newest":
+        if input_requested_version == "latest":
             requested_packages[input_requested_package].add(
                 get_latest_package_version(package_infos, input_requested_package)
             )
