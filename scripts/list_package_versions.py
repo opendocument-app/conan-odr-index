@@ -153,9 +153,8 @@ def get_latest_package_version(package_infos, package_name):
 def main():
     parser = argparse.ArgumentParser(description="List package versions")
     parser.add_argument(
-        "--commit-ids",
+        "--commit-id",
         nargs="*",
-        dest="COMMIT_ID",
         help="Find packages modified by supplied commits. Commit ids will also be obtained from $ENV[GITHUB_EVENT][commits]",
     )
     parser.add_argument(
@@ -171,7 +170,6 @@ def main():
     parser.add_argument(
         "--dependency-graph",
         nargs="*",
-        dest="CONAN_DEPENDENCY_GRAPH.json",
         help="Used to calculate downstream dependents of requested packages",
     )
     args = parser.parse_args()
@@ -183,7 +181,7 @@ def main():
     default_packages = get_default_packages()
     requested_packages = dict()
 
-    commit_ids = args.COMMIT_ID or list()
+    commit_ids = args.commit_id or list()
     commit_obj_list = github_event.get("commits", list())
     for package in get_modified_packages_in_commits(commit_ids, commit_obj_list):
         if package not in requested_packages.keys():
@@ -233,7 +231,7 @@ def main():
         else:
             requested_packages[input_requested_package].add(input_requested_version)
 
-    dependency_graph_files = getattr(args, "CONAN_DEPENDENCY_GRAPH.json") or list()
+    dependency_graph_files = args.dependency_graph or list()
     downstream_dependents = get_downstream_dependents(
         dependency_graph_files, package_infos
     )
