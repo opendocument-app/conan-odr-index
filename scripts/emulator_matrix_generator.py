@@ -39,19 +39,21 @@ def main():
                     if emulator_api_level < 35 and api_type_target == "google_apis":
                         continue
 
-                    matrix.append({
-                        "emulator_api_level": emulator_api_level,
-                        "build_api_level": build_api_level,
-                        "api_type_target": api_type_target,
-                        "arch": arch,
-                    })
+                    matrix.append(
+                        {
+                            "emulator_api_level": emulator_api_level,
+                            "build_api_level": build_api_level,
+                            "api_type_target": api_type_target,
+                            "arch": arch,
+                        }
+                    )
 
     for i in matrix:
-        print('-', i)
+        print("-", i)
 
-    gh_output = os.environ.get('GITHUB_OUTPUT')
+    gh_output = os.environ.get("GITHUB_OUTPUT")
     if gh_output:
-        with open(gh_output, 'w') as out:
+        with open(gh_output, "w") as out:
             print("matrix=" + json.dumps(matrix), file=out)
 
 

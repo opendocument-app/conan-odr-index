@@ -1,3 +1,5 @@
 versions:
-  "0.18.8.rc1-git-6f85c88":
+  "0.18.8.rc1-20240905-git-vili":
+    folder: all
+  "0.18.8.rc1-git-6f85c88-odr":
     folder: all
