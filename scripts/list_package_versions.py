@@ -159,12 +159,15 @@ def main():
     if github_event.get("schedule", False):
         print("Scheduled job, requesting all package rebuild")
         input_requested_package = "all"
+    if input_requested_package != "all" and input_requested_package not in package_infos.keys():
+        print(f"Requested package {input_requested_package} not found in recipes", file=sys.stderr)
+        return 1
     if input_requested_package == "all":
         for package in package_infos:
             if package not in requested_packages.keys():
                 requested_packages[package] = set()
             requested_packages[package].add(get_latest_package_version(package_infos, package))
-    elif input_requested_package:
+    else:
         print(f"Requested package: {input_requested_package}/{input_requested_version}")
         if input_requested_package not in requested_packages.keys():
             requested_packages[input_requested_package] = set()
@@ -211,7 +214,7 @@ def main():
         this_file = Path(__file__).resolve().relative_to(root_path)
         build_workflow = ".github/workflows/build.yml"
         print(f"Dependency tier overflow. Increase TIER_COUNT in {this_file} and in {build_workflow}", file=sys.stderr)
-        sys.exit(1)
+        return 1
 
     result = []
     for tier in tiered_packages:
@@ -232,6 +235,8 @@ def main():
                 packages_in_tier = result[tier_index] if len(result) > tier_index else list()
                 print(f"packages_{tier_index}={json.dumps(packages_in_tier)}", file=out)
 
+    return 0
+
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
