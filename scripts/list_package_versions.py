@@ -206,7 +206,8 @@ def main():
         print("Scheduled job, requesting default package rebuild")
         input_requested_package = "default"
     if (
-        input_requested_package != "default"
+        input_requested_package is not None
+        and input_requested_package != "default"
         and input_requested_package not in package_infos.keys()
     ):
         print(
@@ -219,7 +220,7 @@ def main():
             if package not in requested_packages.keys():
                 requested_packages[package] = set()
             requested_packages[package].update(versions)
-    else:
+    elif input_requested_package is not None:
         print(f"Requested package: {input_requested_package}/{input_requested_version}")
         if input_requested_package not in requested_packages.keys():
             requested_packages[input_requested_package] = set()
