@@ -44,7 +44,7 @@ class FontForgeConan(ConanFile):
         self.requires("giflib/5.2.2")
         self.requires("libjpeg/9f")
         self.requires("libpng/[>=1.6 <2]")
-        self.requires("gettext/0.22.5")
+        self.requires("libgettext/0.22")
 
         if self.options.with_tiff:
             self.requires("libtiff/4.6.0")
