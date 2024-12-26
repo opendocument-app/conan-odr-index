@@ -128,7 +128,9 @@ jobs:
     steps:
       - name: macos dependencies
         if: startsWith(matrix.config.build_machine, 'macos')
-        run: brew install gettext
+        run: |
+          brew install gettext || brew reinstall gettext
+          brew unlink gettext && brew link gettext --force
 
       - name: checkout
         uses: actions/checkout@v4
