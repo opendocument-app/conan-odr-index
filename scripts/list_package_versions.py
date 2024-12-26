@@ -30,6 +30,7 @@ def get_default_packages():
 
     return result
 
+
 def get_package_infos():
     package_infos = {}
 
