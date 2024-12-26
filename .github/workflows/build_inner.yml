@@ -126,6 +126,10 @@ jobs:
           - conanfile: 'recipes/poppler-data/all/conanfile.py'
             config: { build_machine: windows-2022, host_profile: msvc-1940 }
     steps:
+      - name: macos dependencies
+        if: startsWith(matrix.config.build_machine, 'macos')
+        run: brew install gettext
+
       - name: checkout
         uses: actions/checkout@v4
 
