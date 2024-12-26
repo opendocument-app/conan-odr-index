@@ -17,8 +17,14 @@ def main():
     for package in package_infos:
         for version in package_infos[package]:
             proc = subprocess.run(
-                ["conan", "export", version["conanfile"], "--version", version["version"]],
-                cwd=root_path
+                [
+                    "conan",
+                    "export",
+                    version["conanfile"],
+                    "--version",
+                    version["version"],
+                ],
+                cwd=root_path,
             )
             if proc.returncode != 0:
                 print(f"Failed to export {package} {version['version']}")

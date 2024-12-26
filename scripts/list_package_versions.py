@@ -37,12 +37,25 @@ def get_package_infos():
                     "package": package_name,
                     "version": version,
                     "package_reference": "{}/{}".format(package_name, version),
-                    "conanfile": str((package_path / details["folder"] / "conanfile.py").relative_to(root_path)),
-                    "test_conanfile": str((package_path / details["folder"] / "test_package" / "conanfile.py").relative_to(root_path)),
+                    "conanfile": str(
+                        (package_path / details["folder"] / "conanfile.py").relative_to(
+                            root_path
+                        )
+                    ),
+                    "test_conanfile": str(
+                        (
+                            package_path
+                            / details["folder"]
+                            / "test_package"
+                            / "conanfile.py"
+                        ).relative_to(root_path)
+                    ),
                 }
             )
 
-        package_infos[package_name] = sorted(infos, key=lambda x: x["version"], reverse=True)
+        package_infos[package_name] = sorted(
+            infos, key=lambda x: x["version"], reverse=True
+        )
 
     return package_infos
 
@@ -82,7 +95,9 @@ def get_modified_packages_in_commits(commit_id_list, commit_obj_list):
 
     for commit in commit_obj_list:
         if -1 == str.lower(commit["message"]).find("[skipci]"):
-            print(f"Found commit without [skipci]: {commit["id"]} - {commit["message"]}")
+            print(
+                f"Found commit without [skipci]: {commit["id"]} - {commit["message"]}"
+            )
             packages += get_packages_in_commit(commit["id"])
     return packages
 
@@ -121,20 +136,34 @@ def get_latest_package_version(package_infos, package_name):
 
 def main():
     parser = argparse.ArgumentParser(description="List package versions")
-    parser.add_argument("--commit-ids", nargs="*", dest="COMMIT_ID",
-                        help="Find packages modified by supplied commits. Commit ids will also be obtained from "
-                             "$ENV[GITHUB_EVENT][commits]")
-    parser.add_argument("--request-package", action="store",
-                        help="Requested package will also be obtained from "
-                             "$ENV[GITHUB_EVENT][inputs][package_name]")
-    parser.add_argument("--request-package-version", action="store",
-                        help="Used together with --request-package, ignored when building all packages. "
-                             "Requested package version will also be obtained from "
-                             "$ENV[GITHUB_EVENT][inputs][package_version]."
-                             "Specify 'newest' or leave empty to request the newest version. "
-                             "Specify 'all' to request all versions.")
-    parser.add_argument("--dependency-graph", nargs="*", dest="CONAN_DEPENDENCY_GRAPH.json",
-                        help="Used to calculate downstream dependents of requested packages")
+    parser.add_argument(
+        "--commit-ids",
+        nargs="*",
+        dest="COMMIT_ID",
+        help="Find packages modified by supplied commits. Commit ids will also be obtained from "
+        "$ENV[GITHUB_EVENT][commits]",
+    )
+    parser.add_argument(
+        "--request-package",
+        action="store",
+        help="Requested package will also be obtained from "
+        "$ENV[GITHUB_EVENT][inputs][package_name]",
+    )
+    parser.add_argument(
+        "--request-package-version",
+        action="store",
+        help="Used together with --request-package, ignored when building all packages. "
+        "Requested package version will also be obtained from "
+        "$ENV[GITHUB_EVENT][inputs][package_version]."
+        "Specify 'newest' or leave empty to request the newest version. "
+        "Specify 'all' to request all versions.",
+    )
+    parser.add_argument(
+        "--dependency-graph",
+        nargs="*",
+        dest="CONAN_DEPENDENCY_GRAPH.json",
+        help="Used to calculate downstream dependents of requested packages",
+    )
 
     args = parser.parse_args()
     del parser
@@ -150,38 +179,58 @@ def main():
     for package in get_modified_packages_in_commits(commit_ids, commit_obj_list):
         if package not in requested_packages.keys():
             requested_packages[package] = set()
-        requested_packages[package].add(get_latest_package_version(package_infos, package))
+        requested_packages[package].add(
+            get_latest_package_version(package_infos, package)
+        )
     del commit_ids, commit_obj_list
 
     # Check if any packages were asked to be rebuilt
-    input_requested_package = args.request_package if args.request_package else inputs.get("package_name")
-    input_requested_version = args.request_package_version or inputs.get("package_version", "newest")
+    input_requested_package = (
+        args.request_package if args.request_package else inputs.get("package_name")
+    )
+    input_requested_version = args.request_package_version or inputs.get(
+        "package_version", "newest"
+    )
     if github_event.get("schedule", False):
         print("Scheduled job, requesting all package rebuild")
         input_requested_package = "all"
-    if input_requested_package != "all" and input_requested_package not in package_infos.keys():
-        print(f"Requested package {input_requested_package} not found in recipes", file=sys.stderr)
+    if (
+        input_requested_package != "all"
+        and input_requested_package not in package_infos.keys()
+    ):
+        print(
+            f"Requested package {input_requested_package} not found in recipes",
+            file=sys.stderr,
+        )
         return 1
     if input_requested_package == "all":
         for package in package_infos:
             if package not in requested_packages.keys():
                 requested_packages[package] = set()
-            requested_packages[package].add(get_latest_package_version(package_infos, package))
+            requested_packages[package].add(
+                get_latest_package_version(package_infos, package)
+            )
     else:
         print(f"Requested package: {input_requested_package}/{input_requested_version}")
         if input_requested_package not in requested_packages.keys():
             requested_packages[input_requested_package] = set()
         if input_requested_version == "newest":
-            requested_packages[input_requested_package].add(get_latest_package_version(package_infos, input_requested_package))
+            requested_packages[input_requested_package].add(
+                get_latest_package_version(package_infos, input_requested_package)
+            )
         elif input_requested_version == "all":
-            for version in list(map(lambda v: v["version"], package_infos[input_requested_package])):
+            for version in list(
+                map(lambda v: v["version"], package_infos[input_requested_package])
+            ):
                 requested_packages[input_requested_package].add(version)
         else:
             requested_packages[input_requested_package].add(input_requested_version)
     del input_requested_package, input_requested_version
 
     dependency_graph_files = getattr(args, "CONAN_DEPENDENCY_GRAPH.json") or list()
-    downstream_dependents = get_downstream_dependents(dependency_graph_files, package_infos)
+    downstream_dependents = get_downstream_dependents(
+        dependency_graph_files, package_infos
+    )
     del dependency_graph_files
 
     dependents = set()
@@ -191,7 +240,9 @@ def main():
     for dependant in dependents:
         if dependant not in requested_packages.keys():
             requested_packages[dependant] = set()
-        requested_packages[dependant].add(get_latest_package_version(package_infos, dependant))
+        requested_packages[dependant].add(
+            get_latest_package_version(package_infos, dependant)
+        )
     del dependents
 
     tiered_packages = [requested_packages]
@@ -203,7 +254,9 @@ def main():
         for package in packages_from_this_tier.keys():
             for dependant in downstream_dependents.get(package, list()):
                 if dependant in packages_from_this_tier.keys():
-                    packages_to_add_in_next_tier[dependant] = packages_from_this_tier[dependant]
+                    packages_to_add_in_next_tier[dependant] = packages_from_this_tier[
+                        dependant
+                    ]
                     if dependant in tiered_packages[dependency_tier].keys():
                         del tiered_packages[dependency_tier][dependant]
         if len(packages_to_add_in_next_tier):
@@ -213,7 +266,10 @@ def main():
     if dependency_tier > TIER_COUNT:
         this_file = Path(__file__).resolve().relative_to(root_path)
         build_workflow = ".github/workflows/build.yml"
-        print(f"Dependency tier overflow. Increase TIER_COUNT in {this_file} and in {build_workflow}", file=sys.stderr)
+        print(
+            f"Dependency tier overflow. Increase TIER_COUNT in {this_file} and in {build_workflow}",
+            file=sys.stderr,
+        )
         return 1
 
     result = []
@@ -221,18 +277,25 @@ def main():
         package_infos_in_this_tier = []
         for package in tier.keys():
             for version in tier[package]:
-                package_infos_in_this_tier.append(get_package_info(package_infos, package, version))
+                package_infos_in_this_tier.append(
+                    get_package_info(package_infos, package, version)
+                )
         result.append(package_infos_in_this_tier)
 
     for tier_index in range(TIER_COUNT):
         packages_in_tier = result[tier_index] if len(result) > tier_index else list()
-        print(f"packages_{tier_index}=" + " ".join(map(lambda x: x["package_reference"], packages_in_tier)))
+        print(
+            f"packages_{tier_index}="
+            + " ".join(map(lambda x: x["package_reference"], packages_in_tier))
+        )
 
     gh_output = os.environ.get("GITHUB_OUTPUT")
     if gh_output:
         with open(gh_output, "w") as out:
             for tier_index in range(TIER_COUNT):
-                packages_in_tier = result[tier_index] if len(result) > tier_index else list()
+                packages_in_tier = (
+                    result[tier_index] if len(result) > tier_index else list()
+                )
                 print(f"packages_{tier_index}={json.dumps(packages_in_tier)}", file=out)
 
     return 0
