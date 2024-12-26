@@ -153,9 +153,8 @@ def get_latest_package_version(package_infos, package_name):
 def main():
     parser = argparse.ArgumentParser(description="List package versions")
     parser.add_argument(
-        "--commit-ids",
+        "--commit-id",
         nargs="*",
-        dest="COMMIT_ID",
         help="Find packages modified by supplied commits. Commit ids will also be obtained from $ENV[GITHUB_EVENT][commits]",
     )
     parser.add_argument(
@@ -171,12 +170,9 @@ def main():
     parser.add_argument(
         "--dependency-graph",
         nargs="*",
-        dest="CONAN_DEPENDENCY_GRAPH.json",
         help="Used to calculate downstream dependents of requested packages",
     )
-
     args = parser.parse_args()
-    del parser
 
     github_event = json.loads(os.environ.get("GITHUB_EVENT", "{}"))
     inputs = github_event.get("inputs", dict())
@@ -185,7 +181,7 @@ def main():
     default_packages = get_default_packages()
     requested_packages = dict()
 
-    commit_ids = args.COMMIT_ID or list()
+    commit_ids = args.commit_id or list()
     commit_obj_list = github_event.get("commits", list())
     for package in get_modified_packages_in_commits(commit_ids, commit_obj_list):
         if package not in requested_packages.keys():
@@ -193,7 +189,6 @@ def main():
         requested_packages[package].add(
             get_latest_package_version(package_infos, package)
         )
-    del commit_ids, commit_obj_list
 
     # Check if any packages were asked to be rebuilt
     input_requested_package = (
@@ -235,13 +230,11 @@ def main():
                 requested_packages[input_requested_package].add(version)
         else:
             requested_packages[input_requested_package].add(input_requested_version)
-    del input_requested_package, input_requested_version
 
-    dependency_graph_files = getattr(args, "CONAN_DEPENDENCY_GRAPH.json") or list()
+    dependency_graph_files = args.dependency_graph or list()
     downstream_dependents = get_downstream_dependents(
         dependency_graph_files, package_infos
     )
-    del dependency_graph_files
 
     dependents = set()
     for package in requested_packages.keys():
@@ -253,10 +246,8 @@ def main():
         requested_packages[dependant].add(
             get_latest_package_version(package_infos, dependant)
         )
-    del dependents
 
     tiered_packages = [requested_packages]
-    del requested_packages
     dependency_tier = 0
     while dependency_tier < len(tiered_packages):
         packages_from_this_tier = dict(tiered_packages[dependency_tier])

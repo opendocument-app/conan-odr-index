@@ -12,10 +12,6 @@ class FontForgeTestConan(ConanFile):
     def requirements(self):
         self.requires(self.tested_reference_str)
 
-        # Workaround against not properly propagated dependency
-        if self.settings.os == "Android":
-            self.requires("libgettext/0.22")
-
     def build(self):
         cmake = CMake(self)
         cmake.configure()
