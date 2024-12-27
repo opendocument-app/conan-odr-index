@@ -138,19 +138,6 @@ def get_cli_args():
         help="Find packages modified by supplied commits. Commit ids will also be obtained from $ENV[GITHUB_EVENT][commits]",
     )
     parser.add_argument(
-        "--request-package",
-        help="Requested package will also be obtained from $ENV[GITHUB_EVENT][inputs][package_name]",
-    )
-    parser.add_argument(
-        "--request-package-version",
-        help="Used together with --request-package, ignored when building default packages. Requested package version will also be obtained from $ENV[GITHUB_EVENT][inputs][package_version]. Specify 'latest' or leave empty to request the latest version. Specify 'all' to request all versions.",
-    )
-    parser.add_argument(
-        "--dependency-graph",
-        nargs="*",
-        help="Used to calculate downstream dependents of requested packages",
-    )
-    parser.add_argument(
         "--github-output",
         type=Path,
         help="Output file for GitHub action",
@@ -162,7 +149,6 @@ def get_cli_args():
 
 def get_github_args():
     event = json.loads(os.environ.get("GITHUB_EVENT", "{}"))
-    inputs = event.get("inputs", {})
 
     selection_config = root_path / "defaults.yaml"
 
@@ -173,21 +159,11 @@ def get_github_args():
         if "[skipci]" not in commit["message"].lower()
     ]
 
-    request_package = inputs.get("package_name")
-    request_package_version = inputs.get("package_version", "latest")
-    dependency_graph = inputs.get("dependency_graph", [])
     github_output = Path(os.environ.get("GITHUB_OUTPUT"))
-
-    if event.get("schedule", False):
-        print("Scheduled job, requesting default package rebuild")
-        request_package = "default"
 
     return argparse.Namespace(
         selection_config=selection_config,
         commit_id=commit_ids,
-        request_package=request_package,
-        request_package_version=request_package_version,
-        dependency_graph=dependency_graph,
         github_output=github_output,
     )
 
