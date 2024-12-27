@@ -14,8 +14,6 @@ import yaml
 script_path = Path(__file__).resolve().parent
 root_path = script_path.parent
 recipes_path = root_path / "recipes"
-default_packages_path = root_path / "default-packages-list.txt"
-TIER_COUNT = 5
 
 
 def get_package_infos():
@@ -166,7 +164,7 @@ def get_github_args():
     event = json.loads(os.environ.get("GITHUB_EVENT", "{}"))
     inputs = event.get("inputs", {})
 
-    selection_config = root_path / "default.yml"
+    selection_config = root_path / "defaults.yml"
 
     commit_obj_list = event.get("commits", [])
     commit_ids = [
