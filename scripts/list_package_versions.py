@@ -20,7 +20,7 @@ def get_default_packages():
     with open(default_packages_path) as f:
         list = f.read().splitlines()
 
-    result = dict()
+    result = {}
 
     for package_version in list:
         package, version = package_version.split("/")
@@ -94,7 +94,7 @@ def get_files_in_commit(commit_id):
 
 
 def get_packages_in_commit(commit_id):
-    packages = list()
+    packages = []
     for file_in_commit in get_files_in_commit(commit_id):
         file_components = file_in_commit.split(os.sep)
         if len(file_components) >= 3 and file_components[0] == "recipes":
@@ -103,25 +103,18 @@ def get_packages_in_commit(commit_id):
     return packages
 
 
-def get_modified_packages_in_commits(commit_id_list, commit_obj_list):
-    packages = list()
+def get_modified_packages_in_commits(commit_id_list):
+    packages = []
     for commit_id in commit_id_list:
         print(f"Commit {commit_id} requested as an argument")
         packages += get_packages_in_commit(commit_id)
-
-    for commit in commit_obj_list:
-        if -1 == str.lower(commit["message"]).find("[skipci]"):
-            print(
-                f"Found commit without [skipci]: {commit["id"]} - {commit["message"]}"
-            )
-            packages += get_packages_in_commit(commit["id"])
     return packages
 
 
 def get_downstream_dependents(dependency_graph_files, package_infos):
     # downstream_packages dictionary key is package name,
     # value is a set of packages, which use this package
-    downstream_packages = dict()
+    downstream_packages = {}
     for conan_dependency_graph_file in dependency_graph_files:
         print("Parsing dependencies in " + conan_dependency_graph_file)
         with open(conan_dependency_graph_file, "r") as dep_json:
@@ -150,7 +143,61 @@ def get_latest_package_version(package_infos, package_name):
     return package_infos[package_name][0]["version"]
 
 
-def main():
+def add_dependents_to_requested_packages(
+    requested_packages, downstream_dependents, package_infos
+):
+    dependents = set()
+    for package in requested_packages.keys():
+        for dependant in downstream_dependents.get(package, []):
+            dependents.add(dependant)
+    for dependant in dependents:
+        if dependant not in requested_packages.keys():
+            requested_packages[dependant] = set()
+        requested_packages[dependant].add(
+            get_latest_package_version(package_infos, dependant)
+        )
+
+
+def get_tiered_packages(requested_packages, downstream_dependents, package_infos):
+    tiered_packages = [requested_packages]
+    dependency_tier = 0
+    while dependency_tier < len(tiered_packages):
+        packages_from_this_tier = dict(tiered_packages[dependency_tier])
+        packages_to_add_in_next_tier = {}
+        for package in packages_from_this_tier.keys():
+            for dependant in downstream_dependents.get(package, []):
+                if dependant in packages_from_this_tier.keys():
+                    packages_to_add_in_next_tier[dependant] = packages_from_this_tier[
+                        dependant
+                    ]
+                    if dependant in tiered_packages[dependency_tier].keys():
+                        del tiered_packages[dependency_tier][dependant]
+        if len(packages_to_add_in_next_tier):
+            tiered_packages.append(packages_to_add_in_next_tier)
+        dependency_tier += 1
+
+    if dependency_tier > TIER_COUNT:
+        this_file = Path(__file__).resolve().relative_to(root_path)
+        print(
+            f"Dependency tier overflow. Increase TIER_COUNT in {this_file} and in .github/workflows/build.yml",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+    result = [[] for _ in range(TIER_COUNT)]
+    for tier, packages in enumerate(tiered_packages):
+        package_infos_in_this_tier = []
+        for package in packages.keys():
+            for version in packages[package]:
+                package_infos_in_this_tier.append(
+                    get_package_info(package_infos, package, version)
+                )
+        result[tier] = package_infos_in_this_tier
+
+    return result
+
+
+def get_cli_args():
     parser = argparse.ArgumentParser(description="List package versions")
     parser.add_argument(
         "--commit-id",
@@ -159,12 +206,10 @@ def main():
     )
     parser.add_argument(
         "--request-package",
-        action="store",
         help="Requested package will also be obtained from $ENV[GITHUB_EVENT][inputs][package_name]",
     )
     parser.add_argument(
         "--request-package-version",
-        action="store",
         help="Used together with --request-package, ignored when building default packages. Requested package version will also be obtained from $ENV[GITHUB_EVENT][inputs][package_version]. Specify 'latest' or leave empty to request the latest version. Specify 'all' to request all versions.",
     )
     parser.add_argument(
@@ -172,18 +217,62 @@ def main():
         nargs="*",
         help="Used to calculate downstream dependents of requested packages",
     )
+    parser.add_argument(
+        "--github-output",
+        type=Path,
+        help="Output file for GitHub action",
+    )
     args = parser.parse_args()
 
+    return args
+
+
+def get_github_args():
     github_event = json.loads(os.environ.get("GITHUB_EVENT", "{}"))
-    inputs = github_event.get("inputs", dict())
+    inputs = github_event.get("inputs", {})
+
+    commit_obj_list = github_event.get("commits", [])
+    commit_ids = [
+        commit["id"]
+        for commit in commit_obj_list
+        if "[skipci]" not in commit["message"].lower()
+    ]
+
+    request_package = inputs.get("package_name")
+    request_package_version = inputs.get("package_version", "latest")
+    dependency_graph = inputs.get("dependency_graph", [])
+    github_output = Path(os.environ.get("GITHUB_OUTPUT"))
+
+    if github_event.get("schedule", False):
+        print("Scheduled job, requesting default package rebuild")
+        request_package = "default"
+
+    return argparse.Namespace(
+        commit_id=commit_ids,
+        request_package=request_package,
+        request_package_version=request_package_version,
+        dependency_graph=dependency_graph,
+        github_output=github_output,
+    )
+
+
+def get_is_github():
+    return bool(os.environ.get("GITHUB_ACTIONS", False))
+
+
+def main():
+    is_github = get_is_github()
+
+    if is_github:
+        args = get_github_args()
+    else:
+        args = get_cli_args()
 
     package_infos = get_package_infos()
     default_packages = get_default_packages()
-    requested_packages = dict()
+    requested_packages = {}
 
-    commit_ids = args.commit_id or list()
-    commit_obj_list = github_event.get("commits", list())
-    for package in get_modified_packages_in_commits(commit_ids, commit_obj_list):
+    for package in get_modified_packages_in_commits(args.commit_id):
         if package not in requested_packages.keys():
             requested_packages[package] = set()
         requested_packages[package].add(
@@ -191,15 +280,8 @@ def main():
         )
 
     # Check if any packages were asked to be rebuilt
-    input_requested_package = (
-        args.request_package if args.request_package else inputs.get("package_name")
-    )
-    input_requested_version = args.request_package_version or inputs.get(
-        "package_version", "latest"
-    )
-    if github_event.get("schedule", False):
-        print("Scheduled job, requesting default package rebuild")
-        input_requested_package = "default"
+    input_requested_package = args.request_package
+    input_requested_version = args.request_package_version
     if (
         input_requested_package is not None
         and input_requested_package != "default"
@@ -231,72 +313,28 @@ def main():
         else:
             requested_packages[input_requested_package].add(input_requested_version)
 
-    dependency_graph_files = args.dependency_graph or list()
+    dependency_graph_files = args.dependency_graph or []
     downstream_dependents = get_downstream_dependents(
         dependency_graph_files, package_infos
     )
 
-    dependents = set()
-    for package in requested_packages.keys():
-        for dependant in downstream_dependents.get(package, list()):
-            dependents.add(dependant)
-    for dependant in dependents:
-        if dependant not in requested_packages.keys():
-            requested_packages[dependant] = set()
-        requested_packages[dependant].add(
-            get_latest_package_version(package_infos, dependant)
-        )
+    add_dependents_to_requested_packages(
+        requested_packages, downstream_dependents, package_infos
+    )
 
-    tiered_packages = [requested_packages]
-    dependency_tier = 0
-    while dependency_tier < len(tiered_packages):
-        packages_from_this_tier = dict(tiered_packages[dependency_tier])
-        packages_to_add_in_next_tier = dict()
-        for package in packages_from_this_tier.keys():
-            for dependant in downstream_dependents.get(package, list()):
-                if dependant in packages_from_this_tier.keys():
-                    packages_to_add_in_next_tier[dependant] = packages_from_this_tier[
-                        dependant
-                    ]
-                    if dependant in tiered_packages[dependency_tier].keys():
-                        del tiered_packages[dependency_tier][dependant]
-        if len(packages_to_add_in_next_tier):
-            tiered_packages.append(packages_to_add_in_next_tier)
-        dependency_tier += 1
+    tiered_packages = get_tiered_packages(
+        requested_packages, downstream_dependents, package_infos
+    )
 
-    if dependency_tier > TIER_COUNT:
-        this_file = Path(__file__).resolve().relative_to(root_path)
-        build_workflow = ".github/workflows/build.yml"
-        print(
-            f"Dependency tier overflow. Increase TIER_COUNT in {this_file} and in {build_workflow}",
-            file=sys.stderr,
-        )
-        return 1
-
-    result = []
-    for tier in tiered_packages:
-        package_infos_in_this_tier = []
-        for package in tier.keys():
-            for version in tier[package]:
-                package_infos_in_this_tier.append(
-                    get_package_info(package_infos, package, version)
-                )
-        result.append(package_infos_in_this_tier)
-
-    for tier_index in range(TIER_COUNT):
-        packages_in_tier = result[tier_index] if len(result) > tier_index else list()
+    for tier_index, packages_in_tier in enumerate(tiered_packages):
         print(
             f"packages_{tier_index}="
             + " ".join(map(lambda x: x["package_reference"], packages_in_tier))
         )
 
-    gh_output = os.environ.get("GITHUB_OUTPUT")
-    if gh_output:
-        with open(gh_output, "w") as out:
-            for tier_index in range(TIER_COUNT):
-                packages_in_tier = (
-                    result[tier_index] if len(result) > tier_index else list()
-                )
+    if is_github:
+        with open(args.github_output, "w") as out:
+            for tier_index, packages_in_tier in enumerate(tiered_packages):
                 print(f"packages_{tier_index}={json.dumps(packages_in_tier)}", file=out)
 
     return 0
