@@ -164,7 +164,7 @@ def get_github_args():
     event = json.loads(os.environ.get("GITHUB_EVENT", "{}"))
     inputs = event.get("inputs", {})
 
-    selection_config = root_path / "defaults.yml"
+    selection_config = root_path / "defaults.yaml"
 
     commit_obj_list = event.get("commits", [])
     commit_ids = [
