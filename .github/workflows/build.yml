@@ -37,7 +37,7 @@ jobs:
   generate-matrix:
     runs-on: ubuntu-24.04
     outputs:
-      packages: ${{ steps.list-packages-with-dependents.outputs.packages }}
+      packages: ${{ steps.list-packages.outputs.packages }}
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -80,7 +80,7 @@ jobs:
           echo "graph_file=wvware-dependency-tree.json" >> $GITHUB_OUTPUT
 
       - name: Get selected packages from commits and workflow_dispatch inputs
-        id: list-packages-with-dependents
+        id: list-packages
         run: python scripts/list_package_references.py
         env:
           GITHUB_EVENT: ${{ toJson(github.event) }}

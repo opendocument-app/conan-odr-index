@@ -202,8 +202,15 @@ def main():
 
     if is_github:
         with open(args.github_output, "w") as out:
-            for package_reference in selected_packages:
-                print(f"packages={json.dumps(package_reference)}", file=out)
+            selected_package_infos = [
+                get_package_info(
+                    package_infos,
+                    package_reference.split("/")[0],
+                    package_reference.split("/")[1],
+                )
+                for package_reference in selected_packages
+            ]
+            print(f"packages={json.dumps(selected_package_infos)}", file=out)
 
     return 0
 
