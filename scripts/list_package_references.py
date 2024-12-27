@@ -59,7 +59,8 @@ def get_package_infos():
             )
 
         package_infos[package_name] = sorted(
-            infos, key=cmp_to_key(lambda a, b: semver.compare(a["version"], b["version"]))
+            infos,
+            key=cmp_to_key(lambda a, b: semver.compare(a["version"], b["version"])),
         )
 
     return package_infos
@@ -81,9 +82,15 @@ def get_selected_packages(package_references, config):
     result = []
 
     for package_reference in package_references:
-        if all(not fnmatch.fnmatch(package_reference, pattern) for pattern in package_selection.get("include", ["*"])):
+        if all(
+            not fnmatch.fnmatch(package_reference, pattern)
+            for pattern in package_selection.get("include", ["*"])
+        ):
             continue
-        if any(fnmatch.fnmatch(package_reference, pattern) for pattern in package_selection.get("exclude", [])):
+        if any(
+            fnmatch.fnmatch(package_reference, pattern)
+            for pattern in package_selection.get("exclude", [])
+        ):
             continue
         result.append(package_reference)
 
@@ -207,7 +214,9 @@ def main():
     package_infos = get_package_infos()
     package_references = get_package_references(package_infos)
     if args.selection_config is not None:
-        selected_packages = get_selected_packages(package_references, args.selection_config)
+        selected_packages = get_selected_packages(
+            package_references, args.selection_config
+        )
     else:
         selected_packages = package_references
 

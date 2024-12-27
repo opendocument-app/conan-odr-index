@@ -37,11 +37,7 @@ jobs:
   generate-matrices:
     runs-on: ubuntu-22.04
     outputs:
-      packages_0: ${{ steps.list-packages-with-dependents.outputs.packages_0 }}
-      packages_1: ${{ steps.list-packages-with-dependents.outputs.packages_1 }}
-      packages_2: ${{ steps.list-packages-with-dependents.outputs.packages_2 }}
-      packages_3: ${{ steps.list-packages-with-dependents.outputs.packages_3 }}
-      packages_4: ${{ steps.list-packages-with-dependents.outputs.packages_4 }}
+      packages: ${{ steps.list-packages-with-dependents.outputs.packages }}
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -83,97 +79,20 @@ jobs:
           conan graph info recipes/wvware/all/conanfile.py --version=1.2.9-odr --profile:host=android-21-armv8 --format=json | tee wvware-dependency-tree.json
           echo "graph_file=wvware-dependency-tree.json" >> $GITHUB_OUTPUT
 
-      - name: Get requested packages and dependants from commits and workflow_dispatch inputs
+      - name: Get selected packages from commits and workflow_dispatch inputs
         id: list-packages-with-dependents
-        run: python scripts/list_package_versions.py --dependency-graph ${{ steps.odrcore-dependency-tree.outputs.graph_file }} ${{ steps.wvware-dependency-tree.outputs.graph_file }}
+        run: python scripts/list_package_references.py
         env:
           GITHUB_EVENT: ${{ toJson(github.event) }}
 
-  build_0:
-    if: ${{ needs.generate-matrices.outputs.packages_0 != '[]' && needs.generate-matrices.outputs.packages_0 != '' }}
+  build:
     name: ${{ matrix.package.package_reference }}
     needs:
       - generate-matrices
     strategy:
       fail-fast: false
       matrix:
-        package: ${{ fromJson(needs.generate-matrices.outputs.packages_0) }}
-    uses: ./.github/workflows/build_inner.yml
-    with:
-      conanfile: ${{ matrix.package.conanfile }}
-      package_version: ${{ matrix.package.version }}
-      build_dependencies_from_source: ${{ github.event.inputs.build_dependencies_from_source == 'true' }}
-      artifactory_upload: ${{ github.repository_owner == 'opendocument-app' && (github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.upload_to_artifactory == 'true')) }}
-    secrets:
-      ARTIFACTORY: ${{ secrets.ARTIFACTORY }}
-
-  build_1:
-    if: ${{ needs.generate-matrices.outputs.packages_1 != '[]' && needs.generate-matrices.outputs.packages_1 != '' }}
-    name: ${{ matrix.package.package_reference }}
-    needs:
-      - generate-matrices
-      - build_0
-    strategy:
-      fail-fast: false
-      matrix:
-        package: ${{ fromJson(needs.generate-matrices.outputs.packages_1) }}
-    uses: ./.github/workflows/build_inner.yml
-    with:
-      conanfile: ${{ matrix.package.conanfile }}
-      package_version: ${{ matrix.package.version }}
-      build_dependencies_from_source: ${{ github.event.inputs.build_dependencies_from_source == 'true' }}
-      artifactory_upload: ${{ github.repository_owner == 'opendocument-app' && (github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.upload_to_artifactory == 'true')) }}
-    secrets:
-      ARTIFACTORY: ${{ secrets.ARTIFACTORY }}
-
-  build_2:
-    if: ${{ needs.generate-matrices.outputs.packages_2 != '[]' && needs.generate-matrices.outputs.packages_2 != '' }}
-    name: ${{ matrix.package.package_reference }}
-    needs:
-      - generate-matrices
-      - build_1
-    strategy:
-      fail-fast: false
-      matrix:
-        package: ${{ fromJson(needs.generate-matrices.outputs.packages_2) }}
-    uses: ./.github/workflows/build_inner.yml
-    with:
-      conanfile: ${{ matrix.package.conanfile }}
-      package_version: ${{ matrix.package.version }}
-      build_dependencies_from_source: ${{ github.event.inputs.build_dependencies_from_source == 'true' }}
-      artifactory_upload: ${{ github.repository_owner == 'opendocument-app' && (github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.upload_to_artifactory == 'true')) }}
-    secrets:
-      ARTIFACTORY: ${{ secrets.ARTIFACTORY }}
-
-  build_3:
-    if: ${{ needs.generate-matrices.outputs.packages_3 != '[]' && needs.generate-matrices.outputs.packages_3 != '' }}
-    name: ${{ matrix.package.package_reference }}
-    needs:
-      - generate-matrices
-      - build_2
-    strategy:
-      fail-fast: false
-      matrix:
-        package: ${{ fromJson(needs.generate-matrices.outputs.packages_3) }}
-    uses: ./.github/workflows/build_inner.yml
-    with:
-      conanfile: ${{ matrix.package.conanfile }}
-      package_version: ${{ matrix.package.version }}
-      build_dependencies_from_source: ${{ github.event.inputs.build_dependencies_from_source == 'true' }}
-      artifactory_upload: ${{ github.repository_owner == 'opendocument-app' && (github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.upload_to_artifactory == 'true')) }}
-    secrets:
-      ARTIFACTORY: ${{ secrets.ARTIFACTORY }}
-
-  build_4:
-    if: ${{ needs.generate-matrices.outputs.packages_4 != '[]' && needs.generate-matrices.outputs.packages_4 != '' }}
-    name: ${{ matrix.package.package_reference }}
-    needs:
-      - generate-matrices
-      - build_3
-    strategy:
-      fail-fast: false
-      matrix:
-        package: ${{ fromJson(needs.generate-matrices.outputs.packages_4) }}
+        package: ${{ fromJson(needs.generate-matrices.outputs.packages) }}
     uses: ./.github/workflows/build_inner.yml
     with:
       conanfile: ${{ matrix.package.conanfile }}
