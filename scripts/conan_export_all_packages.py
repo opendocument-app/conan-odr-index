@@ -4,7 +4,7 @@ import sys
 import subprocess
 from pathlib import Path
 
-from scripts.list_package_references import get_package_infos
+from list_package_references import get_package_infos
 
 
 def main():
