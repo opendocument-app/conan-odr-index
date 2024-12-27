@@ -6,11 +6,9 @@ import os
 import subprocess
 import sys
 from pathlib import Path
-from functools import cmp_to_key
 import fnmatch
 
 import yaml
-import semver
 
 
 script_path = Path(__file__).resolve().parent
@@ -58,10 +56,7 @@ def get_package_infos():
                 }
             )
 
-        package_infos[package_name] = sorted(
-            infos,
-            key=cmp_to_key(lambda a, b: semver.compare(a["version"], b["version"])),
-        )
+        package_infos[package_name] = sorted(infos, key=lambda x: x["version"])
 
     return package_infos
 
