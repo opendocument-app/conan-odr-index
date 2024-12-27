@@ -228,10 +228,10 @@ def get_cli_args():
 
 
 def get_github_args():
-    github_event = json.loads(os.environ.get("GITHUB_EVENT", "{}"))
-    inputs = github_event.get("inputs", {})
+    event = json.loads(os.environ.get("GITHUB_EVENT", "{}"))
+    inputs = event.get("inputs", {})
 
-    commit_obj_list = github_event.get("commits", [])
+    commit_obj_list = event.get("commits", [])
     commit_ids = [
         commit["id"]
         for commit in commit_obj_list
@@ -243,7 +243,7 @@ def get_github_args():
     dependency_graph = inputs.get("dependency_graph", [])
     github_output = Path(os.environ.get("GITHUB_OUTPUT"))
 
-    if github_event.get("schedule", False):
+    if event.get("schedule", False):
         print("Scheduled job, requesting default package rebuild")
         request_package = "default"
 
