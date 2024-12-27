@@ -1,0 +1,59 @@
+packages:
+  include:
+    - "glib/2.81.0-odr"
+    - "tmpfile/3.0.6"
+    - "fontconfig/2.15.0-odr"
+    - "poppler-data/0.4.12-odr"
+    - "libwmf/0.2.13"
+    - "openlibm/0.8.3"
+    - "fontforge/20240423-git"
+    - "libgsf/1.14.52"
+    - "cairo/1.18.0-odr"
+    - "wvware/1.2.9-vili"
+    - "wvware/1.2.9-odr"
+    - "poppler/24.08.0-odr"
+    - "pdf2htmlex/0.18.8.rc1-20240905-git-vili"
+    - "pdf2htmlex/0.18.8.rc1-git-6f85c88-odr"
+    - "odrcore/4.1.1"
+
+platforms:
+  include: "*"
+
+profiles:
+  include: "*"
+
+rules:
+  - exclude:
+    packages:
+      # OpenLibm does not support Windows
+      - "openlibm/*"
+      # Cairo fails to compile on Windows
+      # https://github.com/conan-io/conan-center-index/issues/23786
+      # https://gitlab.freedesktop.org/cairo/cairo/-/issues/808
+      - "cairo/*"
+      # No Cairo means no Poppler and no pdf2htmlEX
+      - "poppler/*"
+      - "pdf2htmlex/*"
+      # Fontforge build issue on msvc-1940
+      - "fontforge/*"
+      # pdf2htmlEX and wvWare not yet supported on Windows, GLib isn't needed then either
+      - "glib/*"
+      # Autotools are problematic on Windows
+      - "libgsf/*"
+      - "libwmf/*"
+      - "wvware/*"
+    platforms: "windows*"
+  # tmpfile is needed only for Android
+  - exclude:
+    packages: "tmpfile/*"
+    platforms:
+      - "macos*"
+      - "ubuntu*"
+      - "windows*"
+  # poppler-data is the same package for all configurations
+  - exclude:
+    packages: "poppler-data/*"
+  - include:
+    packages: "poppler-data/*"
+    platforms: "ubuntu-24.04"
+    profiles: "clang-18"
