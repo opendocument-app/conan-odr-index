@@ -34,8 +34,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  generate-matrices:
-    runs-on: ubuntu-22.04
+  generate-matrix:
+    runs-on: ubuntu-24.04
     outputs:
       packages: ${{ steps.list-packages-with-dependents.outputs.packages }}
     steps:
@@ -88,11 +88,11 @@ jobs:
   build:
     name: ${{ matrix.package.package_reference }}
     needs:
-      - generate-matrices
+      - generate-matrix
     strategy:
       fail-fast: false
       matrix:
-        package: ${{ fromJson(needs.generate-matrices.outputs.packages) }}
+        package: ${{ fromJson(needs.generate-matrix.outputs.packages) }}
     uses: ./.github/workflows/build_inner.yml
     with:
       conanfile: ${{ matrix.package.conanfile }}
