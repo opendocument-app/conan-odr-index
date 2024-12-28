@@ -191,7 +191,7 @@ def get_github_args():
     github = json.loads(os.environ.get("GITHUB_CONTEXT", "{}"))
     inputs = json.loads(os.environ.get("GITHUB_INPUT", "{}"))
 
-    conanfile = inputs.get("conanfile")
+    conanfile = Path(inputs.get("conanfile"))
     version = inputs.get("package_version")
 
     selection_config = root_path / "defaults.yaml"
