@@ -111,14 +111,14 @@ def get_build_matrix(package_reference, selection_config_path):
         "macos-13",
         {
             "build_machine": "macos-13",
-            "host_profile": "apple-clang-14",
+            "host_profile": "macos-13-x86_64-apple-clang-14",
         },
     )
     check_and_append(
         "macos-14",
         {
             "build_machine": "macos-14",
-            "host_profile": "apple-armv8-clang-14",
+            "host_profile": "macos-14-armv8-apple-clang-14",
         },
     )
 
@@ -127,21 +127,21 @@ def get_build_matrix(package_reference, selection_config_path):
         "ubuntu-24.04",
         {
             "build_machine": "ubuntu-24.04",
-            "host_profile": "gcc-13",
+            "host_profile": "ubuntu-24.04-x86_64-gcc-13",
         },
     )
     check_and_append(
         "ubuntu-24.04",
         {
             "build_machine": "ubuntu-24.04",
-            "host_profile": "gcc-14",
+            "host_profile": "ubuntu-24.04-x86_64-gcc-14",
         },
     )
     check_and_append(
         "ubuntu-24.04",
         {
             "build_machine": "ubuntu-24.04",
-            "host_profile": "clang-18",
+            "host_profile": "ubuntu-24.04-x86_64-clang-18",
         },
     )
 
@@ -150,7 +150,7 @@ def get_build_matrix(package_reference, selection_config_path):
         "windows-2022",
         {
             "build_machine": "windows-2022",
-            "host_profile": "msvc-1940",
+            "host_profile": "windows-2022-x86_64-msvc-1940",
         },
     )
 

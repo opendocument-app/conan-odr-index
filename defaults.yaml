@@ -56,4 +56,4 @@ rules:
   - type: "include"
     packages: "poppler-data/*"
     platforms: "ubuntu-24.04"
-    profiles: "clang-18"
+    profiles: "ubuntu-24.04-x86-clang-18"
