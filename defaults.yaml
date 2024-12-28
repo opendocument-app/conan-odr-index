@@ -23,7 +23,7 @@ profiles:
   include: "*"
 
 rules:
-  - exclude:
+  - type: "exclude"
     packages:
       # OpenLibm does not support Windows
       - "openlibm/*"
@@ -44,16 +44,16 @@ rules:
       - "wvware/*"
     platforms: "windows*"
   # tmpfile is needed only for Android
-  - exclude:
+  - type: "exclude"
     packages: "tmpfile/*"
     platforms:
       - "macos*"
       - "ubuntu*"
       - "windows*"
   # poppler-data is the same package for all configurations
-  - exclude:
+  - type: "exclude"
     packages: "poppler-data/*"
-  - include:
+  - type: "include"
     packages: "poppler-data/*"
     platforms: "ubuntu-24.04"
     profiles: "clang-18"

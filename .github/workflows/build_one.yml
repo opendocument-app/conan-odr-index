@@ -1,0 +1,98 @@
+on:
+  workflow_call:
+    inputs:
+      conanfile:
+        required: true
+        type: string
+      package_version:
+        required: true
+        type: string
+      build_dependencies_from_source:
+        required: true
+        type: boolean
+      artifactory_upload:
+        required: true
+        type: boolean
+    secrets:
+      ARTIFACTORY:
+        required: true
+
+jobs:
+  generate-matrix:
+    runs-on: ubuntu-24.04
+    outputs:
+      matrix: ${{ steps.list-build-matrix.outputs.matrix }}
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: setup python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+      - name: install python dependencies
+        run: python -m pip install --upgrade pip conan semver
+
+      - name: conan config
+        run: conan config install .github/config/ubuntu-24.04/conan
+
+      - name: list build matrix
+        id: list-build-matrix
+        run: python scripts/list_build_matrix.py
+
+  build:
+    name : ${{ matrix.config.host_profile }}
+    needs:
+      - generate-matrix
+    runs-on: ${{ matrix.config.build_machine }}
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: setup python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+      - name: install python dependencies and setuptools (required to build GLib)
+        run: python -m pip install --upgrade pip conan setuptools
+
+      - name: install NDK
+        if: startsWith(matrix.config.host_profile, 'android')
+        run: echo "y" | sudo ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install "ndk;${{ matrix.config.ndk_version }}"
+
+      - name: conan remote
+        run: conan remote add odr https://artifactory.opendocument.app/artifactory/api/conan/conan
+      - name: conan config
+        run: conan config install .github/config/${{ matrix.config.build_machine }}/conan
+
+      - name: Parse build from source option
+        id: build_from_source
+        shell: bash
+        run: |
+          if [ ${{ inputs.build_dependencies_from_source }} == true ]; then
+            echo argument=--build=* | tee $GITHUB_OUTPUT
+          else
+            echo argument=--build=missing | tee $GITHUB_OUTPUT
+          fi
+
+      # No need to export local packages, if the previous build jobs in this chain already published to artifactory
+      - name: Conan export all packages
+        if: ${{ inputs.artifactory_upload != true }}
+        run: python scripts/conan_export_all_packages.py
+
+      - name: conan install
+        run: conan install ${{ inputs.conanfile }} --version ${{ inputs.package_version }} --profile:host ${{ matrix.config.host_profile }} --profile:build default ${{ steps.build_from_source.outputs.argument }}
+
+      - name: conan create
+        run: conan create ${{ inputs.conanfile }} --version ${{ inputs.package_version }} --profile:host ${{ matrix.config.host_profile }} --profile:build default
+
+      - name: conan login
+        if: ${{ inputs.artifactory_upload }}
+        run: conan remote login odr admin --password '${{ secrets.ARTIFACTORY }}'
+
+      - name: conan upload
+        if: ${{ inputs.artifactory_upload }}
+        run: conan upload "*" --check --confirm --remote odr

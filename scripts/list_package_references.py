@@ -16,6 +16,12 @@ root_path = script_path.parent
 recipes_path = root_path / "recipes"
 
 
+def item_to_list(item_or_list):
+    if isinstance(item_or_list, list):
+        return item_or_list
+    return [item_or_list]
+
+
 def get_package_infos():
     package_infos = {}
 
@@ -77,12 +83,12 @@ def get_selected_packages(package_references, config):
     for package_reference in package_references:
         if all(
             not fnmatch.fnmatch(package_reference, pattern)
-            for pattern in package_selection.get("include", ["*"])
+            for pattern in item_to_list(package_selection.get("include", "*"))
         ):
             continue
         if any(
             fnmatch.fnmatch(package_reference, pattern)
-            for pattern in package_selection.get("exclude", [])
+            for pattern in item_to_list(package_selection.get("exclude", []))
         ):
             continue
         result.append(package_reference)
@@ -149,6 +155,7 @@ def get_cli_args():
 
 def get_github_args():
     event = json.loads(os.environ.get("GITHUB_EVENT", "{}"))
+    inputs = event.get("inputs", {})
 
     selection_config = root_path / "defaults.yaml"
 

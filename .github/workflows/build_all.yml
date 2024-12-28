@@ -54,7 +54,7 @@ jobs:
         run: python -m pip install --upgrade pip conan semver
 
       - name: conan config
-        run: conan config install .github/config/ubuntu-22.04/conan
+        run: conan config install .github/config/ubuntu-24.04/conan
 
       - name: Conan export all packages
         run: python scripts/conan_export_all_packages.py
@@ -93,7 +93,7 @@ jobs:
       fail-fast: false
       matrix:
         package: ${{ fromJson(needs.generate-matrix.outputs.packages) }}
-    uses: ./.github/workflows/build_inner.yml
+    uses: ./.github/workflows/build_one.yml
     with:
       conanfile: ${{ matrix.package.conanfile }}
       package_version: ${{ matrix.package.version }}
