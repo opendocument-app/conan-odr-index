@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
-import json
 import os
+import sys
+import json
 
 
 def main():
@@ -56,6 +57,8 @@ def main():
         with open(gh_output, "w") as out:
             print("matrix=" + json.dumps(matrix), file=out)
 
+    return 0
+
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

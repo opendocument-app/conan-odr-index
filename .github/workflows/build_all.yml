@@ -1,0 +1,83 @@
+name: Build all packages
+
+on:
+  push:
+  schedule:
+    # Executed daily, 9:37 is randomly picked time, not 00:00,
+    # because 00:00 is used too frequently and GitHub asks to do cronjobs at less busy times
+    - cron: '37 9 * * *'
+  workflow_dispatch:
+    inputs:
+      package_name:
+        description: Package name
+        type: string
+        default: default
+      package_version:
+        description: Package version. Specify 'newest' or leave empty to request the newest version. Specify 'all' to request all versions.
+        required: false
+      upload_to_artifactory:
+        description: Upload built packages to artifactory
+        type: boolean
+        default: false
+      build_dependents:
+        description: Parse conan dependency tree and build not just the requested package, but also all dependents of it
+        type: boolean
+        default: true
+      build_dependencies_from_source:
+        description: Build all dependencies from source (conan install --build=* instead of --build=missing)
+        type: boolean
+        default: false
+
+run-name: build ${{ inputs.package_name }}
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  generate-matrix:
+    runs-on: ubuntu-24.04
+    outputs:
+      packages: ${{ steps.list-packages.outputs.packages }}
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          # Fetch whole git history.
+          # Required to parse modified packages
+          fetch-depth: 0
+
+      - name: setup python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+      - name: install python dependencies
+        run: python -m pip install --upgrade pip conan semver
+
+      - name: conan config
+        run: conan config install .github/config/ubuntu-24.04/conan
+
+      - name: Conan export all packages
+        run: python scripts/conan_export_all_packages.py
+
+      - name: Get selected packages from commits and workflow_dispatch inputs
+        id: list-packages
+        run: python scripts/list_package_references.py
+        env:
+          GITHUB_EVENT: ${{ toJson(github.event) }}
+
+  build:
+    name: ${{ matrix.package.package_reference }}
+    needs:
+      - generate-matrix
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{ fromJson(needs.generate-matrix.outputs.packages) }}
+    uses: ./.github/workflows/build_one.yml
+    with:
+      conanfile: ${{ matrix.package.conanfile }}
+      package_version: ${{ matrix.package.version }}
+      build_dependencies_from_source: ${{ github.event.inputs.build_dependencies_from_source == 'true' }}
+      artifactory_upload: ${{ github.repository_owner == 'opendocument-app' && (github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.upload_to_artifactory == 'true')) }}
+    secrets:
+      ARTIFACTORY: ${{ secrets.ARTIFACTORY }}
