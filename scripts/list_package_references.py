@@ -155,8 +155,9 @@ def get_cli_args():
 
 def get_github_args():
     github = json.loads(os.environ.get("GITHUB_CONTEXT", "{}"))
+    inputs = json.loads(os.environ.get("GITHUB_INPUT", "{}"))
+
     event = github.get("event", {})
-    inputs = event.get("inputs", {})
 
     selection_config = root_path / "defaults.yaml"
 

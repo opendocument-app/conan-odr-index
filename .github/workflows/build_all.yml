@@ -17,6 +17,8 @@ on:
         type: boolean
         default: false
 
+run-name: Build all packages
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
@@ -52,6 +54,7 @@ jobs:
         run: python scripts/list_package_references.py
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
+          GITHUB_INPUT: ${{ toJson(inputs) }}
 
   build:
     if: ${{ needs.generate-matrix.outputs.packages != '[]' && needs.generate-matrix.outputs.packages != '' }}

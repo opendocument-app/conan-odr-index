@@ -4,23 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       package_name:
-        description: Package name
-        type: choice
-        options:
-          - all
-          - odrcore
-          - pdf2htmlex
-          - fontforge
-          - poppler
-          - poppler-data
-          - cairo
-          - openlibm
-          - fontconfig
-          - glib
-          - tmpfile
-          - libgsf
-          - libwmf
-          - wvware
+        description: Package name pattern
+        type: string
+        default: "*"
 
 run-name: Remove ${{ inputs.package_name }} from artifactory
 
@@ -36,8 +22,4 @@ jobs:
       - run: conan remote add odr https://artifactory.opendocument.app/artifactory/api/conan/conan
       - run: conan remote login odr admin --password ${{ secrets.ARTIFACTORY }}
 
-      - run: conan remove --remote=odr "${{ github.event.inputs.package_name }}/*#*" --confirm
-        if: ${{ github.event.inputs.package_name != 'all' }}
-
-      - run: conan remove --remote=odr '*' --confirm
-        if: ${{ github.event.inputs.package_name == 'all' }}
+      - run: conan remove --remote=odr "${{ github.event.inputs.package_name }}" --confirm
