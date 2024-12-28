@@ -14,7 +14,6 @@ from list_package_references import item_to_list
 
 script_path = Path(__file__).resolve().parent
 root_path = script_path.parent
-recipes_path = root_path / "recipes"
 
 
 def get_build_matrix(package_reference, conanfile, selection_config_path):

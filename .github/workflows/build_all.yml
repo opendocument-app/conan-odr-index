@@ -59,26 +59,6 @@ jobs:
       - name: Conan export all packages
         run: python scripts/conan_export_all_packages.py
 
-      # Generate dependency graphs for all disjoint packages
-      # Dependency graphs for android-21 and android-23 profiles are not identical.
-      # android-21 has an extra openlibm dependency. Android ABI does not matter for dependency graph, as long as it's still Android.
-      # Generating graphs for both 21 and 23 would be more self-explanatory, but conan graph generation takes a few seconds.
-      - name: Generate odrcore dependency tree
-        id: odrcore-dependency-tree
-        if: ${{ github.event.inputs.build_dependents != 'false' }}
-        shell: bash # bash shell needed to pipefail on error
-        run: |
-          conan graph info recipes/odrcore/all/conanfile.py --version=4.1.0 --profile:host=android-21-armv8 --format=json | tee odrcore-dependency-tree.json
-          echo "graph_file=odrcore-dependency-tree.json" >> $GITHUB_OUTPUT
-
-      - name: Generate wvware dependency tree
-        id: wvware-dependency-tree
-        if: ${{ github.event.inputs.build_dependents != 'false' }}
-        shell: bash # bash shell needed to pipefail on error
-        run: |
-          conan graph info recipes/wvware/all/conanfile.py --version=1.2.9-odr --profile:host=android-21-armv8 --format=json | tee wvware-dependency-tree.json
-          echo "graph_file=wvware-dependency-tree.json" >> $GITHUB_OUTPUT
-
       - name: Get selected packages from commits and workflow_dispatch inputs
         id: list-packages
         run: python scripts/list_package_references.py
