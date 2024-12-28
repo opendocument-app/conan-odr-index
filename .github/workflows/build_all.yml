@@ -8,27 +8,15 @@ on:
     - cron: '37 9 * * *'
   workflow_dispatch:
     inputs:
-      package_name:
-        description: Package name
-        type: string
-        default: default
-      package_version:
-        description: Package version. Specify 'newest' or leave empty to request the newest version. Specify 'all' to request all versions.
-        required: false
       upload_to_artifactory:
         description: Upload built packages to artifactory
         type: boolean
         default: false
-      build_dependents:
-        description: Parse conan dependency tree and build not just the requested package, but also all dependents of it
-        type: boolean
-        default: true
       build_dependencies_from_source:
         description: Build all dependencies from source (conan install --build=* instead of --build=missing)
         type: boolean
         default: false
 
-run-name: build ${{ inputs.package_name }}
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
@@ -66,6 +54,7 @@ jobs:
           GITHUB_EVENT: ${{ toJson(github.event) }}
 
   build:
+    if: ${{ needs.generate-matrix.outputs.packages != '[]' && needs.generate-matrix.outputs.packages != '' }}
     name: ${{ matrix.package.package_reference }}
     needs:
       - generate-matrix
