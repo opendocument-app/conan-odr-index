@@ -1,4 +1,4 @@
-name: Remove package from artifactory
+name: Remove packages from artifactory
 
 on:
   workflow_dispatch:

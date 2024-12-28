@@ -188,7 +188,7 @@ def get_cli_args():
 
 
 def get_github_args():
-    event = json.loads(os.environ.get("GITHUB_EVENT", "{}"))
+    event = json.loads(os.environ.get("GITHUB_CONTEXT", "{}"))
     inputs = event.get("inputs", {})
 
     conanfile = inputs.get("conanfile")

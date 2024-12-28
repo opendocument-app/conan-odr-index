@@ -41,6 +41,8 @@ jobs:
       - name: list build matrix
         id: list-build-matrix
         run: python scripts/list_build_matrix.py
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
 
   build:
     name : ${{ matrix.config.host_profile }}
