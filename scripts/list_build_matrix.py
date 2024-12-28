@@ -16,21 +16,18 @@ script_path = Path(__file__).resolve().parent
 root_path = script_path.parent
 
 
-def get_build_matrix(package_reference, conanfile, selection_config_path):
+def get_build_matrix(package_reference, selection_config_path):
     if selection_config_path is None:
         selection_config = None
     else:
         with open(selection_config_path) as f:
             selection_config = yaml.safe_load(f)
 
-    build_matrix = {
-        "conanfile": str(conanfile),
-        "config": [],
-    }
+    build_matrix = []
 
     def check_and_append(platform, config):
         if selection_config is None:
-            build_matrix["config"].append(config)
+            build_matrix.append(config)
             return
 
         if all(
@@ -87,7 +84,7 @@ def get_build_matrix(package_reference, conanfile, selection_config_path):
         if rule_excluded:
             return
 
-        build_matrix["config"].append(config)
+        build_matrix.append(config)
 
     # android
     for platform in [
@@ -230,7 +227,7 @@ def main():
 
     if is_github:
         with open(args.github_output, "w") as out:
-            print(f"matrix={json.dumps(build_matrix)}", file=out)
+            print(f"configs={json.dumps(build_matrix)}", file=out)
 
     return 0
 

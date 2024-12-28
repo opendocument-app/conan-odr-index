@@ -25,7 +25,7 @@ jobs:
   generate-matrix:
     runs-on: ubuntu-24.04
     outputs:
-      matrix: ${{ steps.list-build-matrix.outputs.matrix }}
+      configs: ${{ steps.list-build-matrix.outputs.configs }}
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -48,14 +48,15 @@ jobs:
           GITHUB_INPUT: ${{ toJson(inputs) }}
 
   build:
-    if: ${{ needs.generate-matrix.outputs.matrix != '[]' && needs.generate-matrix.outputs.matrix != '' }}
+    if: ${{ needs.generate-matrix.outputs.configs != '[]' && needs.generate-matrix.outputs.configs != '' }}
     name : ${{ matrix.config.host_profile }}
     needs:
       - generate-matrix
     runs-on: ${{ matrix.config.build_machine }}
     strategy:
       fail-fast: false
-      matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
+      matrix:
+        config: ${{ fromJson(needs.generate-matrix.outputs.configs) }}
     steps:
       - name: checkout
         uses: actions/checkout@v4
