@@ -1,3 +1,5 @@
+name: Build one package
+
 on:
   workflow_call:
     inputs:
