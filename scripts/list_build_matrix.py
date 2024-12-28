@@ -230,7 +230,7 @@ def main():
 
     if is_github:
         with open(args.github_output, "w") as out:
-            print(f"packages={json.dumps(build_matrix)}", file=out)
+            print(f"matrix={json.dumps(build_matrix)}", file=out)
 
     return 0
 
