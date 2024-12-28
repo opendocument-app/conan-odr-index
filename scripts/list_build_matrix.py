@@ -219,9 +219,7 @@ def main():
     package_name = args.conanfile.parent.parent.name
     package_reference = f"{package_name}/{args.version}"
 
-    build_matrix = get_build_matrix(
-        package_reference, args.conanfile, args.selection_config
-    )
+    build_matrix = get_build_matrix(package_reference, args.selection_config)
 
     print(json.dumps(build_matrix, indent=4))
 
