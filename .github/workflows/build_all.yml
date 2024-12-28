@@ -51,7 +51,7 @@ jobs:
         id: list-packages
         run: python scripts/list_package_references.py
         env:
-          GITHUB_EVENT: ${{ toJson(github.event) }}
+          GITHUB_CONTEXT: ${{ toJson(github) }}
 
   build:
     if: ${{ needs.generate-matrix.outputs.packages != '[]' && needs.generate-matrix.outputs.packages != '' }}

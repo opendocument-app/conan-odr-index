@@ -141,7 +141,7 @@ def get_cli_args():
     parser.add_argument(
         "--commit-id",
         nargs="*",
-        help="Find packages modified by supplied commits. Commit ids will also be obtained from $ENV[GITHUB_EVENT][commits]",
+        help="Find packages modified by supplied commits. Commit ids will also be obtained from $ENV[GITHUB_CONTEXT][commits]",
     )
     parser.add_argument(
         "--github-output",
@@ -154,17 +154,17 @@ def get_cli_args():
 
 
 def get_github_args():
-    event = json.loads(os.environ.get("GITHUB_EVENT", "{}"))
+    github = json.loads(os.environ.get("GITHUB_CONTEXT", "{}"))
+    event = github.get("event", {})
     inputs = event.get("inputs", {})
 
     selection_config = root_path / "defaults.yaml"
 
-    commit_obj_list = event.get("commits", [])
-    commit_ids = [
-        commit["id"]
-        for commit in commit_obj_list
-        if "[skipci]" not in commit["message"].lower()
-    ]
+    if github.get("event_name") in ["push", "pull_request"]:
+        commit_obj_list = event.get("commits", [])
+        commit_ids = [commit["id"] for commit in commit_obj_list]
+    else:
+        commit_ids = []
 
     github_output = Path(os.environ.get("GITHUB_OUTPUT"))
 
