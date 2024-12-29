@@ -84,8 +84,9 @@ def get_selected_packages(
             selection = yaml.safe_load(f)
         package_selection = selection["packages"]
 
-        include_packages += item_to_list(package_selection.get("include", []))
-        exclude_packages += item_to_list(package_selection.get("exclude", []))
+        if not include_packages and not exclude_packages:
+            include_packages = item_to_list(package_selection.get("include", []))
+            exclude_packages = item_to_list(package_selection.get("exclude", []))
 
     if not include_packages:
         include_packages = ["*"]
@@ -147,11 +148,13 @@ def get_cli_args():
     parser.add_argument(
         "--include-packages",
         nargs="*",
+        default=[],
         help="Include patterns for package selection",
     )
     parser.add_argument(
         "--exclude-packages",
         nargs="*",
+        default=[],
         help="Exclude patterns for package selection",
     )
     parser.add_argument(

@@ -29,21 +29,24 @@ def get_build_matrix(
         with open(selection_config_path) as f:
             selection_config = yaml.safe_load(f)
 
-        include_platforms += item_to_list(
-            selection_config["platforms"].get("include", [])
-        )
-        exclude_platforms += item_to_list(
-            selection_config["platforms"].get("exclude", [])
-        )
+        if not include_platforms and not exclude_platforms:
+            include_platforms = item_to_list(
+                selection_config["platforms"].get("include", [])
+            )
+            exclude_platforms = item_to_list(
+                selection_config["platforms"].get("exclude", [])
+            )
 
-        include_profiles += item_to_list(
-            selection_config["profiles"].get("include", [])
-        )
-        exclude_profiles += item_to_list(
-            selection_config["profiles"].get("exclude", [])
-        )
+        if not include_profiles and not exclude_profiles:
+            include_profiles = item_to_list(
+                selection_config["profiles"].get("include", [])
+            )
+            exclude_profiles = item_to_list(
+                selection_config["profiles"].get("exclude", [])
+            )
 
-        rules += selection_config["rules"]
+        if not rules:
+            rules = selection_config["rules"]
 
     if not include_platforms:
         include_platforms = ["*"]
@@ -177,11 +180,13 @@ def get_cli_args():
     parser.add_argument(
         "--include-platforms",
         nargs="*",
+        default=[],
         help="Include patterns for platform selection",
     )
     parser.add_argument(
         "--exclude-platforms",
         nargs="*",
+        default=[],
         help="Exclude patterns for platform selection",
     )
     parser.add_argument(
