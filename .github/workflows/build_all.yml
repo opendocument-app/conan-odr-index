@@ -17,16 +17,16 @@ on:
         type: boolean
         default: false
       package_include_patterns:
-        description: Comma separated include patterns to filter packages to build. These are additional to the default selection.
+        description: Include patterns to filter packages to build.
         type: string
       package_exclude_patterns:
-        description: Comma separated exclude patterns to filter packages to build. These are additional to the default selection.
+        description: Exclude patterns to filter packages to build.
         type: string
       platform_include_patterns:
-        description: Comma separated include patterns to filter platforms to build. These are additional to the default selection.
+        description: Include patterns to filter platforms to build.
         type: string
       platform_exclude_patterns:
-        description: Comma separated exclude patterns to filter platforms to build. These are additional to the default selection.
+        description: Exclude patterns to filter platforms to build.
         type: string
 
 run-name: Build all packages

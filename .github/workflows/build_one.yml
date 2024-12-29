@@ -41,10 +41,10 @@ on:
         type: boolean
         default: false
       platform_include_patterns:
-        description: Comma separated include patterns to filter platforms to build. These are additional to the default selection.
+        description: Include patterns to filter platforms to build.
         type: string
       platform_exclude_patterns:
-        description: Comma separated exclude patterns to filter platforms to build. These are additional to the default selection.
+        description: Exclude patterns to filter platforms to build.
         type: string
 
 run-name: Build ${{ inputs.conanfile }} version ${{ inputs.package_version }}
