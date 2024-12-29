@@ -13,3 +13,9 @@ Builds are triggered via a schedule and can be run manually for single packages 
 - [Clear packages](https://github.com/opendocument-app/conan-odr-index/actions/workflows/remove.yml)
 
 Sometime our Artifactory is out of disk space. We have about 100 GB space but it gradually fills up and there seems no good way to auto clean it. This usually requires manual intervention on the machine but potentially the [Clear packages](https://github.com/opendocument-app/conan-odr-index/actions/workflows/remove.yml) workflow can help too.
+
+## Limitations
+
+- We cannot build different configurations of a package
+  - Maybe this is not necessary and the client has to build the specific configuration if the default does not cover it
+  - Potentially this can be modled via profiles, not sure if this is a good solution
