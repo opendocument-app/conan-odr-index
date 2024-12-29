@@ -41,10 +41,10 @@ on:
         type: boolean
         default: false
       platform_include_patterns:
-        description: Include patterns to filter platforms to build.
+        description: Include patterns for platforms
         type: string
       platform_exclude_patterns:
-        description: Exclude patterns to filter platforms to build.
+        description: Exclude patterns for platforms
         type: string
 
 run-name: Build ${{ inputs.conanfile }} version ${{ inputs.package_version }}

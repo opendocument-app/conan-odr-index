@@ -17,16 +17,16 @@ on:
         type: boolean
         default: false
       package_include_patterns:
-        description: Include patterns to filter packages to build.
+        description: Include patterns for packages
         type: string
       package_exclude_patterns:
-        description: Exclude patterns to filter packages to build.
+        description: Exclude patterns for packages
         type: string
       platform_include_patterns:
-        description: Include patterns to filter platforms to build.
+        description: Include patterns for platforms
         type: string
       platform_exclude_patterns:
-        description: Exclude patterns to filter platforms to build.
+        description: Exclude patterns for platforms
         type: string
 
 run-name: Build all packages
