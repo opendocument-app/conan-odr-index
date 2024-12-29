@@ -211,8 +211,16 @@ def get_github_args():
     conanfile = Path(inputs.get("conanfile"))
     version = inputs.get("package_version")
 
-    include_platforms = inputs.get("platform_include_patterns", "").split(",")
-    exclude_platforms = inputs.get("platform_exclude_patterns", "").split(",")
+    include_platforms = (
+        inputs.get("platform_include_patterns").split(",")
+        if inputs.get("platform_include_patterns", "")
+        else []
+    )
+    exclude_platforms = (
+        inputs.get("platform_exclude_patterns").split(",")
+        if inputs.get("platform_exclude_patterns", "")
+        else []
+    )
 
     selection_config = root_path / "defaults.yaml"
 
@@ -239,6 +247,8 @@ def main():
         args = get_github_args()
     else:
         args = get_cli_args()
+
+    args = get_github_args()
 
     # TODO that does not look great
     package_name = args.conanfile.parent.parent.name

@@ -183,8 +183,16 @@ def get_github_args():
 
     event = github.get("event", {})
 
-    include_packages = inputs.get("package_include_patterns", "").split(",")
-    exclude_packages = inputs.get("package_exclude_patterns", "").split(",")
+    include_packages = (
+        inputs.get("package_include_patterns").split(",")
+        if inputs.get("package_include_patterns", "")
+        else []
+    )
+    exclude_packages = (
+        inputs.get("package_exclude_patterns").split(",")
+        if inputs.get("package_exclude_patterns", "")
+        else []
+    )
 
     selection_config = root_path / "defaults.yaml"
 
