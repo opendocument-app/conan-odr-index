@@ -18,6 +18,20 @@ on:
     secrets:
       ARTIFACTORY:
         required: true
+  workflow_dispatch:
+    inputs:
+      conanfile:
+        required: true
+        type: string
+      package_version:
+        required: true
+        type: string
+      build_dependencies_from_source:
+        required: true
+        type: boolean
+      artifactory_upload:
+        required: true
+        type: boolean
 
 run-name: Build ${{ inputs.conanfile }} version ${{ inputs.package_version }}
 
