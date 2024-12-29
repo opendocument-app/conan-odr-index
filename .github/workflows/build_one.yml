@@ -115,9 +115,7 @@ jobs:
             echo argument=--build=missing | tee $GITHUB_OUTPUT
           fi
 
-      # No need to export local packages, if the previous build jobs in this chain already published to artifactory
       - name: Conan export all packages
-        if: ${{ inputs.upload_to_artifactory != true }}
         run: python scripts/conan_export_all_packages.py
 
       - name: conan install
