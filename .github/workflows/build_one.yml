@@ -9,29 +9,43 @@ on:
       package_version:
         required: true
         type: string
+      upload_to_artifactory:
+        required: true
+        type: boolean
       build_dependencies_from_source:
         required: true
         type: boolean
-      artifactory_upload:
-        required: true
-        type: boolean
+      platform_include_patterns:
+        required: false
+        type: string
+      platform_exclude_patterns:
+        required: false
+        type: string
     secrets:
       ARTIFACTORY:
         required: true
   workflow_dispatch:
     inputs:
       conanfile:
-        required: true
+        description: Conanfile to build
         type: string
       package_version:
-        required: true
+        description: The version of the package to build
         type: string
+      upload_to_artifactory:
+        description: Upload built packages to artifactory
+        type: boolean
+        default: false
       build_dependencies_from_source:
-        required: true
+        description: Build all dependencies from source (conan install --build=* instead of --build=missing)
         type: boolean
-      artifactory_upload:
-        required: true
-        type: boolean
+        default: false
+      platform_include_patterns:
+        description: Comma separated include patterns to filter platforms to build. These are additional to the default selection.
+        type: string
+      platform_exclude_patterns:
+        description: Comma separated exclude patterns to filter platforms to build. These are additional to the default selection.
+        type: string
 
 run-name: Build ${{ inputs.conanfile }} version ${{ inputs.package_version }}
 
@@ -103,7 +117,7 @@ jobs:
 
       # No need to export local packages, if the previous build jobs in this chain already published to artifactory
       - name: Conan export all packages
-        if: ${{ inputs.artifactory_upload != true }}
+        if: ${{ inputs.upload_to_artifactory != true }}
         run: python scripts/conan_export_all_packages.py
 
       - name: conan install
@@ -113,9 +127,9 @@ jobs:
         run: conan create ${{ inputs.conanfile }} --version ${{ inputs.package_version }} --profile:host ${{ matrix.config.host_profile }} --profile:build default
 
       - name: conan login
-        if: ${{ inputs.artifactory_upload }}
+        if: ${{ inputs.upload_to_artifactory }}
         run: conan remote login odr admin --password '${{ secrets.ARTIFACTORY }}'
 
       - name: conan upload
-        if: ${{ inputs.artifactory_upload }}
+        if: ${{ inputs.upload_to_artifactory }}
         run: conan upload "*" --check --confirm --remote odr

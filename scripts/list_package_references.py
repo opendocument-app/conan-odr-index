@@ -73,22 +73,33 @@ def get_package_references(package_infos):
     ]
 
 
-def get_selected_packages(package_references, config):
-    with open(config) as f:
-        selection = yaml.safe_load(f)
-    package_selection = selection["packages"]
+def get_selected_packages(
+    package_references, config, include_packages, exclude_packages
+):
+    include_packages = list(include_packages)
+    exclude_packages = list(exclude_packages)
+
+    if config is not None:
+        with open(config) as f:
+            selection = yaml.safe_load(f)
+        package_selection = selection["packages"]
+
+        include_packages += item_to_list(package_selection.get("include", []))
+        exclude_packages += item_to_list(package_selection.get("exclude", []))
+
+    if not include_packages:
+        include_packages = ["*"]
 
     result = []
 
     for package_reference in package_references:
         if all(
             not fnmatch.fnmatch(package_reference, pattern)
-            for pattern in item_to_list(package_selection.get("include", "*"))
+            for pattern in include_packages
         ):
             continue
         if any(
-            fnmatch.fnmatch(package_reference, pattern)
-            for pattern in item_to_list(package_selection.get("exclude", []))
+            fnmatch.fnmatch(package_reference, pattern) for pattern in exclude_packages
         ):
             continue
         result.append(package_reference)
@@ -134,6 +145,16 @@ def get_modified_packages_in_commits(commit_id_list):
 def get_cli_args():
     parser = argparse.ArgumentParser(description="List package versions")
     parser.add_argument(
+        "--include-packages",
+        nargs="*",
+        help="Include patterns for package selection",
+    )
+    parser.add_argument(
+        "--exclude-packages",
+        nargs="*",
+        help="Exclude patterns for package selection",
+    )
+    parser.add_argument(
         "--selection-config",
         type=Path,
         help="Path to selection config file",
@@ -159,6 +180,9 @@ def get_github_args():
 
     event = github.get("event", {})
 
+    include_packages = inputs.get("package_include_patterns", "").split(",")
+    exclude_packages = inputs.get("package_exclude_patterns", "").split(",")
+
     selection_config = root_path / "defaults.yaml"
 
     if github.get("event_name") in ["push", "pull_request"]:
@@ -170,6 +194,8 @@ def get_github_args():
     github_output = Path(os.environ.get("GITHUB_OUTPUT"))
 
     return argparse.Namespace(
+        include_packages=include_packages,
+        exclude_packages=exclude_packages,
         selection_config=selection_config,
         commit_id=commit_ids,
         github_output=github_output,
@@ -190,12 +216,12 @@ def main():
 
     package_infos = get_package_infos()
     package_references = get_package_references(package_infos)
-    if args.selection_config is not None:
-        selected_packages = get_selected_packages(
-            package_references, args.selection_config
-        )
-    else:
-        selected_packages = package_references
+    selected_packages = get_selected_packages(
+        package_references,
+        args.selection_config,
+        args.include_packages,
+        args.exclude_packages,
+    )
 
     if args.commit_id:
         newly_selected_packages = []

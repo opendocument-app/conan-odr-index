@@ -16,6 +16,18 @@ on:
         description: Build all dependencies from source (conan install --build=* instead of --build=missing)
         type: boolean
         default: false
+      package_include_patterns:
+        description: Comma separated include patterns to filter packages to build. These are additional to the default selection.
+        type: string
+      package_exclude_patterns:
+        description: Comma separated exclude patterns to filter packages to build. These are additional to the default selection.
+        type: string
+      platform_include_patterns:
+        description: Comma separated include patterns to filter platforms to build. These are additional to the default selection.
+        type: string
+      platform_exclude_patterns:
+        description: Comma separated exclude patterns to filter platforms to build. These are additional to the default selection.
+        type: string
 
 run-name: Build all packages
 
@@ -69,7 +81,9 @@ jobs:
     with:
       conanfile: ${{ matrix.package.conanfile }}
       package_version: ${{ matrix.package.version }}
+      upload_to_artifactory: ${{ github.repository_owner == 'opendocument-app' && (github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.upload_to_artifactory == 'true')) }}
       build_dependencies_from_source: ${{ github.event.inputs.build_dependencies_from_source == 'true' }}
-      artifactory_upload: ${{ github.repository_owner == 'opendocument-app' && (github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.upload_to_artifactory == 'true')) }}
+      platform_include_patterns: ${{ github.event.inputs.platform_include_patterns }}
+      platform_exclude_patterns: ${{ github.event.inputs.platform_exclude_patterns }}
     secrets:
       ARTIFACTORY: ${{ secrets.ARTIFACTORY }}

@@ -16,51 +16,56 @@ script_path = Path(__file__).resolve().parent
 root_path = script_path.parent
 
 
-def get_build_matrix(package_reference, selection_config_path):
-    if selection_config_path is None:
-        selection_config = None
-    else:
+def get_build_matrix(
+    package_reference, selection_config_path, include_platforms, exclude_platforms
+):
+    include_platforms = list(include_platforms)
+    exclude_platforms = list(exclude_platforms)
+    include_profiles = []
+    exclude_profiles = []
+    rules = []
+
+    if selection_config_path is not None:
         with open(selection_config_path) as f:
             selection_config = yaml.safe_load(f)
+
+        include_platforms += item_to_list(
+            selection_config["platforms"].get("include", [])
+        )
+        exclude_platforms += item_to_list(
+            selection_config["platforms"].get("exclude", [])
+        )
+
+        include_profiles += item_to_list(
+            selection_config["profiles"].get("include", [])
+        )
+        exclude_profiles += item_to_list(
+            selection_config["profiles"].get("exclude", [])
+        )
+
+        rules += selection_config["rules"]
+
+    if not include_platforms:
+        include_platforms = ["*"]
+    if not include_profiles:
+        include_profiles = ["*"]
 
     build_matrix = []
 
     def check_and_append(platform, config):
-        if selection_config is None:
-            build_matrix.append(config)
+        if all(not fnmatch.fnmatch(platform, pattern) for pattern in include_platforms):
             return
-
-        if all(
-            not fnmatch.fnmatch(platform, pattern)
-            for pattern in item_to_list(
-                selection_config["platforms"].get("include", "*")
-            )
-        ):
-            return
-        if any(
-            fnmatch.fnmatch(platform, pattern)
-            for pattern in item_to_list(
-                selection_config["platforms"].get("exclude", [])
-            )
-        ):
+        if any(fnmatch.fnmatch(platform, pattern) for pattern in exclude_platforms):
             return
 
         profile = config["host_profile"]
-        if all(
-            not fnmatch.fnmatch(profile, pattern)
-            for pattern in item_to_list(
-                selection_config["profiles"].get("include", "*")
-            )
-        ):
+        if all(not fnmatch.fnmatch(profile, pattern) for pattern in include_profiles):
             return
-        if any(
-            fnmatch.fnmatch(profile, pattern)
-            for pattern in item_to_list(selection_config["profiles"].get("exclude", []))
-        ):
+        if any(fnmatch.fnmatch(profile, pattern) for pattern in exclude_profiles):
             return
 
         rule_excluded = False
-        for rule in selection_config["rules"]:
+        for rule in rules:
             if all(
                 not fnmatch.fnmatch(package_reference, pattern)
                 for pattern in item_to_list(rule.get("packages", "*"))
@@ -170,6 +175,16 @@ def get_cli_args():
         help="Version of the package",
     )
     parser.add_argument(
+        "--include-platforms",
+        nargs="*",
+        help="Include patterns for platform selection",
+    )
+    parser.add_argument(
+        "--exclude-platforms",
+        nargs="*",
+        help="Exclude patterns for platform selection",
+    )
+    parser.add_argument(
         "--selection-config",
         type=Path,
         help="Path to selection config file",
@@ -191,6 +206,9 @@ def get_github_args():
     conanfile = Path(inputs.get("conanfile"))
     version = inputs.get("package_version")
 
+    include_platforms = inputs.get("platform_include_patterns", "").split(",")
+    exclude_platforms = inputs.get("platform_exclude_patterns", "").split(",")
+
     selection_config = root_path / "defaults.yaml"
 
     github_output = Path(os.environ.get("GITHUB_OUTPUT"))
@@ -198,6 +216,8 @@ def get_github_args():
     return argparse.Namespace(
         conanfile=conanfile,
         version=version,
+        include_platforms=include_platforms,
+        exclude_platforms=exclude_platforms,
         selection_config=selection_config,
         github_output=github_output,
     )
@@ -219,7 +239,12 @@ def main():
     package_name = args.conanfile.parent.parent.name
     package_reference = f"{package_name}/{args.version}"
 
-    build_matrix = get_build_matrix(package_reference, args.selection_config)
+    build_matrix = get_build_matrix(
+        package_reference,
+        args.selection_config,
+        args.include_platforms,
+        args.exclude_platforms,
+    )
 
     print(json.dumps(build_matrix, indent=4))
 
