@@ -5,6 +5,11 @@ sources:
   "0.18.8.rc1-git-6f85c88-odr":
     url: "https://github.com/opendocument-app/pdf2htmlEX/archive/refs/tags/v0.18.8.rc1-git-6f85c88.tar.gz"
     sha256: "b88c0897c26caaba62c84069a22043be703a495852af3d9af9d63e18fde2296e"
+  "v0.18.8.rc1-odr-git-44f9ac6":
+    url: "https://github.com/opendocument-app/pdf2htmlEX/archive/refs/tags/v0.18.8.rc1-odr-git-44f9ac6.tar.gz"
+    sha256: "52f02fdeb9642bd3968d8d75fb7ec9c6496491704259b443988d7c6d66ab22f3"
+  "v0.18.8.rc1-odr-pr1":
+    url: "https://github.com/opendocument-app/pdf2htmlEX/archive/refs/tags/v0.18.8.rc1-odr-pr1.tar.gz"
 patches:
   "0.18.8.rc1-git-6f85c88-odr":
     - patch_file: "patches/0.18.8.rc1-git-6f85c88/0001-Upgrade-Poppler-to-24.06.1.patch"
