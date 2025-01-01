@@ -14,6 +14,8 @@ packages:
     - "poppler/24.08.0-odr"
     - "pdf2htmlex/0.18.8.rc1-20240905-git-vili"
     - "pdf2htmlex/0.18.8.rc1-git-6f85c88-odr"
+    - "pdf2htmlex/v0.18.8.rc1-odr-git-44f9ac6"
+    - "pdf2htmlex/v0.18.8.rc1-odr-pr1"
     - "odrcore/4.1.1"
 
 platforms:
