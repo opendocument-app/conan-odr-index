@@ -15,7 +15,7 @@ patches:
     - patch_file: "patches/0.18.8.rc1-git-6f85c88/0002-Update-missing-font-workaround.patch"
     - patch_file: "patches/0.18.8.rc1-git-6f85c88/0003-use-find_package.patch"
     - patch_file: "patches/0.18.8.rc1-git-6f85c88/0004-build-and-install-library.patch"
-  v0.18.8.rc1-odr-git-3dcf842":
+  "0.18.8.rc1-odr-git-3dcf842":
     - patch_file: "patches/0.18.8.rc1-odr-git-3dcf842/0001-use-find_package.patch"
   "0.18.8.rc1-odr-pr1":
     - patch_file: "patches/0.18.8.rc1-odr-pr1/0001-use-find_package.patch"
