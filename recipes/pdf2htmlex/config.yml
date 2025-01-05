@@ -3,5 +3,7 @@ versions:
     folder: all
   "0.18.8.rc1-git-6f85c88-odr":
     folder: all
-  "v0.18.8.rc1-odr-git-3dcf842":
+  "0.18.8.rc1-odr-git-3dcf842":
+    folder: all
+  "0.18.8.rc1-odr-pr1":
     folder: all
