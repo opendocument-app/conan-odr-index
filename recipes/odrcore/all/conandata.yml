@@ -39,6 +39,9 @@ sources:
     source:
       url: "https://github.com/opendocument-app/OpenDocument.core/archive/refs/tags/v4.1.1.tar.gz"
       sha256: "c4721aa8a50ea0ce123aae7979380f7d515b0e4e66454307a9be94006801cadf"
+  "9.9.9":
+    source:
+      url: "https://github.com/opendocument-app/OpenDocument.core/archive/refs/heads/main.tar.gz"
 
 patches:
   "1.0.0":
