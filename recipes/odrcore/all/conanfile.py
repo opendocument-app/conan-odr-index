@@ -63,6 +63,8 @@ class OpenDocumentCoreConan(ConanFile):
 
         if Version(self.version) == "9.9.9":
             self.requires("cpp-httplib/0.16.3")
+            self.requires("pdf2htmlex/0.18.8.rc1-odr-pr1")
+            self.requires("wvware/1.2.9-odr")
 
     def build_requirements(self):
         if Version(self.version) <= "2.0.0":
