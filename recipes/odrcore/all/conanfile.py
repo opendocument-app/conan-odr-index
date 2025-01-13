@@ -72,9 +72,9 @@ class OpenDocumentCoreConan(ConanFile):
                 wvWare_version = "1.2.9-odr"
 
         if pdf2htmlEX_version is not None:
-            self.requires(f"pdf2htmlEX/{pdf2htmlEX_version}")
+            self.requires(f"pdf2htmlex/{pdf2htmlEX_version}")
         if wvWare_version is not None:
-            self.requires(f"wvWare/{wvWare_version}")
+            self.requires(f"wvware/{wvWare_version}")
 
     def build_requirements(self):
         if Version(self.version) <= "2.0.0":
