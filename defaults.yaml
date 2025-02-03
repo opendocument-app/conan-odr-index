@@ -18,17 +18,6 @@ packages:
     - "pdf2htmlex/0.18.8.rc1-odr-pr1"
     - "odrcore/4.1.1"
 
-    # odrcore dependencies
-    - "pugixml/1.14"
-    - "cryptopp/8.9.0"
-    - "miniz/3.0.2"
-    - "nlohmann_json/3.11.3"
-    - "vincentlaucsb-csv-parser/2.3.0"
-    - "uchardet/0.0.8"
-    - "utfcpp/4.0.4"
-    - "cpp-httplib/0.16.3"
-    - "argon2/20190702"
-
 platforms:
   include: "*"
 
