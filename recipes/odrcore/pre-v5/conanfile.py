@@ -54,34 +54,6 @@ class OpenDocumentCoreConan(ConanFile):
         self.requires("uchardet/0.0.8")
         self.requires("utfcpp/4.0.4")
 
-        pdf2htmlEX_version = None
-        wvWare_version = None
-
-        if self.options.get_safe("with_pdf2htmlEX"):
-            pdf2htmlEX_version = "0.18.8.rc1-20240905-git-vili"
-        if self.options.get_safe("with_wvWare"):
-            wvWare_version = "1.2.9-vili"
-
-        if Version(self.version).major >= 5:
-            self.requires("argon2/20190702")
-            self.requires("cpp-httplib/0.16.3")
-            if self.options.get_safe("with_pdf2htmlEX"):
-                pdf2htmlEX_version = "0.18.8.rc1-odr-pr1"
-            if self.options.get_safe("with_wvWare"):
-                wvWare_version = "1.2.9-odr"
-
-        if Version(self.version) == "9.9.9":
-            self.requires("cpp-httplib/0.16.3")
-            if self.options.get_safe("with_pdf2htmlEX"):
-                pdf2htmlEX_version = "0.18.8.rc1-odr-pr1"
-            if self.options.get_safe("with_wvWare"):
-                wvWare_version = "1.2.9-odr"
-
-        if pdf2htmlEX_version is not None:
-            self.requires(f"pdf2htmlex/{pdf2htmlEX_version}")
-        if wvWare_version is not None:
-            self.requires(f"wvware/{wvWare_version}")
-
     def build_requirements(self):
         if Version(self.version) <= "2.0.0":
             return

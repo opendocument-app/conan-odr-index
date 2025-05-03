@@ -1,0 +1,8 @@
+sources:
+  "5.0.0-pre1":
+    source:
+      url: "https://github.com/opendocument-app/OpenDocument.core/archive/refs/tags/v5.0.0-pre1.tar.gz"
+      sha256: "7390b88baf62c58903f42624802b38d9f0751ec25c164fcad204b022cb6e6e11"
+  "9.9.9":
+    source:
+      url: "https://github.com/opendocument-app/OpenDocument.core/archive/refs/heads/main.tar.gz"
