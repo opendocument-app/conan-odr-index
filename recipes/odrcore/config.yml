@@ -19,5 +19,7 @@ versions:
     folder: "all"
   "4.1.1":
     folder: "all"
+  "5.0.0-pre1":
+    folder: "all"
   "9.9.9":
     folder: "all"
