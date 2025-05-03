@@ -1,0 +1,25 @@
+From 5def48ecc5403e064dfee8a822a2a8367ce758b7 Mon Sep 17 00:00:00 2001
+From: Andreas Stefl <stefl.andreas@gmail.com>
+Date: Sat, 3 May 2025 14:24:09 +0200
+Subject: [PATCH] use env AR if set
+
+---
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index 44c076a..8823030 100644
+--- a/Makefile
++++ b/Makefile
+@@ -124,7 +124,7 @@ LINKED_LIB_SH := lib$(LIB_NAME).$(LINKED_LIB_EXT)
+ endif
+ 
+ # Some systems don't provide an unprefixed ar when cross-compiling.
+-AR=ar
++AR ?= ar
+ 
+ LIBRARIES = $(LIB_SH) $(LIB_ST)
+ HEADERS = include/argon2.h
+-- 
+2.39.5 (Apple Git-154)
+
