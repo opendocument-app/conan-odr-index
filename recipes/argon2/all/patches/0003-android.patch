@@ -1,6 +1,6 @@
 --- a/Makefile
 +++ b/Makefile
-@@ -109,6 +109,13 @@ ifeq ($(KERNEL_NAME), SunOS)
+@@ -109,6 +109,12 @@ ifeq ($(KERNEL_NAME), SunOS)
  	LIB_CFLAGS := -shared -fPIC
  	PC_EXTRA_LIBS ?=
  endif
