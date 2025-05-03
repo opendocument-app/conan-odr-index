@@ -8,7 +8,6 @@
 +	LIB_EXT := so
 +	LIB_CFLAGS := -shared -fPIC -fvisibility=hidden -DA2_VISCTL=1
 +	SO_LDFLAGS := -Wl,-soname,lib$(LIB_NAME).$(LIB_EXT)
-+	LINKED_LIB_EXT := so
 +	PC_EXTRA_LIBS ?= -lrt -ldl
 +endif
  
