@@ -1,14 +1,14 @@
-From 5def48ecc5403e064dfee8a822a2a8367ce758b7 Mon Sep 17 00:00:00 2001
+From 90940a1c91a998892b54b7742d6eb22e7262f640 Mon Sep 17 00:00:00 2001
 From: Andreas Stefl <stefl.andreas@gmail.com>
 Date: Sat, 3 May 2025 14:24:09 +0200
-Subject: [PATCH] use env AR if set
+Subject: [PATCH 2/2] use env AR if set
 
 ---
  Makefile | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/Makefile b/Makefile
-index 44c076a..8823030 100644
+index cb991bb..486048e 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -124,7 +124,7 @@ LINKED_LIB_SH := lib$(LIB_NAME).$(LINKED_LIB_EXT)
