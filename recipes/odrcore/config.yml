@@ -21,5 +21,7 @@ versions:
     folder: "pre-v5"
   "5.0.0-pre1":
     folder: "v5"
+  "5.0.0-pre2":
+    folder: "v5"
   "9.9.9":
     folder: "v5"

@@ -3,6 +3,10 @@ sources:
     source:
       url: "https://github.com/opendocument-app/OpenDocument.core/archive/refs/tags/v5.0.0-pre1.tar.gz"
       sha256: "7390b88baf62c58903f42624802b38d9f0751ec25c164fcad204b022cb6e6e11"
+  "5.0.0-pre2":
+    source:
+      url: "https://github.com/opendocument-app/OpenDocument.core/archive/refs/tags/v5.0.0-pre2.tar.gz"
+      sha256: "b5bf914ecc8d8c2e66bcc93ea01bb1ded5b078749c45a83a0e51d37f957552d2"
   "9.9.9":
     source:
       url: "https://github.com/opendocument-app/OpenDocument.core/archive/refs/heads/main.tar.gz"
