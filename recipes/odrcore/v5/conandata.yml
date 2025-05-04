@@ -1,5 +1,5 @@
 sources:
-  "5.0.0-pre3":
+  "5.0.0-pre4":
     source:
       url: "https://github.com/opendocument-app/OpenDocument.core/archive/refs/tags/v5.0.0-pre4.tar.gz"
       sha256: "c2ae4dfb18999d67b6b66e4205714bc2501740d1af0e511646ac6f8e84c5c32e"
