@@ -1,7 +1,7 @@
 sources:
   "0.18.8.rc1-20240905-git-vili":
     url: "https://github.com/ViliusSutkus89/pdf2htmlEX/archive/0bbd6686f7214c5ddb230fa3323b75e954f39418.tar.gz"
-    sha256: "394a5a5555005a18ada6f810ef7ab693f6d916cd9302d874483cbc4956caf557"
+    sha256: "49dad025a8dc6ff6401b4c1c98df820a8cc07957836c4753b38b67c3c95b8f4e"
   "0.18.8.rc1-git-6f85c88-odr":
     url: "https://github.com/opendocument-app/pdf2htmlEX/archive/refs/tags/v0.18.8.rc1-git-6f85c88.tar.gz"
     sha256: "b88c0897c26caaba62c84069a22043be703a495852af3d9af9d63e18fde2296e"
