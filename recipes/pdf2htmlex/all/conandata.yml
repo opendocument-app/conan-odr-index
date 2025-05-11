@@ -7,8 +7,8 @@ sources:
     sha256: "b88c0897c26caaba62c84069a22043be703a495852af3d9af9d63e18fde2296e"
   "0.18.8.rc1-odr-git-3dcf842":
     url: "https://github.com/opendocument-app/pdf2htmlEX/archive/refs/tags/v0.18.8.rc1-odr-git-3dcf842.tar.gz"
-  "0.18.8.rc1-odr-pr1":
-    url: "https://github.com/opendocument-app/pdf2htmlEX/archive/refs/heads/delayed-background-rendering.tar.gz"
+  "0.18.8.rc1-odr-git-eb5d291":
+    url: "https://github.com/opendocument-app/pdf2htmlEX/archive/refs/tags/v0.18.8.rc1-odr-git-eb5d291.tar.gz"
 patches:
   "0.18.8.rc1-git-6f85c88-odr":
     - patch_file: "patches/0.18.8.rc1-git-6f85c88/0001-Upgrade-Poppler-to-24.06.1.patch"
@@ -16,6 +16,6 @@ patches:
     - patch_file: "patches/0.18.8.rc1-git-6f85c88/0003-use-find_package.patch"
     - patch_file: "patches/0.18.8.rc1-git-6f85c88/0004-build-and-install-library.patch"
   "0.18.8.rc1-odr-git-3dcf842":
-    - patch_file: "patches/0.18.8.rc1-odr-git-3dcf842/0001-use-find_package.patch"
-  "0.18.8.rc1-odr-pr1":
-    - patch_file: "patches/0.18.8.rc1-odr-pr1/0001-use-find_package.patch"
+    - patch_file: "patches/0.18.8.rc1-git-6f85c88/0003-use-find_package.patch"
+  "0.18.8.rc1-odr-git-eb5d291":
+    - patch_file: "patches/0.18.8.rc1-git-6f85c88/0003-use-find_package.patch"
