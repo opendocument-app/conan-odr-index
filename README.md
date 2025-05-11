@@ -6,7 +6,7 @@ The structure of this repository is similar to https://github.com/conan-io/conan
 
 Apart from GitHub Actions we have some custom Python scripts to support the enumeration of packages and versions. Since we do not always want to build all packages and all versions at the same time we have some selection mechanism. The configuration is steered by [`defaults.yaml`](./defaults.yaml).
 
-Builds are triggered via a schedule and can be run manually for single packages and versions or for the default selection of packages. Builds of dependecies are managed only by conan which can result in duplicate builds.
+Builds can be run manually for single packages and versions or for the default selection of packages. Builds of dependecies are managed only by conan which can result in duplicate builds.
 
 - [Build all packages](https://github.com/opendocument-app/conan-odr-index/actions/workflows/build_all.yml)
 - [Build one package](https://github.com/opendocument-app/conan-odr-index/actions/workflows/build_one.yml)
