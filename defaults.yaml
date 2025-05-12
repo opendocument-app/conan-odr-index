@@ -8,6 +8,7 @@ packages:
     - "openlibm/0.8.3"
     - "fontforge/20240423-git"
     - "libgsf/1.14.52"
+    - "libffi/3.4.8"
     - "cairo/1.18.0-odr"
     - "argon2/20190702"
     - "wvware/1.2.9-vili"
