@@ -1,0 +1,12 @@
+{
+    "version": "0.5",
+    "requires": [],
+    "build_requires": [
+        "msys2/cci.latest#d81a9835cf3b4b60a2ed5360e7e2630d%1748075538.81",
+        "m4/1.4.19#b38ced39a01e31fef5435bc634461fd2%1746210826.624",
+        "automake/1.16.5#058bda3e21c36c9aa8425daf3c1faf50%1746210798.187",
+        "autoconf/2.71#f9307992909d7fb3df459340f1932809%1746210796.569"
+    ],
+    "python_requires": [],
+    "config_requires": []
+}

@@ -14,20 +14,26 @@ def main():
     root_path = script_path.parent
 
     package_infos = get_package_infos()
-    for package in package_infos:
-        for version in package_infos[package]:
+    for package_name in package_infos:
+        for package_info in package_infos[package_name]:
+            print(f"Export package {package_name} version {package_info["version"]} ...")
+
             proc = subprocess.run(
                 [
                     "conan",
                     "export",
-                    version["conanfile"],
+                    package_info["conanfile"],
                     "--version",
-                    version["version"],
+                    package_info["version"],
                 ],
                 cwd=root_path,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
             )
             if proc.returncode != 0:
-                print(f"Failed to export {package} {version['version']}")
+                print("... failed to export")
+                print(proc.stdout)
                 returncode = proc.returncode
 
     return returncode

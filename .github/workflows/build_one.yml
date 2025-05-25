@@ -6,6 +6,9 @@ on:
       conanfile:
         required: true
         type: string
+      package_name:
+        required: true
+        type: string
       package_version:
         required: true
         type: string
@@ -28,6 +31,9 @@ on:
     inputs:
       conanfile:
         description: Conanfile to build
+        type: string
+      package_name:
+        description: The name of the package to build
         type: string
       package_version:
         description: The version of the package to build
@@ -98,31 +104,50 @@ jobs:
 
       - name: install NDK
         if: startsWith(matrix.config.host_profile, 'android')
-        run: echo "y" | sudo ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install "ndk;${{ matrix.config.ndk_version }}"
+        run: echo "y" | sudo ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'ndk;${{ matrix.config.ndk_version }}'
 
       - name: conan remote
         run: conan remote add odr https://artifactory.opendocument.app/artifactory/api/conan/conan
       - name: conan config
-        run: conan config install .github/config/${{ matrix.config.build_machine }}/conan
+        run: conan config install '.github/config/${{ matrix.config.build_machine }}/conan'
 
       - name: Parse build from source option
         id: build_from_source
         shell: bash
         run: |
           if [ ${{ inputs.build_dependencies_from_source }} == true ]; then
-            echo argument=--build=* | tee $GITHUB_OUTPUT
+            echo "argument=*" | tee $GITHUB_OUTPUT
           else
-            echo argument=--build=missing | tee $GITHUB_OUTPUT
+            echo "argument=missing" | tee $GITHUB_OUTPUT
           fi
+      
+      - name: Determin lockfile path
+        id: lockfile_path
+        shell: bash
+        run: |
+          lockfile="lockfiles/${{ inputs.package_name }}/${{ inputs.package_version }}/${{ matrix.config.host_profile }}/conan.lock"
+          echo "path=${lockfile}" | tee $GITHUB_OUTPUT
+          [ -f "${lockfile}" ]
 
       - name: Conan export all packages
         run: python scripts/conan_export_all_packages.py
 
       - name: conan install
-        run: conan install ${{ inputs.conanfile }} --version ${{ inputs.package_version }} --profile:host ${{ matrix.config.host_profile }} --profile:build default ${{ steps.build_from_source.outputs.argument }}
+        shell: bash
+        run: |
+          conan install '${{ inputs.conanfile }}' --version '${{ inputs.package_version }}' \
+            --lockfile '${{ steps.lockfile_path.outputs.path }}' \
+            --profile:host '${{ matrix.config.host_profile }}' \
+            --profile:build default \
+            --build '${{ steps.build_from_source.outputs.argument }}' \
 
       - name: conan create
-        run: conan create ${{ inputs.conanfile }} --version ${{ inputs.package_version }} --profile:host ${{ matrix.config.host_profile }} --profile:build default
+        shell: bash
+        run: |
+          conan create '${{ inputs.conanfile }}' --version '${{ inputs.package_version }}' \
+            --lockfile '${{ steps.lockfile_path.outputs.path }}' \
+            --profile:host '${{ matrix.config.host_profile }}' \
+            --profile:build default \
 
       - name: conan login
         if: ${{ inputs.upload_to_artifactory }}
