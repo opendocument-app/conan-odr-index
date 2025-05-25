@@ -1,7 +1,7 @@
 sources:
-  "5.0.0-pre11":
+  "5.0.0-pre12":
     source:
-      url: "https://github.com/opendocument-app/OpenDocument.core/archive/refs/tags/v5.0.0-pre11.tar.gz"
+      url: "https://github.com/opendocument-app/OpenDocument.core/archive/refs/tags/v5.0.0-pre12.tar.gz"
   "9.9.9":
     source:
       url: "https://github.com/opendocument-app/OpenDocument.core/archive/refs/heads/main.tar.gz"
