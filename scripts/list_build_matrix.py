@@ -17,7 +17,10 @@ root_path = script_path.parent
 
 
 def get_build_matrix(
-    package_reference, selection_config_path, include_platforms, exclude_platforms
+    package_reference,
+    selection_config_path=None,
+    include_platforms=[],
+    exclude_platforms=[],
 ):
     include_platforms = list(include_platforms)
     exclude_platforms = list(exclude_platforms)

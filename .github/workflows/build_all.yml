@@ -76,6 +76,7 @@ jobs:
     uses: ./.github/workflows/build_one.yml
     with:
       conanfile: ${{ matrix.package.conanfile }}
+      package_name: ${{ matrix.package.package }}
       package_version: ${{ matrix.package.version }}
       upload_to_artifactory: ${{ github.repository_owner == 'opendocument-app' && (github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.upload_to_artifactory == 'true')) }}
       build_dependencies_from_source: ${{ github.event.inputs.build_dependencies_from_source == 'true' }}

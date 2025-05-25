@@ -128,8 +128,11 @@ def get_files_in_commit(commit_id):
 def get_packages_in_commit(commit_id):
     packages = []
     for file_in_commit in get_files_in_commit(commit_id):
-        file_components = file_in_commit.split(os.sep)
+        file_components = Path(file_in_commit).parts
         if len(file_components) >= 3 and file_components[0] == "recipes":
+            package_name = file_components[1]
+            packages.append(package_name)
+        elif len(file_components) >= 3 and file_components[0] == "lockfiles":
             package_name = file_components[1]
             packages.append(package_name)
     return packages
