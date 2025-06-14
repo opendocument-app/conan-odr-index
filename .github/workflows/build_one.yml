@@ -107,7 +107,10 @@ jobs:
         run: echo "y" | sudo ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'ndk;${{ matrix.config.ndk_version }}'
 
       - name: conan remote
-        run: conan remote add odr https://artifactory.opendocument.app/artifactory/api/conan/conan
+        run: |
+          conan remote remove "*"
+          conan remote add odr https://artifactory.opendocument.app/artifactory/api/conan/conan
+          conan remote add conancenter https://center2.conan.io
       - name: conan config
         run: conan config install '.github/config/${{ matrix.config.build_machine }}/conan'
 
