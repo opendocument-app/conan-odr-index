@@ -104,7 +104,7 @@ jobs:
 
       - name: install NDK
         if: startsWith(matrix.config.host_profile, 'android')
-        run: echo "y" | sudo ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'ndk;${{ matrix.config.ndk_version }}'
+        run: yes | ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'ndk;${{ matrix.config.ndk_version }}'
 
       - name: conan remote
         run: |

@@ -111,7 +111,7 @@ def get_build_matrix(
         check_and_append(
             platform,
             {
-                "build_machine": "ubuntu-22.04",
+                "build_machine": "ubuntu-24.04",
                 "host_profile": platform,
                 "ndk_version": "26.3.11579264",
             },

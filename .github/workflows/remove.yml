@@ -12,7 +12,7 @@ run-name: Remove ${{ inputs.package_name }} from artifactory
 
 jobs:
   remove:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/setup-python@v5
         with:
