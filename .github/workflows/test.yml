@@ -31,7 +31,7 @@ concurrency:
 
 jobs:
   generate-matrices:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     outputs:
       packages: ${{ steps.list-packages-without-dependents.outputs.packages_0 }}
       emulator: ${{ steps.generate-emulator-matrix.outputs.matrix }}
@@ -66,7 +66,7 @@ jobs:
       matrix:
         package: ${{ fromJson(needs.generate-matrices.outputs.packages) }}
         emulator: ${{ fromJson(needs.generate-matrices.outputs.emulator) }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     env:
       ndk_version: 26.3.11579264
       conan_host_profile: android-${{ matrix.emulator.build_api_level }}-${{ matrix.emulator.arch }}
@@ -82,13 +82,13 @@ jobs:
         run: python -m pip install --upgrade pip conan setuptools
 
       - name: install NDK
-        run: echo "y" | sudo ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install "ndk;${{ env.ndk_version }}"
+        run: yes | ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install "ndk;${{ env.ndk_version }}"
 
       - name: conan remote
         run: conan remote add odr https://artifactory.opendocument.app/artifactory/api/conan/conan
 
       - name: conan config
-        run: conan config install .github/config/ubuntu-22.04/conan
+        run: conan config install .github/config/ubuntu-24.04/conan
 
       - name: conan install
         run: conan install ${{ matrix.package.conanfile }} --version ${{ matrix.package.version }} --build missing --profile:host ${{ env.conan_host_profile }} --profile:build ubuntu
