@@ -4,7 +4,6 @@ packages:
     - "tmpfile/3.0.6"
     - "fontconfig/2.15.0-odr"
     - "poppler-data/0.4.12-odr"
-    - "libwmf/0.2.13"
     - "openlibm/0.8.3"
     - "fontforge/20240423-git"
     - "libgsf/1.14.52"
@@ -42,7 +41,6 @@ rules:
       - "glib/*"
       # Autotools are problematic on Windows
       - "libgsf/*"
-      - "libwmf/*"
       - "wvware/*"
     platforms: "windows*"
   # tmpfile is needed only for Android
