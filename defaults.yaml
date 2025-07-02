@@ -15,7 +15,7 @@ packages:
     - "pdf2htmlex/0.18.8.rc1-20240905-git-vili"
     - "pdf2htmlex/0.18.8.rc1-git-6f85c88-odr"
     - "pdf2htmlex/0.18.8.rc1-odr-git-eb5d291"
-    - "odrcore/4.1.1"
+    - "odrcore/5.0.1"
 
 platforms:
   include: "*"

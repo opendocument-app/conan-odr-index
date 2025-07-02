@@ -2,6 +2,9 @@ sources:
   "5.0.0":
     source:
       url: "https://github.com/opendocument-app/OpenDocument.core/archive/refs/tags/v5.0.0.tar.gz"
+  "5.0.1":
+    source:
+      url: "https://github.com/opendocument-app/OpenDocument.core/archive/refs/tags/v5.0.1.tar.gz"
   "9.9.9":
     source:
       url: "https://github.com/opendocument-app/OpenDocument.core/archive/refs/heads/main.tar.gz"
