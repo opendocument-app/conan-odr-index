@@ -7,8 +7,10 @@ sources:
     sha256: "b88c0897c26caaba62c84069a22043be703a495852af3d9af9d63e18fde2296e"
   "0.18.8.rc1-odr-git-3dcf842":
     url: "https://github.com/opendocument-app/pdf2htmlEX/archive/refs/tags/v0.18.8.rc1-odr-git-3dcf842.tar.gz"
-  "0.18.8.rc1-odr-git-e6c9ee6":
-    url: "https://github.com/opendocument-app/pdf2htmlEX/archive/e6c9ee63b575e2254d68fc0bedc2b7a4e3657e2f.tar.gz"
+    sha256: "ddace0d6b683e240df38247ba9a9b25688bfe967c840ddc66fcc28cd62e478cc"
+  "0.18.8.rc1-odr-git-eb5d291":
+    url: "https://github.com/opendocument-app/pdf2htmlEX/archive/refs/tags/v0.18.8.rc1-odr-git-eb5d291.tar.gz"
+    sha256: "530de80cebd3427c9d075c2c5567ba3c7ef1f25ca6a926dcb0d63ce562ce230c"
 patches:
   "0.18.8.rc1-git-6f85c88-odr":
     - patch_file: "patches/0.18.8.rc1-git-6f85c88/0001-Upgrade-Poppler-to-24.06.1.patch"
@@ -17,5 +19,5 @@ patches:
     - patch_file: "patches/0.18.8.rc1-git-6f85c88/0004-build-and-install-library.patch"
   "0.18.8.rc1-odr-git-3dcf842":
     - patch_file: "patches/0.18.8.rc1-git-6f85c88/0003-use-find_package.patch"
-  "0.18.8.rc1-odr-git-e6c9ee6":
+  "0.18.8.rc1-odr-git-eb5d291":
     - patch_file: "patches/0.18.8.rc1-git-6f85c88/0003-use-find_package.patch"
