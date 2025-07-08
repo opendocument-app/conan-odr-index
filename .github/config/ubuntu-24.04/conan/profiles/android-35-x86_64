@@ -1,7 +1,7 @@
 {% set android_home = os.getenv("ANDROID_HOME") %}
 {% set ndk_version = "28.1.13356709" %}
-{% set api_level = "21" %}
-{% set arch = "x86" %}
+{% set api_level = "35" %}
+{% set arch = "x86_64" %}
 {% set cc = {
     "armv7": "armv7a-linux-androideabi" + api_level + "-clang",
     "armv8": "aarch64-linux-android" + api_level + "-clang",

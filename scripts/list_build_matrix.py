@@ -99,6 +99,10 @@ def get_build_matrix(
 
     # android
     for platform in [
+        "android-35-armv8",
+        "android-35-armv7",
+        "android-35-x86",
+        "android-35-x86_64",
         "android-23-armv8",
         "android-23-armv7",
         "android-23-x86",
@@ -113,7 +117,7 @@ def get_build_matrix(
             {
                 "build_machine": "ubuntu-24.04",
                 "host_profile": platform,
-                "ndk_version": "26.3.11579264",
+                "ndk_version": "28.1.13356709",
             },
         )
 

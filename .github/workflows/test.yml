@@ -67,7 +67,7 @@ jobs:
         emulator: ${{ fromJson(needs.generate-matrices.outputs.emulator) }}
     runs-on: ubuntu-24.04
     env:
-      ndk_version: 26.3.11579264
+      ndk_version: 28.1.13356709
       conan_host_profile: android-${{ matrix.emulator.build_api_level }}-${{ matrix.emulator.arch }}
     steps:
       - name: checkout
