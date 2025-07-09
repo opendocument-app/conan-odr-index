@@ -99,14 +99,17 @@ def get_build_matrix(
 
     # android
     for platform in [
+        # using 35 because of the 16k page size requirement
         "android-35-armv8",
         "android-35-armv7",
         "android-35-x86",
         "android-35-x86_64",
+        # TODO why do we use 23?
         "android-23-armv8",
         "android-23-armv7",
         "android-23-x86",
         "android-23-x86_64",
+        # TODO why do we use 21?
         "android-21-armv8",
         "android-21-armv7",
         "android-21-x86",
