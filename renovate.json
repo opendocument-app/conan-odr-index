@@ -2,5 +2,30 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended"
+    "config:best-practices"
+  ],
+  "conan": {
+    "enabled": true
+  },
+  "packageRules": [
+    {
+      "matchDatasources": [
+        "conan"
+      ],
+      "registryUrls": [
+        "https://artifactory.opendocument.app/artifactory/api/conan/conan",
+        "https://center2.conan.io"
+      ]
+    },
+    {
+      "matchDatasources": [
+        "conan"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "groupName": "all non major dependencies"
+    }
   ]
 }
