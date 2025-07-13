@@ -26,6 +26,15 @@
         "patch"
       ],
       "groupName": "all non major dependencies"
+    },
+    {
+      "matchDatasources": [
+        "conan"
+      ],
+      "matchDepNames": [
+        "cmake"
+      ],
+      "allowedVersions": "!/4\\..*/"
     }
   ]
 }
