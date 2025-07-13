@@ -167,7 +167,7 @@ class PopplerConan(ConanFile):
             self.tool_requires("pkgconf/2.2.0")
         if self.options.get_safe("with_glib"):
             self.tool_requires("glib/<host_version>")
-        self.tool_requires("cmake/[>=3.16 <4]")
+        self.tool_requires("cmake/[>=4.0.3 <5]")
 
     def source(self):
         get(self, **self.conan_data["sources"][self.version], strip_root=True)
