@@ -42,14 +42,14 @@ jobs:
       packages: ${{ steps.list-packages.outputs.packages }}
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
           # Fetch whole git history.
           # Required to parse modified packages
           fetch-depth: 0
 
       - name: setup python ${{ env.PYTHON_VERSION }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: install python dependencies
