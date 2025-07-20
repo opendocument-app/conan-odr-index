@@ -3,7 +3,7 @@ name: Build one package
 on:
   workflow_call:
     inputs:
-      conanfile:
+      directory:
         required: true
         type: string
       package_name:
@@ -29,8 +29,8 @@ on:
         required: true
   workflow_dispatch:
     inputs:
-      conanfile:
-        description: Conanfile to build
+      directory:
+        description: Directory containing the conanfile
         type: string
       package_name:
         description: The name of the package to build
@@ -53,7 +53,7 @@ on:
         description: Exclude patterns for platforms
         type: string
 
-run-name: Build ${{ inputs.conanfile }} version ${{ inputs.package_version }}
+run-name: Build ${{ inputs.directory }} version ${{ inputs.package_version }}
 
 env:
   # renovate: datasource=python-version depName=python
@@ -134,7 +134,10 @@ jobs:
       - name: conan install
         shell: bash
         run: |
-          conan install '${{ inputs.conanfile }}' --version '${{ inputs.package_version }}' \
+          cd '${{ inputs.directory }}'
+          conan install . \
+            --version '${{ inputs.package_version }}' \
+            --lockfile conan.lock \
             --profile:host '${{ matrix.config.host_profile }}' \
             --profile:build default \
             --build '${{ steps.build_from_source.outputs.argument }}' \
@@ -142,7 +145,10 @@ jobs:
       - name: conan create
         shell: bash
         run: |
-          conan create '${{ inputs.conanfile }}' --version '${{ inputs.package_version }}' \
+          cd '${{ inputs.directory }}'
+          conan create . \
+            --version '${{ inputs.package_version }}' \
+            --lockfile conan.lock \
             --profile:host '${{ matrix.config.host_profile }}' \
             --profile:build default \
 

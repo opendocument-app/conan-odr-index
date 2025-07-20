@@ -110,4 +110,4 @@ jobs:
           api-level: ${{ matrix.emulator.emulator_api_level }}
           arch: ${{ matrix.emulator.arch }}
           target: ${{ matrix.emulator.api_type_target }}
-          script: conan test ${{ matrix.package.test_conanfile }} ${{ matrix.package.package_reference }} --profile:host ${{ env.conan_host_profile }} --profile:build ubuntu
+          script: conan test '${{ matrix.package.directory }}/${{ matrix.package.test_conanfile }}' ${{ matrix.package.package_reference }} --profile:host ${{ env.conan_host_profile }} --profile:build ubuntu

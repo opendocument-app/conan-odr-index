@@ -39,24 +39,16 @@ def get_package_infos():
         infos = []
         package_name = package_path.name
         for version, details in config["versions"].items():
+            package_directory = (package_path / str(details["folder"])).relative_to(root_path)
+
             infos.append(
                 {
                     "package": package_name,
                     "version": version,
                     "package_reference": "{}/{}".format(package_name, version),
-                    "conanfile": str(
-                        (package_path / str(details["folder"]) / "conanfile.py").relative_to(
-                            root_path
-                        )
-                    ),
-                    "test_conanfile": str(
-                        (
-                            package_path
-                            / str(details["folder"])
-                            / "test_package"
-                            / "conanfile.py"
-                        ).relative_to(root_path)
-                    ),
+                    "directory": str(package_directory),
+                    "conanfile": "conanfile.py",
+                    "test_conanfile": "test_package/conanfile.py",
                 }
             )
 
