@@ -38,23 +38,23 @@ class FontForgeConan(ConanFile):
     }
 
     def requirements(self):
-        self.requires("freetype/2.13.2")
+        self.requires("freetype/2.13.3")
 
-        self.requires("libxml2/2.12.7")
+        self.requires("libxml2/2.13.8")
         self.requires("giflib/5.2.2")
         self.requires("libjpeg/9f")
-        self.requires("libpng/[>=1.6 <2]")
+        self.requires("libpng/[>=1.6.50 <2]")
         self.requires("libgettext/0.22", transitive_headers=True, transitive_libs=True)
 
         if self.options.with_tiff:
-            self.requires("libtiff/4.6.0")
+            self.requires("libtiff/4.7.0")
 
         # jbig and libdeflate are required by libtiff
         # Conan auto finds them, but linker doesn't, unless they're added here manually
         # self.requires("jbig/20160605")
         # self.requires("libdeflate/1.20")
 
-        self.requires("glib/2.81.0-odr")
+        self.requires("glib/2.81.0")
 
         if self.settings.os == "Android" and int(self.settings.os.get_safe("api_level")) < 23:
             self.requires("openlibm/0.8.3")
