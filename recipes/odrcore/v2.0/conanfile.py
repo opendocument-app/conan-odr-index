@@ -43,31 +43,14 @@ class OpenDocumentCoreConan(ConanFile):
             self.options.rm_safe("fPIC")
 
     def requirements(self):
-        if Version(self.version) <= "2.0.0":
-            return
-
-        self.requires("pugixml/1.14")
-        self.requires("cryptopp/8.9.0")
-        self.requires("miniz/3.0.2")
-        self.requires("nlohmann_json/3.11.3")
-        self.requires("vincentlaucsb-csv-parser/2.3.0")
-        self.requires("uchardet/0.0.8")
-        self.requires("utfcpp/4.0.4")
+        return
 
     def build_requirements(self):
-        if Version(self.version) <= "2.0.0":
-            return
-
-        self.test_requires("gtest/1.14.0")
+        return
 
     def validate_build(self):
         if self.settings.get_safe("compiler.cppstd"):
-            if Version(self.version) >= "4.0.0":
-                check_min_cppstd(self, 20)
-            elif Version(self.version) >= "2.0.0":
-                check_min_cppstd(self, 17)
-            else:
-                check_min_cppstd(self, 14)
+            check_min_cppstd(self, 17)
 
     def export_sources(self):
         export_conandata_patches(self)
@@ -85,8 +68,7 @@ class OpenDocumentCoreConan(ConanFile):
         tc.variables["ODR_TEST"] = False
         tc.variables["WITH_PDF2HTMLEX"] = self.options.get_safe("with_pdf2htmlEX", False)
         tc.variables["WITH_WVWARE"] = self.options.get_safe("with_wvWare", False)
-        if Version(self.version) <= "4.0.0":
-            tc.variables["CONAN_EXPORTED"] = True
+        tc.variables["CONAN_EXPORTED"] = True
         tc.generate()
 
         deps = CMakeDeps(self)
@@ -102,9 +84,4 @@ class OpenDocumentCoreConan(ConanFile):
         cmake.install()
 
     def package_info(self):
-        if Version(self.version) >= "2.1.0":
-            self.cpp_info.libs = ["odr"]
-        elif Version(self.version) == "2.0.0":
-            self.cpp_info.libs = ["odr-static"]
-        else:
-            self.cpp_info.libs = ["odrlib"]
+        self.cpp_info.libs = ["odr-static"]

@@ -1,0 +1,11 @@
+sources:
+  "2.2.0":
+    source:
+      url: "https://github.com/opendocument-app/OpenDocument.core/archive/refs/tags/v2.2.0.tar.gz"
+      sha256: "66fe5c5fbe4c1adcc9ebfbdd1a8fb3fac1faab33c2aa303bfdbd8ed5a10ecf0c"
+
+patches:
+  "2.2.0":
+    - patch_file: "patches/2.2.0-0001-fix-cmake-install.patch"
+      patch_description: "Fix header install in CMakeLists.txt"
+      patch_type: "conan"
