@@ -45,14 +45,14 @@ def get_package_infos():
                     "version": version,
                     "package_reference": "{}/{}".format(package_name, version),
                     "conanfile": str(
-                        (package_path / details["folder"] / "conanfile.py").relative_to(
+                        (package_path / str(details["folder"]) / "conanfile.py").relative_to(
                             root_path
                         )
                     ),
                     "test_conanfile": str(
                         (
                             package_path
-                            / details["folder"]
+                            / str(details["folder"])
                             / "test_package"
                             / "conanfile.py"
                         ).relative_to(root_path)
