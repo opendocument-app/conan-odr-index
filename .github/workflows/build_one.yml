@@ -135,7 +135,6 @@ jobs:
         shell: bash
         run: |
           conan install '${{ inputs.conanfile }}' --version '${{ inputs.package_version }}' \
-            --lockfile conan.lock \
             --profile:host '${{ matrix.config.host_profile }}' \
             --profile:build default \
             --build '${{ steps.build_from_source.outputs.argument }}' \
@@ -144,7 +143,6 @@ jobs:
         shell: bash
         run: |
           conan create '${{ inputs.conanfile }}' --version '${{ inputs.package_version }}' \
-            --lockfile conan.lock \
             --profile:host '${{ matrix.config.host_profile }}' \
             --profile:build default \
 
