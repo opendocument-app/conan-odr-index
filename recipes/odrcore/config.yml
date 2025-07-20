@@ -1,24 +1,24 @@
 versions:
   "1.0.0":
-    folder: "pre-v5"
+    folder: "v1"
   "2.0.0":
-    folder: "pre-v5"
+    folder: "v2.0"
   "2.1.0":
-    folder: "pre-v5"
+    folder: "v2.1"
   "2.1.1":
-    folder: "pre-v5"
+    folder: "v2.1"
   "2.1.2":
-    folder: "pre-v5"
+    folder: "v2.1"
   "2.2.0":
-    folder: "pre-v5"
+    folder: "v2.2"
   "3.0.0":
-    folder: "pre-v5"
+    folder: "v3"
   "4.0.0":
-    folder: "pre-v5"
+    folder: "v4.0"
   "4.1.0":
-    folder: "pre-v5"
+    folder: "v4.1"
   "4.1.1":
-    folder: "pre-v5"
+    folder: "v4.1"
   "5.0.0":
     folder: "v5"
   "5.0.1":
@@ -26,4 +26,4 @@ versions:
   "5.0.2":
     folder: "v5"
   "9.9.9":
-    folder: "v5"
+    folder: "main"

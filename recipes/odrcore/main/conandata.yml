@@ -1,0 +1,4 @@
+sources:
+  "9.9.9":
+    source:
+      url: "https://github.com/opendocument-app/OpenDocument.core/archive/refs/heads/main.tar.gz"

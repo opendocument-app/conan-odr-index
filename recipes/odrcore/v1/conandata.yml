@@ -1,0 +1,17 @@
+sources:
+  "1.0.0":
+    source:
+      url: "https://github.com/opendocument-app/OpenDocument.core/archive/refs/tags/v1.0.0.tar.gz"
+      sha256: "4da749ce3ea1cd5fbc4d710f068f582e8e7e14c4847faca323436516ff59df8c"
+
+patches:
+  "1.0.0":
+    - patch_file: "patches/1.0.0-0001-fix-cmake-install.patch"
+      patch_description: "Fix header install in CMakeLists.txt"
+      patch_type: "conan"
+    - patch_file: "patches/1.0.0-0002-fix-glog-stacktrace-misdetection.patch"
+      patch_description: "Glog checks if execinfo.h is available and if it is - expects backtrace to be there, but backtrace is only available from Android API 33"
+      patch_type: "conan"
+    - patch_file: "patches/1.0.0-0003-fix-cryptopp-cpu-features.patch"
+      patch_description: "Cryptopp expects cpu-features.h and .c to be in the source dir, prepare them"
+      patch_type: "conan"

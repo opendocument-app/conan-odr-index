@@ -1,0 +1,11 @@
+sources:
+  "3.0.0":
+    source:
+      url: "https://github.com/opendocument-app/OpenDocument.core/archive/refs/tags/v3.0.0.tar.gz"
+      sha256: "7a4009a5e489302ac1a0db4b071bd138825aa40982dcaec32c74277290769908"
+
+patches:
+  "3.0.0":
+    - patch_file: "patches/3.0.0-0001-fix-cmake-install.patch"
+      patch_description: "Fix header install in CMakeLists.txt"
+      patch_type: "conan"
