@@ -132,9 +132,6 @@ def get_packages_in_commit(commit_id):
         if len(file_components) >= 3 and file_components[0] == "recipes":
             package_name = file_components[1]
             packages.append(package_name)
-        elif len(file_components) >= 3 and file_components[0] == "lockfiles":
-            package_name = file_components[1]
-            packages.append(package_name)
     return packages
 
 

@@ -127,14 +127,6 @@ jobs:
           else
             echo "argument=missing" | tee $GITHUB_OUTPUT
           fi
-      
-      - name: Determin lockfile path
-        id: lockfile_path
-        shell: bash
-        run: |
-          lockfile="lockfiles/${{ inputs.package_name }}/${{ inputs.package_version }}/${{ matrix.config.host_profile }}/conan.lock"
-          echo "path=${lockfile}" | tee $GITHUB_OUTPUT
-          [ -f "${lockfile}" ]
 
       - name: Conan export all packages
         run: python scripts/conan_export_all_packages.py
@@ -143,7 +135,7 @@ jobs:
         shell: bash
         run: |
           conan install '${{ inputs.conanfile }}' --version '${{ inputs.package_version }}' \
-            --lockfile '${{ steps.lockfile_path.outputs.path }}' \
+            --lockfile conan.lock \
             --profile:host '${{ matrix.config.host_profile }}' \
             --profile:build default \
             --build '${{ steps.build_from_source.outputs.argument }}' \
@@ -152,7 +144,7 @@ jobs:
         shell: bash
         run: |
           conan create '${{ inputs.conanfile }}' --version '${{ inputs.package_version }}' \
-            --lockfile '${{ steps.lockfile_path.outputs.path }}' \
+            --lockfile conan.lock \
             --profile:host '${{ matrix.config.host_profile }}' \
             --profile:build default \
 
