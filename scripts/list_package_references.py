@@ -39,7 +39,9 @@ def get_package_infos():
         infos = []
         package_name = package_path.name
         for version, details in config["versions"].items():
-            package_directory = (package_path / str(details["folder"])).relative_to(root_path)
+            package_directory = (package_path / str(details["folder"])).relative_to(
+                root_path
+            )
 
             infos.append(
                 {
