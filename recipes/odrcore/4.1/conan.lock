@@ -1,14 +1,14 @@
 {
     "version": "0.5",
     "requires": [
-        "vincentlaucsb-csv-parser/2.3.0#ac67e368e82c9e3da4a663c35e3a1b2f%1750000219.109",
-        "utfcpp/4.0.4#cd6efc5d62de4e9ee0b5f3abd0df37a9%1750000218.416",
-        "uchardet/0.0.8#a9026ce72d955751db2dbda62c83c430%1750000217.668",
-        "pugixml/1.14#c6afdcf73d71858303d8260b0d76ff91%1750000216.958",
-        "nlohmann_json/3.11.3#45828be26eb619a2e04ca517bb7b828d%1750000211.763",
-        "miniz/3.0.2#bfbce07c6654293cce27ee24129d2df7%1750000211.025",
-        "gtest/1.14.0#f8f0757a574a8dd747d16af62d6eb1b7%1750000208.716",
-        "cryptopp/8.9.0#fe3de584c28c0ecc938a1671e3f1bd72%1750000207.862"
+        "vincentlaucsb-csv-parser/2.3.0#ac67e368e82c9e3da4a663c35e3a1b2f%1746210768.467",
+        "utfcpp/4.0.4#cd6efc5d62de4e9ee0b5f3abd0df37a9%1746210767.415",
+        "uchardet/0.0.8#a9026ce72d955751db2dbda62c83c430%1746210766.02",
+        "pugixml/1.14#c6afdcf73d71858303d8260b0d76ff91%1746210763.976",
+        "nlohmann_json/3.11.3#45828be26eb619a2e04ca517bb7b828d%1746210744.142",
+        "miniz/3.0.2#bfbce07c6654293cce27ee24129d2df7%1746210742.658",
+        "gtest/1.14.0#f8f0757a574a8dd747d16af62d6eb1b7%1746210738.473",
+        "cryptopp/8.9.0#fe3de584c28c0ecc938a1671e3f1bd72%1746210729.502"
     ],
     "build_requires": [
         "cmake/3.31.8#dd6e07c418afc4b30cb1c21584dccc49%1751053281.227",
