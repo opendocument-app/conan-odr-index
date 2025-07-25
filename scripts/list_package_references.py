@@ -39,24 +39,18 @@ def get_package_infos():
         infos = []
         package_name = package_path.name
         for version, details in config["versions"].items():
+            package_directory = (package_path / str(details["folder"])).relative_to(
+                root_path
+            )
+
             infos.append(
                 {
                     "package": package_name,
                     "version": version,
                     "package_reference": "{}/{}".format(package_name, version),
-                    "conanfile": str(
-                        (package_path / str(details["folder"]) / "conanfile.py").relative_to(
-                            root_path
-                        )
-                    ),
-                    "test_conanfile": str(
-                        (
-                            package_path
-                            / str(details["folder"])
-                            / "test_package"
-                            / "conanfile.py"
-                        ).relative_to(root_path)
-                    ),
+                    "directory": str(package_directory),
+                    "conanfile": "conanfile.py",
+                    "test_conanfile": "test_package/conanfile.py",
                 }
             )
 
@@ -130,9 +124,6 @@ def get_packages_in_commit(commit_id):
     for file_in_commit in get_files_in_commit(commit_id):
         file_components = Path(file_in_commit).parts
         if len(file_components) >= 3 and file_components[0] == "recipes":
-            package_name = file_components[1]
-            packages.append(package_name)
-        elif len(file_components) >= 3 and file_components[0] == "lockfiles":
             package_name = file_components[1]
             packages.append(package_name)
     return packages

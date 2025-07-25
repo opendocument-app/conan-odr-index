@@ -178,9 +178,9 @@ def get_build_matrix(
 def get_cli_args():
     parser = argparse.ArgumentParser(description="List build matrix")
     parser.add_argument(
-        "conanfile",
+        "directory",
         type=Path,
-        help="Path to conanfile.py",
+        help="Path to package directory containing conanfile.py",
     )
     parser.add_argument(
         "version",
@@ -218,7 +218,7 @@ def get_github_args():
     github = json.loads(os.environ.get("GITHUB_CONTEXT", "{}"))
     inputs = json.loads(os.environ.get("GITHUB_INPUT", "{}"))
 
-    conanfile = Path(inputs.get("conanfile"))
+    directory = Path(inputs.get("directory"))
     version = inputs.get("package_version")
 
     include_platforms = (
@@ -237,7 +237,7 @@ def get_github_args():
     github_output = Path(os.environ.get("GITHUB_OUTPUT"))
 
     return argparse.Namespace(
-        conanfile=conanfile,
+        directory=directory,
         version=version,
         include_platforms=include_platforms,
         exclude_platforms=exclude_platforms,
@@ -261,7 +261,7 @@ def main():
     args = get_github_args()
 
     # TODO that does not look great
-    package_name = args.conanfile.parent.parent.name
+    package_name = args.directory.parent.name
     package_reference = f"{package_name}/{args.version}"
 
     build_matrix = get_build_matrix(

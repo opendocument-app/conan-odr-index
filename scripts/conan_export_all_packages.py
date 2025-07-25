@@ -16,13 +16,15 @@ def main():
     package_infos = get_package_infos()
     for package_name in package_infos:
         for package_info in package_infos[package_name]:
-            print(f"Export package {package_name} version {package_info["version"]} ...")
+            print(
+                f"Export package {package_name} version {package_info["version"]} ..."
+            )
 
             proc = subprocess.run(
                 [
                     "conan",
                     "export",
-                    package_info["conanfile"],
+                    str(Path(package_info["directory"]) / package_info["conanfile"]),
                     "--version",
                     package_info["version"],
                 ],
