@@ -49,7 +49,7 @@ class OpenDocumentCoreConan(ConanFile):
         self.requires("vincentlaucsb-csv-parser/2.3.0")
         self.requires("uchardet/0.0.8")
         self.requires("utfcpp/4.0.4")
-        self.requires("argon2/20190702")
+        self.requires("argon2/20190702-odr")
         self.requires("cpp-httplib/0.16.3")
 
         if self.options.get_safe("with_pdf2htmlEX"):
