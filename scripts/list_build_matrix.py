@@ -119,6 +119,7 @@ def get_build_matrix(
             platform,
             {
                 "build_machine": "ubuntu-24.04",
+                "build_profile": "ubuntu-24.04-x86_64-clang-18",
                 "host_profile": platform,
                 "ndk_version": "28.1.13356709",
             },
@@ -129,6 +130,7 @@ def get_build_matrix(
         "macos-13",
         {
             "build_machine": "macos-13",
+            "build_profile": "macos-13-x86_64-apple-clang-14",
             "host_profile": "macos-13-x86_64-apple-clang-14",
         },
     )
@@ -136,6 +138,7 @@ def get_build_matrix(
         "macos-14",
         {
             "build_machine": "macos-14",
+            "build_profile": "macos-14-armv8-apple-clang-14",
             "host_profile": "macos-14-armv8-apple-clang-14",
         },
     )
@@ -145,6 +148,7 @@ def get_build_matrix(
         "ubuntu-24.04",
         {
             "build_machine": "ubuntu-24.04",
+            "build_profile": "ubuntu-24.04-x86_64-gcc-13",
             "host_profile": "ubuntu-24.04-x86_64-gcc-13",
         },
     )
@@ -152,6 +156,7 @@ def get_build_matrix(
         "ubuntu-24.04",
         {
             "build_machine": "ubuntu-24.04",
+            "build_profile": "ubuntu-24.04-x86_64-gcc-14",
             "host_profile": "ubuntu-24.04-x86_64-gcc-14",
         },
     )
@@ -159,6 +164,7 @@ def get_build_matrix(
         "ubuntu-24.04",
         {
             "build_machine": "ubuntu-24.04",
+            "build_profile": "ubuntu-24.04-x86_64-clang-18",
             "host_profile": "ubuntu-24.04-x86_64-clang-18",
         },
     )
@@ -168,6 +174,7 @@ def get_build_matrix(
         "windows-2022",
         {
             "build_machine": "windows-2022",
+            "build_profile": "windows-2022-x86_64-msvc-1940",
             "host_profile": "windows-2022-x86_64-msvc-1940",
         },
     )

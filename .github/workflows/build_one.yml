@@ -76,7 +76,7 @@ jobs:
         run: python -m pip install -r requirements.txt
 
       - name: conan config
-        run: conan config install .github/config/ubuntu-24.04/conan
+        run: conan config install .github/config/conan
 
       - name: list build matrix
         id: list-build-matrix
@@ -116,9 +116,9 @@ jobs:
           conan remote add odr https://artifactory.opendocument.app/artifactory/api/conan/conan
           conan remote add conancenter https://center2.conan.io
       - name: conan config
-        run: conan config install '.github/config/${{ matrix.config.build_machine }}/conan'
+        run: conan config install .github/config/conan
 
-      - name: Parse build from source option
+      - name: parse build from source option
         id: build_from_source
         shell: bash
         run: |
@@ -128,7 +128,7 @@ jobs:
             echo "argument=missing" | tee $GITHUB_OUTPUT
           fi
 
-      - name: Conan export all packages
+      - name: conan export all packages
         run: python scripts/conan_export_all_packages.py
 
       - name: conan install
@@ -139,8 +139,8 @@ jobs:
             --version '${{ inputs.package_version }}' \
             --lockfile conan.lock \
             --profile:host '${{ matrix.config.host_profile }}' \
-            --profile:build default \
-            --build '${{ steps.build_from_source.outputs.argument }}' \
+            --profile:build '${{ matrix.config.build_profile }}' \
+            --build '${{ steps.build_from_source.outputs.argument }}'
 
       - name: conan create
         shell: bash
@@ -150,7 +150,7 @@ jobs:
             --version '${{ inputs.package_version }}' \
             --lockfile conan.lock \
             --profile:host '${{ matrix.config.host_profile }}' \
-            --profile:build default \
+            --profile:build '${{ matrix.config.build_profile }}'
 
       - name: conan login
         if: ${{ inputs.upload_to_artifactory }}
