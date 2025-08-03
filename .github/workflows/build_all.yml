@@ -56,12 +56,12 @@ jobs:
         run: python -m pip install -r requirements.txt
 
       - name: conan config
-        run: conan config install .github/config/ubuntu-24.04/conan
+        run: conan config install .github/config/conan
 
-      - name: Conan export all packages
+      - name: conan export all packages
         run: python scripts/conan_export_all_packages.py
 
-      - name: Get selected packages from commits and workflow_dispatch inputs
+      - name: get selected packages from commits and workflow_dispatch inputs
         id: list-packages
         run: python scripts/list_package_references.py
         env:
