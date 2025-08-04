@@ -34,7 +34,6 @@
         "gettext/0.22.5#909a6ca9b6d4062e9b6ccf25c8461cda%1746210802.223",
         "flex/2.6.4#e35bc44b3fcbcd661e0af0dc5b5b1ad4%1748075168.656",
         "automake/1.16.5#058bda3e21c36c9aa8425daf3c1faf50%1746210798.187",
-        "autoconf/2.71#51077f068e61700d65bb05541ea1e4b0%1751053275.066",
         "autoconf/2.71#f9307992909d7fb3df459340f1932809%1746210796.569"
     ],
     "python_requires": [],

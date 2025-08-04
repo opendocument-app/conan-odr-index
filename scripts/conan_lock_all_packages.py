@@ -7,6 +7,27 @@ from pathlib import Path
 from list_package_references import get_package_infos
 
 
+def create_lock_file(package_info, root_path, host_profile):
+    conanfile_path = Path(package_info["directory"]) / package_info["conanfile"]
+    proc = subprocess.run(
+        [
+            "conan",
+            "lock",
+            "create",
+            str(conanfile_path),
+            "--version",
+            package_info["version"],
+            "--profile:host",
+            str(host_profile),
+        ],
+        cwd=root_path,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+    )
+    return proc
+
+
 def main():
     returncode = 0
 
@@ -16,29 +37,24 @@ def main():
     package_infos = get_package_infos()
     for package_name in package_infos:
         for package_info in package_infos[package_name]:
-            print(
-                f"Lock package {package_name} version {package_info["version"]} ..."
-            )
+            for host_profile in [
+                "android-21-armv8",
+                "ubuntu-24.04-x86_64-clang-18",
+                "macos-14-armv8-apple-clang-14",
+                "windows-2022-x86_64-msvc-1940",
+            ]:
+                print(
+                    f"Lock package {package_name} version {package_info["version"]} for {host_profile} ..."
+                )
 
-            proc = subprocess.run(
-                [
-                    "conan",
-                    "lock",
-                    "create",
-                    str(Path(package_info["directory"]) / package_info["conanfile"]),
-                    "--version",
-                    package_info["version"],
-                    "--profile:host",
-                    str(Path(".github/config/conan/profiles/android-21-armv8")),
-                ],
-                cwd=root_path,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                text=True,
-            )
-            if proc.returncode != 0:
-                print("... failed to export")
-                print(proc.stdout)
+                proc = create_lock_file(
+                    package_info,
+                    root_path,
+                    Path(".github/config/conan/profiles/android-21-armv8"),
+                )
+                if proc.returncode != 0:
+                    print("... failed to lock")
+                    print(proc.stdout)
                 returncode = proc.returncode
 
     return returncode
