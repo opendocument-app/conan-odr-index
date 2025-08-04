@@ -21,14 +21,12 @@ class OpenDocumentCoreConan(ConanFile):
         "fPIC": [True, False],
         "with_pdf2htmlEX": [True, False],
         "with_wvWare": [True, False],
-        "with_tmpfile_hack": [True, False],
     }
     default_options = {
         "shared": False,
         "fPIC": True,
         "with_pdf2htmlEX": True,
         "with_wvWare": True,
-        "with_tmpfile_hack": True,
     }
 
     def config_options(self):
@@ -38,9 +36,6 @@ class OpenDocumentCoreConan(ConanFile):
             # But by the time config_options() is executed, default_options is already done parsed.
             del self.options.with_pdf2htmlEX
             del self.options.with_wvWare
-
-        if self.settings.os != "Android":
-            del self.options.with_tmpfile_hack
 
     def configure(self):
         if self.options.shared:
@@ -61,9 +56,6 @@ class OpenDocumentCoreConan(ConanFile):
             self.requires("pdf2htmlex/0.18.8.rc1-odr-git-eb5d291")
         if self.options.get_safe("with_wvWare"):
             self.requires("wvware/1.2.9-odr")
-
-        if self.options.get_safe("with_tmpfile_hack", False):
-            self.requires("tmpfile/3.0.6")
 
     def build_requirements(self):
         self.test_requires("gtest/1.14.0")
