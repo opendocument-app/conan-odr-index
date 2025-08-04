@@ -16,7 +16,6 @@ on:
           - openlibm
           - fontconfig
           - glib
-          - tmpfile
           - libgsf
           - wvware
       package_version:
