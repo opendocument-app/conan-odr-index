@@ -1,6 +1,7 @@
 packages:
   include:
     - "glib/2.81.0-odr"
+    - "tmpfile/3.0.6"
     - "fontconfig/2.15.0-odr"
     - "poppler-data/0.4.12-odr"
     - "openlibm/0.8.3"
@@ -42,6 +43,13 @@ rules:
       - "libgsf/*"
       - "wvware/*"
     platforms: "windows*"
+  # tmpfile is needed only for Android
+  - type: "exclude"
+    packages: "tmpfile/*"
+    platforms:
+      - "macos*"
+      - "ubuntu*"
+      - "windows*"
   # poppler-data is the same package for all configurations
   - type: "exclude"
     packages: "poppler-data/*"
