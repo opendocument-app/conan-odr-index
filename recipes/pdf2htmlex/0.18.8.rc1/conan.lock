@@ -27,7 +27,8 @@
         "bzip2/1.0.8#00b4a4658791c1f06914e087f0e792f5%1754336009.237",
         "brotli/1.1.0#406ce8f1c997f4ef7852fa01ff85ef9f%1754336007.831",
         "boost/1.86.0#cd839a2082585255010f9e82eea94c7f%1728027203.247",
-        "libselinux/3.6#5a78ff6ae5034eeaac8da723361a8ce4%1748075177.52"
+        "libselinux/3.6#5a78ff6ae5034eeaac8da723361a8ce4%1748075177.52",
+        "util-linux-libuuid/2.39.2#637bd312b6310c18190469fae4e1d480%1748076007.711"
     ],
     "build_requires": [
         "zlib/1.3.1#b8bc2603263cf7eccbd6e17e66b0ed76%1754336059.551",
