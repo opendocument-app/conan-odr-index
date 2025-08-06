@@ -1,23 +1,23 @@
 sources:
-  "0.18.8.rc1-20240905-git-vili":
-    url: "https://github.com/ViliusSutkus89/pdf2htmlEX/archive/0bbd6686f7214c5ddb230fa3323b75e954f39418.tar.gz"
-    sha256: "49dad025a8dc6ff6401b4c1c98df820a8cc07957836c4753b38b67c3c95b8f4e"
-  "0.18.8.rc1-git-6f85c88-odr":
-    url: "https://github.com/opendocument-app/pdf2htmlEX/archive/refs/tags/v0.18.8.rc1-git-6f85c88.tar.gz"
-    sha256: "b88c0897c26caaba62c84069a22043be703a495852af3d9af9d63e18fde2296e"
-  "0.18.8.rc1-odr-git-3dcf842":
-    url: "https://github.com/opendocument-app/pdf2htmlEX/archive/refs/tags/v0.18.8.rc1-odr-git-3dcf842.tar.gz"
-    sha256: "ddace0d6b683e240df38247ba9a9b25688bfe967c840ddc66fcc28cd62e478cc"
+  # "0.18.8.rc1-20240905-git-vili":
+  #   url: "https://github.com/ViliusSutkus89/pdf2htmlEX/archive/0bbd6686f7214c5ddb230fa3323b75e954f39418.tar.gz"
+  #   sha256: "49dad025a8dc6ff6401b4c1c98df820a8cc07957836c4753b38b67c3c95b8f4e"
+  # "0.18.8.rc1-git-6f85c88-odr":
+  #   url: "https://github.com/opendocument-app/pdf2htmlEX/archive/refs/tags/v0.18.8.rc1-git-6f85c88.tar.gz"
+  #   sha256: "b88c0897c26caaba62c84069a22043be703a495852af3d9af9d63e18fde2296e"
+  # "0.18.8.rc1-odr-git-3dcf842":
+  #   url: "https://github.com/opendocument-app/pdf2htmlEX/archive/refs/tags/v0.18.8.rc1-odr-git-3dcf842.tar.gz"
+  #   sha256: "ddace0d6b683e240df38247ba9a9b25688bfe967c840ddc66fcc28cd62e478cc"
   "0.18.8.rc1-odr-git-eb5d291":
     url: "https://github.com/opendocument-app/pdf2htmlEX/archive/refs/tags/v0.18.8.rc1-odr-git-eb5d291.tar.gz"
     sha256: "530de80cebd3427c9d075c2c5567ba3c7ef1f25ca6a926dcb0d63ce562ce230c"
 patches:
-  "0.18.8.rc1-git-6f85c88-odr":
-    - patch_file: "patches/0.18.8.rc1-git-6f85c88/0001-Upgrade-Poppler-to-24.06.1.patch"
-    - patch_file: "patches/0.18.8.rc1-git-6f85c88/0002-Update-missing-font-workaround.patch"
-    - patch_file: "patches/0.18.8.rc1-git-6f85c88/0003-use-find_package.patch"
-    - patch_file: "patches/0.18.8.rc1-git-6f85c88/0004-build-and-install-library.patch"
-  "0.18.8.rc1-odr-git-3dcf842":
-    - patch_file: "patches/0.18.8.rc1-git-6f85c88/0003-use-find_package.patch"
+  # "0.18.8.rc1-git-6f85c88-odr":
+  #   - patch_file: "patches/0.18.8.rc1-git-6f85c88/0001-Upgrade-Poppler-to-24.06.1.patch"
+  #   - patch_file: "patches/0.18.8.rc1-git-6f85c88/0002-Update-missing-font-workaround.patch"
+  #   - patch_file: "patches/0.18.8.rc1-git-6f85c88/0003-use-find_package.patch"
+  #   - patch_file: "patches/0.18.8.rc1-git-6f85c88/0004-build-and-install-library.patch"
+  # "0.18.8.rc1-odr-git-3dcf842":
+  #   - patch_file: "patches/0.18.8.rc1-git-6f85c88/0003-use-find_package.patch"
   "0.18.8.rc1-odr-git-eb5d291":
     - patch_file: "patches/0.18.8.rc1-git-6f85c88/0003-use-find_package.patch"
