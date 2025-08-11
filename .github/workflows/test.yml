@@ -40,7 +40,7 @@ jobs:
       emulator: ${{ steps.generate-emulator-matrix.outputs.matrix }}
     steps:
       - name: checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
 
       - name: setup python ${{ env.PYTHON_VERSION }}
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
@@ -75,7 +75,7 @@ jobs:
       conan_host_profile: android-${{ matrix.emulator.build_api_level }}-${{ matrix.emulator.arch }}
     steps:
       - name: checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
 
       - name: setup python ${{ env.PYTHON_VERSION }}
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
