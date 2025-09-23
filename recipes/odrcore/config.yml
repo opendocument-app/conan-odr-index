@@ -33,5 +33,7 @@ versions:
     folder: "5"
   "5.0.6":
     folder: "5"
+  "5.0.7":
+    folder: "5"
   "9.9.9":
     folder: "main"
