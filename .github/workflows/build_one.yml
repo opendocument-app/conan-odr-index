@@ -57,7 +57,7 @@ run-name: Build ${{ inputs.directory }} version ${{ inputs.package_version }}
 
 env:
   # renovate: datasource=python-version depName=python
-  PYTHON_VERSION: 3.13
+  PYTHON_VERSION: 3.14
 
 jobs:
   generate-matrix:
