@@ -7,7 +7,7 @@ from pathlib import Path
 from list_package_references import get_package_infos
 
 
-def create_lock_file(package_info, root_path, host_profile):
+def create_lock_file(package_info, root_path, build_profile, host_profile):
     conanfile_path = Path(package_info["directory"]) / package_info["conanfile"]
     proc = subprocess.run(
         [
@@ -17,6 +17,8 @@ def create_lock_file(package_info, root_path, host_profile):
             str(conanfile_path),
             "--version",
             package_info["version"],
+            "--profile:build",
+            str(build_profile),
             "--profile:host",
             str(host_profile),
         ],
@@ -50,7 +52,8 @@ def main():
                 proc = create_lock_file(
                     package_info,
                     root_path,
-                    Path(".github/config/conan/profiles/android-21-armv8"),
+                    Path(f".github/config/conan/profiles/{host_profile}"),
+                    Path(f".github/config/conan/profiles/{host_profile}"),
                 )
                 if proc.returncode != 0:
                     print("... failed to lock")

@@ -16,6 +16,7 @@
     "build_requires": [
         "pkgconf/2.2.0#4ac315b50ef734072b00ff3aacbf52bf%1755505628.021",
         "ninja/1.13.1#294f8721dbcde145674f7ba44994700e%1753400352.374",
+        "msys2/cci.latest#5b73b10144f73cc5bfe0572ed9be39e1%1751977009.857",
         "meson/1.9.1#abbc783cd297bedce14581b4aec060b8%1758626166.349",
         "cmake/3.31.8#dd6e07c418afc4b30cb1c21584dccc49%1750223587.75"
     ],
