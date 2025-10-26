@@ -93,6 +93,7 @@ class pdf2htmlEXConan(ConanFile):
         tc = CMakeToolchain(self)
         tc.extra_cxxflags = ["-Wno-maybe-uninitialized"]
         tc.variables["PDF2HTMLEX_VERSION"] = self.version
+        tc.cache_variables["CMAKE_POLICY_VERSION_MINIMUM"] = "3.5"  # CMake 4 support
 
         # Get runenv info, exported by package_info() of dependencies
         # We need to obtain POPPLER_DATA_DIR and FONTCONFIG_PATH
