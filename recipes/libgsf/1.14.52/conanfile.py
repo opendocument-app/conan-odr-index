@@ -45,9 +45,9 @@ class LibgsfConan(ConanFile):
         # basic_layout(self, src_folder="src")
 
     def requirements(self):
-        self.requires("glib/2.81.0-odr", transitive_headers=True)
+        self.requires("glib/2.85.3", transitive_headers=True)
         self.requires("zlib/1.3.1")
-        self.requires("libxml2/2.12.7", transitive_headers=True)
+        self.requires("libxml2/2.15.0", transitive_headers=True)
 
     # if another tool than the compiler or autotools is required to build the project (pkgconf, bison, flex etc)
     def build_requirements(self):
@@ -61,7 +61,7 @@ class LibgsfConan(ConanFile):
         self.tool_requires("libtool/2.4.7")
         # only if upstream configure.ac relies on PKG_CHECK_MODULES macro
         if not self.conf.get("tools.gnu:pkg_config", check_type=str):
-            self.tool_requires("pkgconf/2.2.0")
+            self.tool_requires("pkgconf/2.5.1")
         # required to suppport windows as a build machine
         if self._settings_build.os == "Windows":
             self.win_bash = True
