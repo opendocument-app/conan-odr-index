@@ -11,7 +11,7 @@ packages:
     - "wvware/1.2.9-odr"
     - "poppler/24.08.0-odr"
     - "pdf2htmlex/0.18.8.rc1-odr-git-eb5d291"
-    - "odrcore/5.1.1"
+    - "odrcore/5.1.2"
 
 platforms:
   include: "*"

@@ -29,3 +29,6 @@ sources:
   "5.1.1":
     source:
       url: "https://github.com/opendocument-app/OpenDocument.core/archive/refs/tags/v5.1.1.tar.gz"
+  "5.1.2":
+    source:
+      url: "https://github.com/opendocument-app/OpenDocument.core/archive/refs/tags/v5.1.2.tar.gz"
