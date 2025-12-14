@@ -42,7 +42,7 @@ def main():
             for host_profile in [
                 "android-21-armv8",
                 "ubuntu-24.04-x86_64-clang-18",
-                "macos-14-armv8-apple-clang-14",
+                "macos-15-armv8-apple-clang-14",
                 "windows-2022-x86_64-msvc-1940",
             ]:
                 print(

@@ -127,19 +127,19 @@ def get_build_matrix(
 
     # macos
     check_and_append(
-        "macos-13",
+        "macos-15",
         {
-            "build_machine": "macos-13",
-            "build_profile": "macos-13-x86_64-apple-clang-14",
-            "host_profile": "macos-13-x86_64-apple-clang-14",
+            "build_machine": "macos-15",
+            "build_profile": "macos-15-x86_64-apple-clang-14",
+            "host_profile": "macos-15-x86_64-apple-clang-14",
         },
     )
     check_and_append(
-        "macos-14",
+        "macos-26",
         {
-            "build_machine": "macos-14",
-            "build_profile": "macos-14-armv8-apple-clang-14",
-            "host_profile": "macos-14-armv8-apple-clang-14",
+            "build_machine": "macos-26",
+            "build_profile": "macos-26-armv8-apple-clang-14",
+            "host_profile": "macos-26-armv8-apple-clang-14",
         },
     )
 
