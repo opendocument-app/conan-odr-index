@@ -130,8 +130,8 @@ def get_build_matrix(
         "macos-15",
         {
             "build_machine": "macos-15",
-            "build_profile": "macos-15-x86_64-apple-clang-14",
-            "host_profile": "macos-15-x86_64-apple-clang-14",
+            "build_profile": "macos-15-armv8-apple-clang-14",
+            "host_profile": "macos-15-armv8-apple-clang-14",
         },
     )
     check_and_append(
@@ -144,14 +144,6 @@ def get_build_matrix(
     )
 
     # ubuntu
-    check_and_append(
-        "ubuntu-24.04",
-        {
-            "build_machine": "ubuntu-24.04",
-            "build_profile": "ubuntu-24.04-x86_64-gcc-13",
-            "host_profile": "ubuntu-24.04-x86_64-gcc-13",
-        },
-    )
     check_and_append(
         "ubuntu-24.04",
         {
