@@ -54,7 +54,7 @@ class wvWareConan(ConanFile):
     def requirements(self):
         self.requires("libgsf/1.14.52", transitive_headers=True)
         self.requires("glib/2.81.0-odr")
-        self.requires("libiconv/1.18")
+        self.requires("libiconv/1.17")
         self.requires("zlib/1.3.1")
         self.requires("libpng/[>=1.6.53 <2]")
 

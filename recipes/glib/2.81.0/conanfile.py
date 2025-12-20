@@ -72,9 +72,9 @@ class GLibConan(ConanFile):
     def requirements(self):
         self.requires("zlib/[>=1.2.11 <2]")
         self.requires("libffi/3.4.8")
-        self.requires("pcre2/10.44")
+        self.requires("pcre2/10.42")
         if self.options.get_safe("with_elf"):
-            self.requires("libelf/0.8.13")
+            self.requires("elfutils/0.190")
         if self.options.get_safe("with_mount"):
             self.requires("libmount/2.40.2")
         if self.options.get_safe("with_selinux"):
@@ -84,7 +84,7 @@ class GLibConan(ConanFile):
             self.requires("libgettext/0.26", transitive_headers=True, transitive_libs=True)
 
         if is_apple_os(self):
-            self.requires("libiconv/1.18")
+            self.requires("libiconv/1.17")
 
     def build_requirements(self):
         self.tool_requires("meson/[>=1.9.1 <2]")

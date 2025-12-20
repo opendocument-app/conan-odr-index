@@ -9,19 +9,21 @@ from list_package_references import get_package_infos
 
 def create_lock_file(package_info, root_path, build_profile, host_profile):
     conanfile_path = Path(package_info["directory"]) / package_info["conanfile"]
+    command = [
+        "conan",
+        "lock",
+        "create",
+        str(conanfile_path),
+        "--version",
+        package_info["version"],
+        "--profile:build",
+        str(build_profile),
+        "--profile:host",
+        str(host_profile),
+    ]
+    print("Running command: " + " ".join(command))
     proc = subprocess.run(
-        [
-            "conan",
-            "lock",
-            "create",
-            str(conanfile_path),
-            "--version",
-            package_info["version"],
-            "--profile:build",
-            str(build_profile),
-            "--profile:host",
-            str(host_profile),
-        ],
+        command,
         cwd=root_path,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
