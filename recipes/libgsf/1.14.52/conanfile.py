@@ -47,12 +47,12 @@ class LibgsfConan(ConanFile):
     def requirements(self):
         self.requires("glib/2.81.0-odr", transitive_headers=True)
         self.requires("zlib/1.3.1")
-        self.requires("libxml2/2.12.7", transitive_headers=True)
+        self.requires("libxml2/2.15.0", transitive_headers=True)
 
     # if another tool than the compiler or autotools is required to build the project (pkgconf, bison, flex etc)
     def build_requirements(self):
         # Can't exec "autopoint": No such file or directory at /home/user/.conan2/p/autocf2af015330354/p/bin/../res/autoconf/Autom4te/FileUtils.pm line 293.
-        self.tool_requires("gettext/0.22.5")
+        self.tool_requires("gettext/0.26")
         # Can't exec "gtkdocize": No such file or directory at /home/user/.conan2/p/autocf2af015330354/p/bin/../res/autoconf/Autom4te/FileUtils.pm line 293.
         # autoreconf: error: gtkdocize failed with exit status: 
         self.tool_requires("gtk-doc-stub/cci.20181216")
@@ -61,7 +61,7 @@ class LibgsfConan(ConanFile):
         self.tool_requires("libtool/2.4.7")
         # only if upstream configure.ac relies on PKG_CHECK_MODULES macro
         if not self.conf.get("tools.gnu:pkg_config", check_type=str):
-            self.tool_requires("pkgconf/2.2.0")
+            self.tool_requires("pkgconf/2.5.1")
         # required to suppport windows as a build machine
         if self._settings_build.os == "Windows":
             self.win_bash = True

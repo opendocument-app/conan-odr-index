@@ -54,12 +54,12 @@ class wvWareConan(ConanFile):
     def requirements(self):
         self.requires("libgsf/1.14.52", transitive_headers=True)
         self.requires("glib/2.81.0-odr")
-        self.requires("libiconv/1.17")
+        self.requires("libiconv/1.18")
         self.requires("zlib/1.3.1")
-        self.requires("libpng/[>=1.6 <2]")
+        self.requires("libpng/[>=1.6.53 <2]")
 
         # Requirements not passed from libgsf
-        self.requires("libxml2/2.12.7")
+        self.requires("libxml2/2.15.0")
 
     # if another tool than the compiler or autotools is required to build the project (pkgconf, bison, flex etc)
     def build_requirements(self):
@@ -68,7 +68,7 @@ class wvWareConan(ConanFile):
         self.tool_requires("libtool/2.4.7")
         # only if upstream configure.ac relies on PKG_CHECK_MODULES macro
         if not self.conf.get("tools.gnu:pkg_config", check_type=str):
-            self.tool_requires("pkgconf/2.2.0")
+            self.tool_requires("pkgconf/2.5.1")
         # required to suppport windows as a build machine
         if self._settings_build.os == "Windows":
             self.win_bash = True

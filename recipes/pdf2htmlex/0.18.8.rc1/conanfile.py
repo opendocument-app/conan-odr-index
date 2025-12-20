@@ -57,7 +57,7 @@ class pdf2htmlEXConan(ConanFile):
             "with_xlib_xrender": False,
             "with_xcb": False,
         }, transitive_headers=True, transitive_libs=True)
-        self.requires("freetype/2.13.2")
+        self.requires("freetype/2.14.1")
         self.requires("fontforge/20240423-git", options={
             "install_private_headers": True,
         })
