@@ -151,4 +151,6 @@ class LibgsfConan(ConanFile):
     def package_info(self):
         self.cpp_info.libs = ["gsf-1"]
         self.cpp_info.includedirs = [os.path.join("include", "libgsf-1")]
-        self.cpp_info.set_property('pkg_config_name', 'libgsf-1')
+        self.cpp_info.set_property("pkg_config_name", "libgsf-1")
+        if self.settings.os in ["Linux", "FreeBSD", "Android"]:
+            self.cpp_info.system_libs.append("m")

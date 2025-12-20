@@ -166,7 +166,7 @@ class PopplerConan(ConanFile):
         if not self.conf.get("tools.gnu:pkg_config", default=False, check_type=str):
             self.tool_requires("pkgconf/2.5.1")
         if self.options.get_safe("with_glib"):
-            self.tool_requires("glib/<host_version>")
+            self.tool_requires("glib/2.81.0-odr")
         self.tool_requires("cmake/[>=3.31.10 <4]")
 
     def source(self):

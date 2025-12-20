@@ -9,7 +9,7 @@
         "libgettext/0.26#239f10d42ffa7041c45a2f4e7adc16d0%1765809128.675",
         "libffi/3.4.8#a045c00fb26779635e3bed40e80c5254%1753360042.396",
         "libelf/0.8.13#ba59bbc89757ed62cfd7690a73bf81be%1741781951.327",
-        "glib/2.81.0-odr#550accb9584a3e2427cce86bcf1fc75f%1766242053.989324",
+        "glib/2.81.0-odr#550accb9584a3e2427cce86bcf1fc75f%1766248655.538537",
         "bzip2/1.0.8#c470882369c2d95c5c77e970c0c7e321%1762886692.465"
     ],
     "build_requires": [

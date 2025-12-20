@@ -2,7 +2,7 @@
     "version": "0.5",
     "requires": [
         "zlib/1.3.1#cac0f6daea041b0ccf42934163defb20%1765284699.337",
-        "poppler-data/0.4.12-odr#06cdb12e4cab52261a5eb6c7d7dad273%1766242054.8670871",
+        "poppler-data/0.4.12-odr#06cdb12e4cab52261a5eb6c7d7dad273%1766248656.4693172",
         "openjpeg/2.5.4#372fbc2b4348d45ab0c0a62a8475dc2f%1760446899.685",
         "libpng/1.6.53#a55f084366cd7b81cfce80327507913e%1765191393.267",
         "libjpeg/9f#8edfe2699565c80c825d0256002504ff%1723665907.087",
