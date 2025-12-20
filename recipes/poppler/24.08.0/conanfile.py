@@ -116,7 +116,7 @@ class PopplerConan(ConanFile):
         if self.options.fontconfiguration == "fontconfig":
             self.requires("fontconfig/2.15.0-odr")
         if self.options.with_cairo:
-            self.requires("cairo/1.18.0")
+            self.requires("cairo/1.18.0-odr")
         if self.options.get_safe("with_glib"):
             self.requires("glib/2.81.0-odr")
         if self.options.get_safe("with_gobject_introspection"):
