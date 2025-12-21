@@ -21,12 +21,14 @@ class OpenDocumentCoreConan(ConanFile):
         "fPIC": [True, False],
         "with_pdf2htmlEX": [True, False],
         "with_wvWare": [True, False],
+        "with_libmagic": [True, False],
     }
     default_options = {
         "shared": False,
         "fPIC": True,
         "with_pdf2htmlEX": True,
         "with_wvWare": True,
+        "with_libmagic": True,
     }
 
     def config_options(self):
@@ -36,6 +38,7 @@ class OpenDocumentCoreConan(ConanFile):
             # But by the time config_options() is executed, default_options is already done parsed.
             del self.options.with_pdf2htmlEX
             del self.options.with_wvWare
+            del self.options.with_libmagic
 
     def configure(self):
         if self.options.shared:
@@ -56,6 +59,8 @@ class OpenDocumentCoreConan(ConanFile):
             self.requires("pdf2htmlex/0.18.8.rc1-odr-git-eb5d291")
         if self.options.get_safe("with_wvWare"):
             self.requires("wvware/1.2.9-odr")
+        if self.options.get_safe("with_libmagic", False):
+            self.requires("libmagic/5.45")
 
     def build_requirements(self):
         self.test_requires("gtest/1.17.0")
@@ -80,6 +85,7 @@ class OpenDocumentCoreConan(ConanFile):
         tc.variables["ODR_TEST"] = False
         tc.variables["WITH_PDF2HTMLEX"] = self.options.get_safe("with_pdf2htmlEX", False)
         tc.variables["WITH_WVWARE"] = self.options.get_safe("with_wvWare", False)
+        tc.variables["WITH_LIBMAGIC"] = self.options.get_safe("with_libmagic", False)
         tc.generate()
 
         deps = CMakeDeps(self)
