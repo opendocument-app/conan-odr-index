@@ -10,10 +10,7 @@ import fnmatch
 
 import yaml
 
-
-script_path = Path(__file__).resolve().parent
-root_path = script_path.parent
-recipes_path = root_path / "recipes"
+from definitions import get_recipes_path, get_root_path, get_default_selection_config
 
 
 def item_to_list(item_or_list):
@@ -22,8 +19,8 @@ def item_to_list(item_or_list):
     return [item_or_list]
 
 
-def get_package_infos():
-    package_infos = {}
+def get_package_infos(root_path, recipes_path):
+    package_infos = []
 
     for package_path in recipes_path.iterdir():
         if not package_path.is_dir():
@@ -36,14 +33,13 @@ def get_package_infos():
         with open(config_file) as f:
             config = yaml.safe_load(f)
 
-        infos = []
         package_name = package_path.name
         for version, details in config["versions"].items():
             package_directory = (package_path / str(details["folder"])).relative_to(
                 root_path
             )
 
-            infos.append(
+            package_infos.append(
                 {
                     "package": package_name,
                     "version": version,
@@ -54,17 +50,10 @@ def get_package_infos():
                 }
             )
 
-        package_infos[package_name] = sorted(infos, key=lambda x: x["version"])
+    package_infos = sorted(package_infos, key=lambda x: x["version"])
+    package_infos = sorted(package_infos, key=lambda x: x["package"])
 
     return package_infos
-
-
-def get_package_references(package_infos):
-    return [
-        package_info["package_reference"]
-        for package_infos in package_infos.values()
-        for package_info in package_infos
-    ]
 
 
 def get_selected_packages(
@@ -102,14 +91,7 @@ def get_selected_packages(
     return result
 
 
-def get_package_info(package_infos, package, version):
-    versions = package_infos[package]
-    for package_versioned in versions:
-        if package_versioned["version"] == version:
-            return package_versioned
-
-
-def get_files_in_commit(commit_id):
+def get_files_in_commit(root_path, commit_id):
     files_in_commit = subprocess.run(
         ["git", "diff-tree", "--no-commit-id", "--name-only", "-r", commit_id],
         capture_output=True,
@@ -119,9 +101,9 @@ def get_files_in_commit(commit_id):
     return filter(None, files_in_commit.stdout.split("\n"))
 
 
-def get_packages_in_commit(commit_id):
+def get_packages_in_commit(root_path, commit_id):
     packages = []
-    for file_in_commit in get_files_in_commit(commit_id):
+    for file_in_commit in get_files_in_commit(root_path, commit_id):
         file_components = Path(file_in_commit).parts
         if len(file_components) >= 3 and file_components[0] == "recipes":
             package_name = file_components[1]
@@ -129,11 +111,11 @@ def get_packages_in_commit(commit_id):
     return packages
 
 
-def get_modified_packages_in_commits(commit_id_list):
+def get_modified_packages_in_commits(root_path, commit_id_list):
     packages = []
     for commit_id in commit_id_list:
         print(f"Commit {commit_id} requested as an argument")
-        packages += get_packages_in_commit(commit_id)
+        packages += get_packages_in_commit(root_path, commit_id)
     return packages
 
 
@@ -154,7 +136,20 @@ def get_cli_args():
     parser.add_argument(
         "--selection-config",
         type=Path,
+        default=get_default_selection_config(),
         help="Path to selection config file",
+    )
+    parser.add_argument(
+        "--root-path",
+        type=Path,
+        default=get_root_path(),
+        help="Path to root directory",
+    )
+    parser.add_argument(
+        "--recipes-path",
+        type=Path,
+        default=get_recipes_path(),
+        help="Path to recipes directory",
     )
     parser.add_argument(
         "--commit-id",
@@ -172,6 +167,10 @@ def get_cli_args():
 
 
 def get_github_args():
+    selection_config = get_default_selection_config()
+    root_path = get_root_path()
+    recipes_path = get_recipes_path()
+
     github = json.loads(os.environ.get("GITHUB_CONTEXT", "{}"))
     inputs = json.loads(os.environ.get("GITHUB_INPUT", "{}"))
 
@@ -188,8 +187,6 @@ def get_github_args():
         else []
     )
 
-    selection_config = root_path / "defaults.yaml"
-
     if github.get("event_name") in ["push", "pull_request"]:
         commit_obj_list = event.get("commits", [])
         commit_ids = [commit["id"] for commit in commit_obj_list]
@@ -202,6 +199,8 @@ def get_github_args():
         include_packages=include_packages,
         exclude_packages=exclude_packages,
         selection_config=selection_config,
+        root_path=root_path,
+        recipes_path=recipes_path,
         commit_id=commit_ids,
         github_output=github_output,
     )
@@ -219,8 +218,10 @@ def main():
     else:
         args = get_cli_args()
 
-    package_infos = get_package_infos()
-    package_references = get_package_references(package_infos)
+    package_infos = get_package_infos(args.root_path, args.recipes_path)
+    package_references = [
+        package_info["package_reference"] for package_info in package_infos
+    ]
     selected_packages = get_selected_packages(
         package_references,
         args.selection_config,
@@ -229,12 +230,14 @@ def main():
     )
 
     if args.commit_id:
-        newly_selected_packages = []
-        modified_packages = get_modified_packages_in_commits(args.commit_id)
+        modified_selected_packages = []
+        modified_packages = get_modified_packages_in_commits(
+            args.root_path, args.commit_id
+        )
         for package_references in selected_packages:
             if package_references.split("/")[0] in modified_packages:
-                newly_selected_packages.append(package_references)
-        selected_packages = newly_selected_packages
+                modified_selected_packages.append(package_references)
+        selected_packages = modified_selected_packages
 
     for package_reference in selected_packages:
         print(package_reference)
@@ -242,12 +245,9 @@ def main():
     if is_github:
         with open(args.github_output, "w") as out:
             selected_package_infos = [
-                get_package_info(
-                    package_infos,
-                    package_reference.split("/")[0],
-                    package_reference.split("/")[1],
-                )
-                for package_reference in selected_packages
+                package_info
+                for package_info in package_infos
+                if package_info["package_reference"] in selected_packages
             ]
             print(f"packages={json.dumps(selected_package_infos)}", file=out)
 

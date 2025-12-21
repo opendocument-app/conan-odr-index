@@ -76,7 +76,7 @@ class GLibConan(ConanFile):
         if self.options.get_safe("with_elf"):
             self.requires("libelf/0.8.13")
         if self.options.get_safe("with_mount"):
-            self.requires("libmount/2.39")
+            self.requires("libmount/2.40.2")
         if self.options.get_safe("with_selinux"):
             self.requires("libselinux/3.6")
         if self.settings.os != "Linux":
@@ -87,9 +87,9 @@ class GLibConan(ConanFile):
             self.requires("libiconv/1.17")
 
     def build_requirements(self):
-        self.tool_requires("meson/[>=1.2.3 <2]")
+        self.tool_requires("meson/[>=1.9.1 <2]")
         if not self.conf.get("tools.gnu:pkg_config", check_type=str):
-            self.tool_requires("pkgconf/2.0.3")
+            self.tool_requires("pkgconf/2.5.1")
 
     def source(self):
         get(self, **self.conan_data["sources"][self.version], strip_root=True)

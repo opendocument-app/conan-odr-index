@@ -94,19 +94,19 @@ class CairoConan(ConanFile):
         basic_layout(self, src_folder="src")
 
     def requirements(self):
-        self.requires("pixman/0.43.4")
+        self.requires("pixman/0.46.2")
         if self.options.with_zlib and self.options.with_png:
-            self.requires("expat/[>=2.6.2 <3]")
+            self.requires("expat/[>=2.7.3 <3]")
         if self.options.with_lzo:
             self.requires("lzo/2.10")
         if self.options.with_zlib:
             self.requires("zlib/[>=1.2.11 <2]")
         if self.options.with_freetype:
-            self.requires("freetype/2.13.2", transitive_headers=True, transitive_libs=True)
+            self.requires("freetype/2.14.1", transitive_headers=True, transitive_libs=True)
         if self.options.with_fontconfig:
             self.requires("fontconfig/2.15.0-odr", transitive_headers=True, transitive_libs=True)
         if self.options.with_png:
-            self.requires("libpng/[>=1.6 <2]")
+            self.requires("libpng/[>=1.6.53 <2]")
         if self.options.with_glib:
             self.requires("glib/2.81.0-odr")
         if self.settings.os in ["Linux", "FreeBSD"]:
@@ -136,9 +136,9 @@ class CairoConan(ConanFile):
                 )
 
     def build_requirements(self):
-        self.tool_requires("meson/1.4.0")
+        self.tool_requires("meson/1.9.1")
         if not self.conf.get("tools.gnu:pkg_config", check_type=str):
-            self.tool_requires("pkgconf/2.1.0")
+            self.tool_requires("pkgconf/2.5.1")
 
     def source(self):
         get(self, **self.conan_data["sources"][self.version], strip_root=True)
