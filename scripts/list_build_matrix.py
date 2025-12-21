@@ -9,6 +9,7 @@ import fnmatch
 
 import yaml
 
+from definitions import get_recipes_path, get_root_path, get_default_selection_config
 from list_package_references import item_to_list
 
 
@@ -197,7 +198,20 @@ def get_cli_args():
     parser.add_argument(
         "--selection-config",
         type=Path,
+        default=get_default_selection_config(),
         help="Path to selection config file",
+    )
+    parser.add_argument(
+        "--root-path",
+        type=Path,
+        default=get_root_path(),
+        help="Path to root directory",
+    )
+    parser.add_argument(
+        "--recipes-path",
+        type=Path,
+        default=get_recipes_path(),
+        help="Path to recipes directory",
     )
     parser.add_argument(
         "--github-output",
@@ -209,7 +223,11 @@ def get_cli_args():
     return args
 
 
-def get_github_args(root_path):
+def get_github_args():
+    selection_config = get_default_selection_config()
+    root_path = get_root_path()
+    recipes_path = get_recipes_path()
+
     github = json.loads(os.environ.get("GITHUB_CONTEXT", "{}"))
     inputs = json.loads(os.environ.get("GITHUB_INPUT", "{}"))
 
@@ -227,8 +245,6 @@ def get_github_args(root_path):
         else []
     )
 
-    selection_config = root_path / "defaults.yaml"
-
     github_output = Path(os.environ.get("GITHUB_OUTPUT"))
 
     return argparse.Namespace(
@@ -237,6 +253,8 @@ def get_github_args(root_path):
         include_platforms=include_platforms,
         exclude_platforms=exclude_platforms,
         selection_config=selection_config,
+        root_path=root_path,
+        recipes_path=recipes_path,
         github_output=github_output,
     )
 
@@ -246,13 +264,10 @@ def get_is_github():
 
 
 def main():
-    script_path = Path(__file__).resolve().parent
-    root_path = script_path.parent
-
     is_github = get_is_github()
 
     if is_github:
-        args = get_github_args(root_path)
+        args = get_github_args()
     else:
         args = get_cli_args()
 

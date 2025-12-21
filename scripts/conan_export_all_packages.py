@@ -5,6 +5,7 @@ import sys
 import subprocess
 from pathlib import Path
 
+from definitions import get_root_path, get_recipes_path, get_default_selection_config
 from list_package_references import (
     get_package_infos,
     get_selected_packages,
@@ -54,7 +55,20 @@ def get_cli_args():
     parser.add_argument(
         "--selection-config",
         type=Path,
+        default=get_default_selection_config(),
         help="Path to selection config file",
+    )
+    parser.add_argument(
+        "--root-path",
+        type=Path,
+        default=get_root_path(),
+        help="Path to root directory",
+    )
+    parser.add_argument(
+        "--recipes-path",
+        type=Path,
+        default=get_recipes_path(),
+        help="Path to recipes directory",
     )
     parser.add_argument(
         "--dry-run",
@@ -71,11 +85,7 @@ def main():
 
     args = get_cli_args()
 
-    script_path = Path(__file__).resolve().parent
-    root_path = script_path.parent
-    recipes_path = root_path / "recipes"
-
-    package_infos = get_package_infos(root_path, recipes_path)
+    package_infos = get_package_infos(args.root_path, args.recipes_path)
     package_references = [
         package_info["package_reference"] for package_info in package_infos
     ]
@@ -94,7 +104,7 @@ def main():
             f"Export package {package_info["package"]} version {package_info["version"]} ..."
         )
 
-        proc = export_package(package_info, root_path, dry_run=args.dry_run)
+        proc = export_package(package_info, args.root_path, dry_run=args.dry_run)
         if proc.returncode != 0:
             print("... failed to export")
             print(proc.stdout)

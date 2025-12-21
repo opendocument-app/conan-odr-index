@@ -10,6 +10,8 @@ import fnmatch
 
 import yaml
 
+from definitions import get_recipes_path, get_root_path, get_default_selection_config
+
 
 def item_to_list(item_or_list):
     if isinstance(item_or_list, list):
@@ -134,7 +136,20 @@ def get_cli_args():
     parser.add_argument(
         "--selection-config",
         type=Path,
+        default=get_default_selection_config(),
         help="Path to selection config file",
+    )
+    parser.add_argument(
+        "--root-path",
+        type=Path,
+        default=get_root_path(),
+        help="Path to root directory",
+    )
+    parser.add_argument(
+        "--recipes-path",
+        type=Path,
+        default=get_recipes_path(),
+        help="Path to recipes directory",
     )
     parser.add_argument(
         "--commit-id",
@@ -152,6 +167,10 @@ def get_cli_args():
 
 
 def get_github_args(root_path):
+    selection_config = get_default_selection_config()
+    root_path = get_root_path()
+    recipes_path = get_recipes_path()
+
     github = json.loads(os.environ.get("GITHUB_CONTEXT", "{}"))
     inputs = json.loads(os.environ.get("GITHUB_INPUT", "{}"))
 
@@ -168,8 +187,6 @@ def get_github_args(root_path):
         else []
     )
 
-    selection_config = root_path / "defaults.yaml"
-
     if github.get("event_name") in ["push", "pull_request"]:
         commit_obj_list = event.get("commits", [])
         commit_ids = [commit["id"] for commit in commit_obj_list]
@@ -182,6 +199,8 @@ def get_github_args(root_path):
         include_packages=include_packages,
         exclude_packages=exclude_packages,
         selection_config=selection_config,
+        root_path=root_path,
+        recipes_path=recipes_path,
         commit_id=commit_ids,
         github_output=github_output,
     )
@@ -192,18 +211,14 @@ def get_is_github():
 
 
 def main():
-    script_path = Path(__file__).resolve().parent
-    root_path = script_path.parent
-    recipes_path = root_path / "recipes"
-
     is_github = get_is_github()
 
     if is_github:
-        args = get_github_args(root_path)
+        args = get_github_args()
     else:
         args = get_cli_args()
 
-    package_infos = get_package_infos(root_path, recipes_path)
+    package_infos = get_package_infos(args.root_path, args.recipes_path)
     package_references = [
         package_info["package_reference"] for package_info in package_infos
     ]
@@ -216,7 +231,9 @@ def main():
 
     if args.commit_id:
         modified_selected_packages = []
-        modified_packages = get_modified_packages_in_commits(root_path, args.commit_id)
+        modified_packages = get_modified_packages_in_commits(
+            args.root_path, args.commit_id
+        )
         for package_references in selected_packages:
             if package_references.split("/")[0] in modified_packages:
                 modified_selected_packages.append(package_references)
