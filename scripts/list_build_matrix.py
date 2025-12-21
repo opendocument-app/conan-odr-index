@@ -12,10 +12,6 @@ import yaml
 from list_package_references import item_to_list
 
 
-script_path = Path(__file__).resolve().parent
-root_path = script_path.parent
-
-
 def get_build_matrix(
     package_reference,
     selection_config_path=None,
@@ -213,7 +209,7 @@ def get_cli_args():
     return args
 
 
-def get_github_args():
+def get_github_args(root_path):
     github = json.loads(os.environ.get("GITHUB_CONTEXT", "{}"))
     inputs = json.loads(os.environ.get("GITHUB_INPUT", "{}"))
 
@@ -250,14 +246,15 @@ def get_is_github():
 
 
 def main():
+    script_path = Path(__file__).resolve().parent
+    root_path = script_path.parent
+
     is_github = get_is_github()
 
     if is_github:
-        args = get_github_args()
+        args = get_github_args(root_path)
     else:
         args = get_cli_args()
-
-    args = get_github_args()
 
     # TODO that does not look great
     package_name = args.directory.parent.name

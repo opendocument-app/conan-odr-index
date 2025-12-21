@@ -11,19 +11,14 @@ import fnmatch
 import yaml
 
 
-script_path = Path(__file__).resolve().parent
-root_path = script_path.parent
-recipes_path = root_path / "recipes"
-
-
 def item_to_list(item_or_list):
     if isinstance(item_or_list, list):
         return item_or_list
     return [item_or_list]
 
 
-def get_package_infos():
-    package_infos = {}
+def get_package_infos(root_path, recipes_path):
+    package_infos = []
 
     for package_path in recipes_path.iterdir():
         if not package_path.is_dir():
@@ -36,14 +31,13 @@ def get_package_infos():
         with open(config_file) as f:
             config = yaml.safe_load(f)
 
-        infos = []
         package_name = package_path.name
         for version, details in config["versions"].items():
             package_directory = (package_path / str(details["folder"])).relative_to(
                 root_path
             )
 
-            infos.append(
+            package_infos.append(
                 {
                     "package": package_name,
                     "version": version,
@@ -54,17 +48,10 @@ def get_package_infos():
                 }
             )
 
-        package_infos[package_name] = sorted(infos, key=lambda x: x["version"])
+    package_infos = sorted(package_infos, key=lambda x: x["version"])
+    package_infos = sorted(package_infos, key=lambda x: x["package"])
 
     return package_infos
-
-
-def get_package_references(package_infos):
-    return [
-        package_info["package_reference"]
-        for package_infos in package_infos.values()
-        for package_info in package_infos
-    ]
 
 
 def get_selected_packages(
@@ -102,14 +89,7 @@ def get_selected_packages(
     return result
 
 
-def get_package_info(package_infos, package, version):
-    versions = package_infos[package]
-    for package_versioned in versions:
-        if package_versioned["version"] == version:
-            return package_versioned
-
-
-def get_files_in_commit(commit_id):
+def get_files_in_commit(root_path, commit_id):
     files_in_commit = subprocess.run(
         ["git", "diff-tree", "--no-commit-id", "--name-only", "-r", commit_id],
         capture_output=True,
@@ -171,7 +151,7 @@ def get_cli_args():
     return args
 
 
-def get_github_args():
+def get_github_args(root_path):
     github = json.loads(os.environ.get("GITHUB_CONTEXT", "{}"))
     inputs = json.loads(os.environ.get("GITHUB_INPUT", "{}"))
 
@@ -212,15 +192,21 @@ def get_is_github():
 
 
 def main():
+    script_path = Path(__file__).resolve().parent
+    root_path = script_path.parent
+    recipes_path = root_path / "recipes"
+
     is_github = get_is_github()
 
     if is_github:
-        args = get_github_args()
+        args = get_github_args(root_path)
     else:
         args = get_cli_args()
 
-    package_infos = get_package_infos()
-    package_references = get_package_references(package_infos)
+    package_infos = get_package_infos(root_path, recipes_path)
+    package_references = [
+        package_info["package_reference"] for package_info in package_infos
+    ]
     selected_packages = get_selected_packages(
         package_references,
         args.selection_config,
@@ -229,12 +215,12 @@ def main():
     )
 
     if args.commit_id:
-        newly_selected_packages = []
+        modified_selected_packages = []
         modified_packages = get_modified_packages_in_commits(args.commit_id)
         for package_references in selected_packages:
             if package_references.split("/")[0] in modified_packages:
-                newly_selected_packages.append(package_references)
-        selected_packages = newly_selected_packages
+                modified_selected_packages.append(package_references)
+        selected_packages = modified_selected_packages
 
     for package_reference in selected_packages:
         print(package_reference)
@@ -242,12 +228,9 @@ def main():
     if is_github:
         with open(args.github_output, "w") as out:
             selected_package_infos = [
-                get_package_info(
-                    package_infos,
-                    package_reference.split("/")[0],
-                    package_reference.split("/")[1],
-                )
-                for package_reference in selected_packages
+                package_info
+                for package_info in package_infos
+                if package_info["package_reference"] in selected_packages
             ]
             print(f"packages={json.dumps(selected_package_infos)}", file=out)
 
