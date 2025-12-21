@@ -40,7 +40,7 @@ class FontForgeConan(ConanFile):
     def requirements(self):
         self.requires("freetype/2.14.1")
 
-        self.requires("libxml2/2.15.0")
+        self.requires("libxml2/2.12.7")
         self.requires("giflib/5.2.2")
         self.requires("libjpeg/9f")
         self.requires("libpng/[>=1.6.53 <2]")

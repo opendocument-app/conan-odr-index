@@ -47,7 +47,7 @@ class LibgsfConan(ConanFile):
     def requirements(self):
         self.requires("glib/2.81.0-odr", transitive_headers=True)
         self.requires("zlib/1.3.1")
-        self.requires("libxml2/2.15.0", transitive_headers=True)
+        self.requires("libxml2/2.12.7", transitive_headers=True)
 
     # if another tool than the compiler or autotools is required to build the project (pkgconf, bison, flex etc)
     def build_requirements(self):
