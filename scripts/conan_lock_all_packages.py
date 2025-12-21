@@ -106,11 +106,11 @@ def main():
         if package_info["package_reference"] not in selected_packages:
             continue
 
-        for host_profile in [
-            "android-21-armv8",
-            "ubuntu-24.04-x86_64-clang-18",
-            "macos-15-armv8-apple-clang-14",
-            "windows-2022-x86_64-msvc-1940",
+        for build_profile, host_profile in [
+            ("ubuntu-24.04-x86_64-clang-18", "android-21-armv8"),
+            ("ubuntu-24.04-x86_64-clang-18", "ubuntu-24.04-x86_64-clang-18"),
+            ("macos-15-armv8-apple-clang-14", "macos-15-armv8-apple-clang-14"),
+            ("windows-2022-x86_64-msvc-1940", "windows-2022-x86_64-msvc-1940"),
         ]:
             print(
                 f"Lock package {package_info["package"]} version {package_info["version"]} for {host_profile} ..."
@@ -119,7 +119,7 @@ def main():
             proc = create_lock_file(
                 package_info,
                 build_profile=args.root_path
-                / ".github/config/conan/profiles/ubuntu-24.04-x86_64-clang-18",
+                / f".github/config/conan/profiles/{build_profile}",
                 host_profile=args.root_path
                 / f".github/config/conan/profiles/{host_profile}",
                 dry_run=args.dry_run,
