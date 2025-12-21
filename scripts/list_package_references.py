@@ -99,9 +99,9 @@ def get_files_in_commit(root_path, commit_id):
     return filter(None, files_in_commit.stdout.split("\n"))
 
 
-def get_packages_in_commit(commit_id):
+def get_packages_in_commit(root_path, commit_id):
     packages = []
-    for file_in_commit in get_files_in_commit(commit_id):
+    for file_in_commit in get_files_in_commit(root_path, commit_id):
         file_components = Path(file_in_commit).parts
         if len(file_components) >= 3 and file_components[0] == "recipes":
             package_name = file_components[1]
@@ -109,11 +109,11 @@ def get_packages_in_commit(commit_id):
     return packages
 
 
-def get_modified_packages_in_commits(commit_id_list):
+def get_modified_packages_in_commits(root_path, commit_id_list):
     packages = []
     for commit_id in commit_id_list:
         print(f"Commit {commit_id} requested as an argument")
-        packages += get_packages_in_commit(commit_id)
+        packages += get_packages_in_commit(root_path, commit_id)
     return packages
 
 
@@ -216,7 +216,7 @@ def main():
 
     if args.commit_id:
         modified_selected_packages = []
-        modified_packages = get_modified_packages_in_commits(args.commit_id)
+        modified_packages = get_modified_packages_in_commits(root_path, args.commit_id)
         for package_references in selected_packages:
             if package_references.split("/")[0] in modified_packages:
                 modified_selected_packages.append(package_references)
