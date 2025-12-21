@@ -14,4 +14,4 @@ def get_recipes_path() -> Path:
 
 
 def get_default_selection_config():
-    return get_root_path() / "defaults.yml"
+    return get_root_path() / "defaults.yaml"
