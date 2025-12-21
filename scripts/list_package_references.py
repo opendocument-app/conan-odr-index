@@ -166,7 +166,7 @@ def get_cli_args():
     return args
 
 
-def get_github_args(root_path):
+def get_github_args():
     selection_config = get_default_selection_config()
     root_path = get_root_path()
     recipes_path = get_recipes_path()
