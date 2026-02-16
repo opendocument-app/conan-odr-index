@@ -11,8 +11,8 @@
         "cryptopp/8.9.0#7a51e0038756b21bc3a6b82d681d5906%1758206597.119"
     ],
     "build_requires": [
-        "cmake/4.2.1#951586eff155256a7b5298631d6b1416%1765387599.255",
-        "cmake/3.31.10#313d16a1aa16bbdb2ca0792467214b76%1763665505.054"
+        "cmake/4.2.3#c5c10d4c90874997553970589940ab9c%1769792867.095",
+        "cmake/3.31.11#f325c933f618a1fcebc1e1c0babfd1ba%1769622857.944"
     ],
     "python_requires": [],
     "config_requires": []
