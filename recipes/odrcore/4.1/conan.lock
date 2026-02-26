@@ -2,11 +2,15 @@
     "version": "0.5",
     "requires": [
         "vincentlaucsb-csv-parser/2.3.0#ac67e368e82c9e3da4a663c35e3a1b2f%1718528275.177",
+        "utfcpp/4.0.8#2b56ab30c4747169f419f9a82a47d45c%1758199947.264",
         "utfcpp/4.0.4#cd6efc5d62de4e9ee0b5f3abd0df37a9%1722968964.685",
         "uchardet/0.0.8#6ab25e452021fcdb560f4e37f4a27bc1%1759735438.978",
+        "pugixml/1.15#979e88f4fafbfe3585d2c0510a071cc7%1739435725.483",
         "pugixml/1.14#c6afdcf73d71858303d8260b0d76ff91%1696206310.014",
+        "nlohmann_json/3.12.0#2d634ab0ec8d9f56353e5ccef6d6612c%1744735883.94",
         "nlohmann_json/3.11.3#45828be26eb619a2e04ca517bb7b828d%1701220705.259",
         "miniz/3.0.2#bfbce07c6654293cce27ee24129d2df7%1743673472.805",
+        "gtest/1.17.0#5224b3b3ff3b4ce1133cbdd27d53ee7d%1755784855.585",
         "gtest/1.14.0#f8f0757a574a8dd747d16af62d6eb1b7%1743410807.169",
         "cryptopp/8.9.0#7a51e0038756b21bc3a6b82d681d5906%1758206597.119"
     ],
