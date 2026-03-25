@@ -7,6 +7,17 @@
   "conan": {
     "enabled": true
   },
+  "customDatasources": [
+    {
+      "foo": {
+        "defaultRegistryUrlTemplate": "https://raw.githubusercontent.com/opendocument-app/conan-odr-index/refs/heads/main/recipes/{{ packageName }}/config.yml",
+        "format": "yaml",
+        "transformTemplates": [
+          "{ \"releases\": versions.$keys().{ \"version\": $ } }"
+        ]
+      }
+    }
+  ]
   "packageRules": [
     {
       "matchDatasources": [
