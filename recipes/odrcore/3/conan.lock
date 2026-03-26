@@ -2,6 +2,7 @@
     "version": "0.5",
     "requires": [
         "vincentlaucsb-csv-parser/2.3.0#ac67e368e82c9e3da4a663c35e3a1b2f%1718528275.177",
+        "utfcpp/4.0.9#b5eb56fe6b829b6f3eb8da167c4f41b2%1773905531.586",
         "utfcpp/4.0.8#2b56ab30c4747169f419f9a82a47d45c%1758199947.264",
         "uchardet/0.0.8#6ab25e452021fcdb560f4e37f4a27bc1%1759735438.978",
         "pugixml/1.15#979e88f4fafbfe3585d2c0510a071cc7%1739435725.483",
