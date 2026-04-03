@@ -9,9 +9,16 @@
   },
   "postUpgradeTasks": {
     "commands": [
-      "conan remote add odr https://artifactory.opendocument.app/artifactory/api/conan/conan"
+      "git clone git@github.com:opendocument-app/conan-odr-index.git",
+      "python conan-odr-index/scripts/conan_export_all_packages.py"
     ],
     "fileFilters": ["**/*"]
+  },
+  "customDatasources": {
+    "myConan": {
+      "defaultRegistryUrlTemplate": "https://opendocument-app.github.io/conan-odr-index/{{packageName}}.json",
+      "format": "json"
+    }
   },
   "packageRules": [
     {
@@ -19,13 +26,34 @@
         "conan"
       ],
       "registryUrls": [
-        "https://center2.conan.io",
-        "https://artifactory.opendocument.app/artifactory/api/conan/conan"
+        "https://center2.conan.io"
       ]
     },
     {
       "matchDatasources": [
         "conan"
+      ],
+      "matchPackageNames": [
+        "argon2",
+        "cairo",
+        "fontconfig",
+        "fontforge",
+        "glib",
+        "libgsf",
+        "odrcore",
+        "openlibm",
+        "pdf2htmlex",
+        "poppler",
+        "poppler-data",
+        "wvware"
+      ],
+      "overrideDatasource": "myConan",
+      "versioning": "conan"
+    },
+    {
+      "matchDatasources": [
+        "conan",
+        "myConan"
       ],
       "matchUpdateTypes": [
         "minor",
@@ -35,7 +63,8 @@
     },
     {
       "matchDatasources": [
-        "conan"
+        "conan",
+        "myConan"
       ],
       "matchDepNames": [
         "cmake"
