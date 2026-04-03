@@ -8,25 +8,11 @@
     "enabled": true
   },
   "customDatasources": {
-    "conan-custom": {
+    "conan": {
       "defaultRegistryUrlTemplate": "https://opendocument-app.github.io/conan-odr-index/packages/{{packageName}}.json",
       "format": "json"
     }
   },
-  "customManagers": [
-    {
-      "customType": "regex",
-      "managerFilePatterns": [
-        "/conanfile.txt/",
-        "/conanfile.py/",
-        "/conan.lock/"
-      ],
-      "matchStrings": [
-        "(?<depName>)/(?<currentValue>[^#\\s]+)#(?<currentDigest>[a-f0-9]+)"
-      ],
-      "datasourceTemplate": "conan-custom"
-    }
-  ],
   "packageRules": [
     {
       "matchDatasources": [
@@ -34,7 +20,8 @@
       ],
       "registryUrls": [
         "https://center2.conan.io"
-      ]
+      ],
+      "datasource": "custom.conan"
     },
     {
       "matchDatasources": [
@@ -53,7 +40,7 @@
       "matchDepNames": [
         "cmake"
       ],
-      "allowedVersions": "!/4\..*/"
+      "allowedVersions": "!/4\\..*/"
     }
   ]
 }
