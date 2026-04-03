@@ -10,8 +10,7 @@
   "customDatasources": {
     "conan-custom": {
       "defaultRegistryUrlTemplate": "https://opendocument-app.github.io/conan-odr-index/package_index.json",
-      "format": "json",
-      "transform": "$map($keys($), function($pkg){$map($keys($[$pkg]), function($v){{\"version\":$v,\"digest\":$[$pkg][$v].latest}})})~>$flatten()~>{\"releases\":$}"
+      "format": "json"
     }
   },
   "customManagers": [
