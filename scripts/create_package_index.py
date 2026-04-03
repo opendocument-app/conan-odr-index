@@ -57,7 +57,7 @@ def create_package_index():
 def get_cli_args():
     parser = argparse.ArgumentParser(description="Create package index")
     parser.add_argument(
-        "output_path",
+        "--output-path",
         help="Output path for the package index",
         type=Path,
         default=Path("packages"),
