@@ -2,7 +2,7 @@
     "version": "0.5",
     "requires": [
         "vincentlaucsb-csv-parser/2.3.0#ac67e368e82c9e3da4a663c35e3a1b2f%1718528275.177",
-        "utfcpp/4.0.4#cd6efc5d62de4e9ee0b5f3abd0df37a9%1722968964.685",
+        "utfcpp/4.0.4#199ad4051968b14d27cb937173bcf42a%1773905534.969",
         "uchardet/0.0.8#6ab25e452021fcdb560f4e37f4a27bc1%1759735438.978",
         "pugixml/1.14#c6afdcf73d71858303d8260b0d76ff91%1696206310.014",
         "nlohmann_json/3.11.3#45828be26eb619a2e04ca517bb7b828d%1701220705.259",
@@ -11,7 +11,7 @@
         "cryptopp/8.9.0#7a51e0038756b21bc3a6b82d681d5906%1758206597.119"
     ],
     "build_requires": [
-        "cmake/3.31.10#313d16a1aa16bbdb2ca0792467214b76%1763665505.054"
+        "cmake/3.31.11#f325c933f618a1fcebc1e1c0babfd1ba%1769622857.944"
     ],
     "python_requires": [],
     "config_requires": []
