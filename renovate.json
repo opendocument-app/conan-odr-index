@@ -7,46 +7,19 @@
   "conan": {
     "enabled": true
   },
-  "customDatasources": {
-    "myConan": {
-      "defaultRegistryUrlTemplate": "https://opendocument-app.github.io/conan-odr-index/{{packageName}}.json",
-      "format": "json"
-    }
-  },
   "packageRules": [
     {
       "matchDatasources": [
         "conan"
       ],
       "registryUrls": [
-        "https://center2.conan.io"
+        "https://center2.conan.io",
+        "https://artifactory.opendocument.app/artifactory/api/conan/conan"
       ]
     },
     {
       "matchDatasources": [
         "conan"
-      ],
-      "matchPackageNames": [
-        "argon2",
-        "cairo",
-        "fontconfig",
-        "fontforge",
-        "glib",
-        "libgsf",
-        "odrcore",
-        "openlibm",
-        "pdf2htmlex",
-        "poppler",
-        "poppler-data",
-        "wvware"
-      ],
-      "overrideDatasource": "myConan",
-      "versioning": "conan"
-    },
-    {
-      "matchDatasources": [
-        "conan",
-        "myConan"
       ],
       "matchUpdateTypes": [
         "minor",
@@ -56,8 +29,7 @@
     },
     {
       "matchDatasources": [
-        "conan",
-        "myConan"
+        "conan"
       ],
       "matchDepNames": [
         "cmake"
