@@ -46,6 +46,11 @@ on:
 run-name: Build ${{ inputs.directory }} version ${{ inputs.package_version }}
 
 env:
+  CCACHE_DIR: ${{ github.workspace }}/.ccache
+  CCACHE_MAXSIZE: 1G
+  CCACHE_KEY_SUFFIX: r1
+  CONAN_HOME: ${{ github.workspace }}/.conan2
+  CONAN_KEY_SUFFIX: r1
   # renovate: datasource=python-version depName=python
   PYTHON_VERSION: 3.14
 
@@ -89,6 +94,17 @@ jobs:
       - name: checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
+      - name: ubuntu install ccache
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt install ccache
+          ccache -V
+      - name: macos install ccache
+        if: runner.os == 'macOS'
+        run: |
+          brew install ccache
+          ccache -V
+
       - name: setup python ${{ env.PYTHON_VERSION }}
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
@@ -99,6 +115,14 @@ jobs:
       - name: install NDK
         if: startsWith(matrix.config.host_profile, 'android')
         run: yes | ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'ndk;${{ matrix.config.ndk_version }}'
+
+      - name: cache conan
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5
+        with:
+          path: ${{ env.CONAN_HOME }}
+          key: conan-${{ matrix.config.host_profile }}-${{ env.CONAN_KEY_SUFFIX }}
+          restore-keys: |
+            conan-${{ matrix.config.host_profile }}-
 
       - name: conan config
         run: conan config install .github/config/conan
@@ -115,6 +139,14 @@ jobs:
 
       - name: conan export all packages
         run: python scripts/conan_export_all_packages.py
+
+      - name: cache ccache
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache-${{ matrix.config.host_profile }}-${{ env.CCACHE_KEY_SUFFIX }}
+          restore-keys: |
+            ccache-${{ matrix.config.host_profile }}-
 
       - name: conan install
         shell: bash
