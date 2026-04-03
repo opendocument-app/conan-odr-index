@@ -16,12 +16,32 @@
   "packageRules": [
     {
       "matchDatasources": [
-        "conan",
-        "myConan"
+        "conan"
       ],
       "registryUrls": [
         "https://center2.conan.io"
       ]
+    },
+    {
+      "matchDatasources": [
+        "conan"
+      ],
+      "matchPackageNames": [
+        "argon2",
+        "cairo",
+        "fontconfig",
+        "fontforge",
+        "glib",
+        "libgsf",
+        "odrcore",
+        "openlibm",
+        "pdf2htmlex",
+        "poppler",
+        "poppler-data",
+        "wvware"
+      ],
+      "overrideDatasource": "myConan",
+      "versioning": "conan"
     },
     {
       "matchDatasources": [
@@ -42,7 +62,7 @@
       "matchDepNames": [
         "cmake"
       ],
-      "allowedVersions": "!/4\..*/"
+      "allowedVersions": "!/4\\..*/"
     }
   ]
 }
