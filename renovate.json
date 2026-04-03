@@ -9,7 +9,7 @@
   },
   "customDatasources": {
     "conan": {
-      "defaultRegistryUrlTemplate": "https://opendocument-app.github.io/conan-odr-index/packages/{{packageName}}.json",
+      "defaultRegistryUrlTemplate": "https://opendocument-app.github.io/conan-odr-index/{{packageName}}.json",
       "format": "json"
     }
   },
