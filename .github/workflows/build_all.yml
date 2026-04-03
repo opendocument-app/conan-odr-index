@@ -2,6 +2,8 @@ name: Build all packages
 
 on:
   push:
+    branches: [main]
+  pull_request:
   workflow_dispatch:
     inputs:
       build_dependencies_from_source:
