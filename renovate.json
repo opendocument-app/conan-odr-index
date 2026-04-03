@@ -7,12 +7,6 @@
   "conan": {
     "enabled": true
   },
-  "postUpgradeTasks": {
-    "commands": [
-      "conan remote add odr https://artifactory.opendocument.app/artifactory/api/conan/conan"
-    ],
-    "fileFilters": ["**/*"]
-  },
   "packageRules": [
     {
       "matchDatasources": [
