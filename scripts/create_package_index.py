@@ -5,9 +5,10 @@ import json
 import sys
 import subprocess
 from datetime import datetime, timezone
+from pathlib import Path
 
 
-def create_package_index(dry_run=False):
+def create_package_index():
     command = [
         "conan",
         "list",
@@ -15,12 +16,6 @@ def create_package_index(dry_run=False):
         "json",
         "*:*",
     ]
-    if dry_run:
-        print("Dry run, not executing command: " + " ".join(command))
-        proc = subprocess.CompletedProcess(
-            args=command, returncode=0, stdout="Dry run", stderr=""
-        )
-        return {}
 
     print("Running command: " + " ".join(command))
     proc = subprocess.run(
@@ -55,14 +50,6 @@ def create_package_index(dry_run=False):
             )[revision] = {
                 "timestamp": utc_time,
             }
-            result[package][version].setdefault("latest", revision)
-            if (
-                utc_time
-                > result[package][version]["revisions"][
-                    result[package][version]["latest"]
-                ]["timestamp"]
-            ):
-                result[package][version]["latest"] = revision
 
     return result
 
@@ -70,15 +57,10 @@ def create_package_index(dry_run=False):
 def get_cli_args():
     parser = argparse.ArgumentParser(description="Create package index")
     parser.add_argument(
-        "output_file",
-        nargs="?",
-        default="package_index.json",
-        help="Output file for the package index (default: package_index.json)",
-    )
-    parser.add_argument(
-        "--dry-run",
-        action="store_true",
-        help="Perform a dry run without executing commands",
+        "output_path",
+        help="Output path for the package index",
+        type=Path,
+        default=Path("packages"),
     )
     args = parser.parse_args()
 
@@ -90,11 +72,25 @@ def main():
 
     args = get_cli_args()
 
-    index = create_package_index(dry_run=args.dry_run)
-    if not args.dry_run:
-        with open(args.output_file, "w") as f:
-            json.dump(index, f, indent=2)
-        print(f"Package index written to {args.output_file}")
+    index = create_package_index()
+
+    args.output_path.mkdir(parents=True, exist_ok=True)
+
+    for package, package_info in index.items():
+        result = {
+            "releases": []
+        }
+
+        for version, version_info in package_info.items():
+            for revision, revision_info in version_info["revisions"].items():
+                result["releases"].append({
+                    "version": version,
+                    "digest": revision,
+                    "releaseTimestamp": revision_info["timestamp"],
+                })
+
+        with open(args.output_path / f"{package}.json", "w") as f:
+            json.dump(result, f, indent=2)
 
     return returncode
 

@@ -35,7 +35,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: package_index
-          path: package_index.json
+          path: packages
 
   deploy:
     if: ( github.event_name == 'push' && github.ref == 'refs/heads/main' ) || github.event_name == 'workflow_dispatch'
