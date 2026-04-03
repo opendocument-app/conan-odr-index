@@ -12,9 +12,6 @@ on:
       package_version:
         required: true
         type: string
-      upload_to_artifactory:
-        required: true
-        type: boolean
       build_dependencies_from_source:
         required: true
         type: boolean
@@ -24,9 +21,6 @@ on:
       platform_exclude_patterns:
         required: false
         type: string
-    secrets:
-      ARTIFACTORY:
-        required: true
   workflow_dispatch:
     inputs:
       directory:
@@ -38,10 +32,6 @@ on:
       package_version:
         description: The version of the package to build
         type: string
-      upload_to_artifactory:
-        description: Upload built packages to artifactory
-        type: boolean
-        default: false
       build_dependencies_from_source:
         description: Build all dependencies from source (conan install --build=* instead of --build=missing)
         type: boolean
@@ -110,11 +100,6 @@ jobs:
         if: startsWith(matrix.config.host_profile, 'android')
         run: yes | ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'ndk;${{ matrix.config.ndk_version }}'
 
-      - name: conan remote
-        run: |
-          conan remote remove "*"
-          conan remote add conancenter https://center2.conan.io
-          conan remote add odr https://artifactory.opendocument.app/artifactory/api/conan/conan
       - name: conan config
         run: conan config install .github/config/conan
 
@@ -151,11 +136,3 @@ jobs:
             --lockfile conan.lock \
             --profile:host '${{ matrix.config.host_profile }}' \
             --profile:build '${{ matrix.config.build_profile }}'
-
-      - name: conan login
-        if: ${{ inputs.upload_to_artifactory }}
-        run: conan remote login odr admin --password '${{ secrets.ARTIFACTORY }}'
-
-      - name: conan upload
-        if: ${{ inputs.upload_to_artifactory }}
-        run: conan upload "*" --check --confirm --remote odr
