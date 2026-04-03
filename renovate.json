@@ -15,7 +15,12 @@
   },
   "customManagers": [
     {
-      "fileMatch": ["conanfile.txt", "conanfile.py", "conan.lock"],
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/conanfile.txt/",
+        "/conanfile.py/",
+        "/conan.lock/"
+      ],
       "matchStrings": [
         "(?<depName>)/(?<currentValue>[^#\\s]+)#(?<currentDigest>[a-f0-9]+)"
       ],
@@ -48,7 +53,7 @@
       "matchDepNames": [
         "cmake"
       ],
-      "allowedVersions": "!/4\\..*/"
+      "allowedVersions": "!/4\..*/"
     }
   ]
 }
