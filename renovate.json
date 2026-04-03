@@ -20,8 +20,7 @@
       ],
       "registryUrls": [
         "https://center2.conan.io"
-      ],
-      "datasource": "custom.conan"
+      ]
     },
     {
       "matchDatasources": [
@@ -40,7 +39,7 @@
       "matchDepNames": [
         "cmake"
       ],
-      "allowedVersions": "!/4\\..*/"
+      "allowedVersions": "!/4\..*/"
     }
   ]
 }
