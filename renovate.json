@@ -8,7 +8,7 @@
     "enabled": true
   },
   "customDatasources": {
-    "conan": {
+    "myConan": {
       "defaultRegistryUrlTemplate": "https://opendocument-app.github.io/conan-odr-index/{{packageName}}.json",
       "format": "json"
     }
@@ -16,7 +16,8 @@
   "packageRules": [
     {
       "matchDatasources": [
-        "conan"
+        "conan",
+        "myConan"
       ],
       "registryUrls": [
         "https://center2.conan.io"
@@ -24,7 +25,8 @@
     },
     {
       "matchDatasources": [
-        "conan"
+        "conan",
+        "myConan"
       ],
       "matchUpdateTypes": [
         "minor",
@@ -34,7 +36,8 @@
     },
     {
       "matchDatasources": [
-        "conan"
+        "conan",
+        "myConan"
       ],
       "matchDepNames": [
         "cmake"
