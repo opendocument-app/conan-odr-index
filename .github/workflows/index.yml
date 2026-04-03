@@ -1,0 +1,59 @@
+name: Generate package index
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+env:
+  # renovate: datasource=python-version depName=python
+  PYTHON_VERSION: 3.14
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: setup python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: install python dependencies and setuptools (required to build GLib)
+        run: python -m pip install -r requirements.txt
+
+      - name: conan export all packages
+        run: python scripts/conan_export_all_packages.py --include-pattern "*"
+
+      - name: create package index
+        run: python scripts/create_package_index.py
+
+      - name: upload package index
+        uses: actions/upload-artifact@v4
+        with:
+          name: package_index
+          path: package_index.json
+
+  deploy:
+    if: ( github.event_name == 'push' && github.ref == 'refs/heads/main' ) || github.event_name == 'workflow_dispatch'
+    needs: generate
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: package_index
+
+      - name: Upload to Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - name: Deploy
+        uses: actions/deploy-pages@v4

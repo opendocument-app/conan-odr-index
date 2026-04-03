@@ -4,10 +4,6 @@ on:
   push:
   workflow_dispatch:
     inputs:
-      upload_to_artifactory:
-        description: Upload built packages to artifactory
-        type: boolean
-        default: false
       build_dependencies_from_source:
         description: Build all dependencies from source (conan install --build=* instead of --build=missing)
         type: boolean
@@ -82,9 +78,6 @@ jobs:
       directory: ${{ matrix.package.directory }}
       package_name: ${{ matrix.package.package }}
       package_version: ${{ matrix.package.version }}
-      upload_to_artifactory: ${{ github.repository_owner == 'opendocument-app' && (github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.upload_to_artifactory == 'true')) }}
       build_dependencies_from_source: ${{ github.event.inputs.build_dependencies_from_source == 'true' }}
       platform_include_patterns: ${{ github.event.inputs.platform_include_patterns }}
       platform_exclude_patterns: ${{ github.event.inputs.platform_exclude_patterns }}
-    secrets:
-      ARTIFACTORY: ${{ secrets.ARTIFACTORY }}
