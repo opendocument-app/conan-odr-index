@@ -60,7 +60,7 @@ class FontForgeConan(ConanFile):
             self.requires("openlibm/0.8.3")
 
     def build_requirements(self):
-        self.tool_requires("gettext/0.26")
+        self.tool_requires("gettext/1.0")
 
     def config_options(self):
         if self.settings.os == "Windows":
