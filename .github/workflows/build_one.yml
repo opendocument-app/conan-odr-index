@@ -127,7 +127,7 @@ jobs:
         run: yes | ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'ndk;${{ matrix.config.ndk_version }}'
 
       - name: cache conan
-        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
         with:
           path: ${{ env.CONAN_HOME }}
           key: conan-${{ matrix.config.host_profile }}-${{ env.CONAN_KEY_SUFFIX }}
@@ -156,7 +156,7 @@ jobs:
         run: python scripts/conan_export_all_packages.py
 
       - name: cache ccache
-        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
         with:
           path: ${{ env.CCACHE_DIR }}
           key: ccache-${{ matrix.config.host_profile }}-${{ env.CCACHE_KEY_SUFFIX }}
