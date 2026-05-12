@@ -110,9 +110,9 @@ class PopplerConan(ConanFile):
     def requirements(self):
         self.requires("poppler-data/0.4.12-odr", transitive_headers=True, transitive_libs=True)
         # https://gitlab.freedesktop.org/poppler/poppler/-/blob/poppler-22.04.0/splash/SplashFTFont.h#L30
-        self.requires("freetype/2.14.1", transitive_headers=True, transitive_libs=True)
+        self.requires("freetype/2.14.3", transitive_headers=True, transitive_libs=True)
         if self.options.get_safe("with_libiconv"):
-            self.requires("libiconv/1.17")
+            self.requires("libiconv/1.18")
         if self.options.fontconfiguration == "fontconfig":
             self.requires("fontconfig/2.15.0-odr")
         if self.options.with_cairo:
@@ -132,7 +132,7 @@ class PopplerConan(ConanFile):
         if self.options.with_libjpeg == "libjpeg":
             self.requires("libjpeg/9f")
         if self.options.with_nss:
-            self.requires("nss/3.93")
+            self.requires("nss/3.119")
         if self.options.with_png:
             self.requires("libpng/[>=1.6.53 <2]")
         if self.options.with_tiff:
@@ -143,7 +143,7 @@ class PopplerConan(ConanFile):
             self.requires("jbig/20160605")
 
         if self.options.splash:
-            self.requires("boost/1.90.0", options={"header_only": True})
+            self.requires("boost/1.91.0", options={"header_only": True})
         if self.options.with_libcurl:
             # https://gitlab.freedesktop.org/poppler/poppler/-/blob/poppler-23.11.0/poppler/CurlCachedFile.h#L18
             self.requires("libcurl/[>=8.17.0 <9]", transitive_headers=True, transitive_libs=True)
