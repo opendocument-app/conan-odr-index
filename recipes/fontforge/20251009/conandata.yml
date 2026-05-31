@@ -1,0 +1,12 @@
+sources:
+  "20251009":
+    url: "https://github.com/fontforge/fontforge/archive/refs/tags/20251009.tar.gz"
+    sha256: "613424039e0e1b6bb106f8f0df287e1d249ac285d854f4e1964d68e9b9ad7eb0"
+patches:
+  "20251009":
+    - patch_file: "patches/conan-find-glib.patch"
+    - patch_file: "patches/InstallStaticLibrary.patch"
+    - patch_file: "patches/gutils-fsys-get-home-dir.patch"
+    - patch_file: "patches/Android-pre-23-complex-math.patch"
+    - patch_file: "patches/conan-find-freetype.patch"
+    - patch_file: "patches/invalid-ligature-index.patch"

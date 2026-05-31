@@ -5,11 +5,13 @@ packages:
     - "poppler-data/0.4.12-odr"
     - "openlibm/0.8.3"
     - "fontforge/20240423-git"
+    - "fontforge/20251009"
     - "libgsf/1.14.52"
     - "cairo/1.18.0-odr"
     - "argon2/20190702-odr"
     - "wvware/1.2.9-odr"
     - "poppler/24.08.0-odr"
+    - "poppler/26.05.0-odr"
     - "pdf2htmlex/0.18.8.rc1-odr-git-eb5d291"
     - "odrcore/5.2.0"
 

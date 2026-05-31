@@ -1,0 +1,55 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index d0b998b8d..f55836399 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -109,9 +109,9 @@ find_package(Freetype 2.3.7 REQUIRED)
+ find_package(Gettext REQUIRED)
+ find_package_with_target(Intl REQUIRED)
+ if(UNIX AND NOT APPLE)
+-  find_package(GLIB 2.6 REQUIRED COMPONENTS gio gobject)
++  find_package(glib 2.6 REQUIRED COMPONENTS gio gobject)
+ else()
+-  find_package(GLIB 2.58 REQUIRED COMPONENTS gio gobject)
++  find_package(glib 2.58 REQUIRED COMPONENTS gio gobject)
+ endif()
+ find_package(Iconv REQUIRED)
+ find_package(LibXml2 REQUIRED)
+diff --git a/fontforge/CMakeLists.txt b/fontforge/CMakeLists.txt
+index 19c701e24..0bda563f2 100644
+--- a/fontforge/CMakeLists.txt
++++ b/fontforge/CMakeLists.txt
+@@ -241,7 +241,7 @@ target_link_libraries(fontforge
+     fontforge_common_headers
+     Freetype::Freetype
+     LibXml2::LibXml2
+-    GLIB::GLIB
++    glib::glib
+     Intl::Intl
+   PRIVATE
+     MathLib::MathLib
+diff --git a/inc/CMakeLists.txt b/inc/CMakeLists.txt
+index b40a6da24..a64f668d5 100644
+--- a/inc/CMakeLists.txt
++++ b/inc/CMakeLists.txt
+@@ -14,7 +14,7 @@ target_include_directories(fontforge_common_headers
+ 
+ target_link_libraries(fontforge_common_headers
+   INTERFACE
+-    GLIB::GLIB
++    glib::glib
+ )
+ 
+ if(ENABLE_CODE_COVERAGE_RESULT)
+diff --git a/tests/CMakeLists.txt b/tests/CMakeLists.txt
+index 60d3b416d..9c205606e 100644
+--- a/tests/CMakeLists.txt
++++ b/tests/CMakeLists.txt
+@@ -10,7 +10,7 @@ if(NOT ENABLE_NATIVE_SCRIPTING AND NOT ENABLE_PYTHON_SCRIPTING_RESULT)
+ endif()
+ 
+ add_executable(systestdriver systestdriver.c)
+-target_link_libraries(systestdriver PRIVATE GLIB::GLIB)
++target_link_libraries(systestdriver PRIVATE glib::glib)
+ if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
+   target_compile_options(systestdriver PRIVATE -Wall -pedantic)
+ endif()
