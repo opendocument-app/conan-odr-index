@@ -11,6 +11,9 @@ sources:
   "0.18.8.rc1-odr-git-eb5d291":
     url: "https://github.com/opendocument-app/pdf2htmlEX/archive/refs/tags/v0.18.8.rc1-odr-git-eb5d291.tar.gz"
     sha256: "530de80cebd3427c9d075c2c5567ba3c7ef1f25ca6a926dcb0d63ce562ce230c"
+  "0.18.8.rc1-odr-git-e685b24":
+    url: "https://github.com/opendocument-app/pdf2htmlEX/archive/e685b2417ce97d85f1810c5a540b0b842a6e2e3a.zip"
+    sha256: "27e1850f252ef2218b173d257d95daa3b000013a3ca61f3fb4226fa6bce5f4c6"
 patches:
   # "0.18.8.rc1-git-6f85c88-odr":
   #   - patch_file: "patches/0.18.8.rc1-git-6f85c88/0001-Upgrade-Poppler-to-24.06.1.patch"
@@ -21,3 +24,12 @@ patches:
   #   - patch_file: "patches/0.18.8.rc1-git-6f85c88/0003-use-find_package.patch"
   "0.18.8.rc1-odr-git-eb5d291":
     - patch_file: "patches/0.18.8.rc1-git-6f85c88/0003-use-find_package.patch"
+  "0.18.8.rc1-odr-git-e685b24":
+    - patch_file: "patches/0.18.8.rc1-git-e685b24/0003-use-find_package.patch"
+dependencies:
+  "0.18.8.rc1-odr-git-eb5d291":
+    poppler: "24.08.0-odr"
+    fontforge: "20240905-git"
+  "0.18.8.rc1-odr-git-e685b24":
+    poppler: "26.05.0-odr"
+    fontforge: "20251009"
