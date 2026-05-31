@@ -1,0 +1,161 @@
+From 5e5a947bd1320e19c1271f5dfaeef098baae4452 Mon Sep 17 00:00:00 2001
+From: Vilius Sutkus '89 <Vilius@ViliusSutkus89.com>
+Date: Thu, 13 Jun 2024 14:18:06 +0300
+Subject: [PATCH 1/4] Upgrade Poppler to 24.06.1
+
+Poppler-24.02.0 OutlineItem changed Title from Unicode pointer and length counter into Unicode vector. ( https://gitlab.freedesktop.org/poppler/poppler/-/commit/fc1c711cb5f769546c6b31cc688bf0ee7f0c1dbc )
+
+Poppler-24.03.0 GooString.h exposes std::string::starts_with and ::ends_with which are CXX20.
+---
+ buildScripts/versionEnvs               |  5 ++-
+ pdf2htmlEX/CMakeLists.txt              |  4 +-
+ pdf2htmlEX/src/HTMLRenderer/outline.cc |  2 +-
+ pdf2htmlEX/src/util/encoding.cc        | 60 +++++++++++++++-----------
+ pdf2htmlEX/src/util/encoding.h         |  2 +
+ 5 files changed, 44 insertions(+), 29 deletions(-)
+
+diff --git a/buildScripts/versionEnvs b/buildScripts/versionEnvs
+index 3ea6cba..9ef5f8b 100755
+--- a/buildScripts/versionEnvs
++++ b/buildScripts/versionEnvs
+@@ -4,11 +4,12 @@
+ # versions
+ 
+ # see: https://poppler.freedesktop.org/releases.html
+-# current working: 24.01.0
++# current working: 24.06.1
+ 
+ export PDF2HTMLEX_VERSION=0.18.8.rc2
+ 
+-export POPPLER_VERSION=poppler-24.01.0
++export POPPLER_VERSION=poppler-24.06.1
++#export POPPLER_VERSION=poppler-24.01.0
+ #export POPPLER_VERSION=poppler-23.12.0
+ #export POPPLER_VERSION=poppler-21.02.0
+ #export POPPLER_VERSION=poppler-0.89.0
+diff --git a/pdf2htmlEX/CMakeLists.txt b/pdf2htmlEX/CMakeLists.txt
+index 761bb21..84b4a98 100644
+--- a/pdf2htmlEX/CMakeLists.txt
++++ b/pdf2htmlEX/CMakeLists.txt
+@@ -125,8 +125,8 @@ set(CMAKE_THREAD_PREFER_PTHREAD ON)
+ set(THREADS_PREFER_PTHREAD_FLAG ON)
+ find_package(Threads REQUIRED)
+ set(PDF2HTMLEX_LIBS ${PDF2HTMLEX_LIBS} Threads::Threads)
+-# Poppler-23.12.0 requires CXX17
+-set(CMAKE_CXX_STANDARD 17)
++# Poppler-24.03.0 requires CXX20
++set(CMAKE_CXX_STANDARD 20)
+ set(CMAKE_CXX_STANDARD_REQUIRED ON)
+ if(NOT CYGWIN)
+     set(CMAKE_CXX_EXTENSIONS OFF)
+diff --git a/pdf2htmlEX/src/HTMLRenderer/outline.cc b/pdf2htmlEX/src/HTMLRenderer/outline.cc
+index 4fdc826..28415c8 100644
+--- a/pdf2htmlEX/src/HTMLRenderer/outline.cc
++++ b/pdf2htmlEX/src/HTMLRenderer/outline.cc
+@@ -42,7 +42,7 @@ void HTMLRenderer::process_outline_items(const std::vector<OutlineItem*> * items
+ 
+         f_outline.fs << ">";
+ 
+-        writeUnicodes(f_outline.fs, item->getTitle(), item->getTitleLength());
++        writeUnicodes(f_outline.fs, item->getTitle());
+ 
+         f_outline.fs << "</a>";
+ 
+diff --git a/pdf2htmlEX/src/util/encoding.cc b/pdf2htmlEX/src/util/encoding.cc
+index 6b600bc..1e3fc29 100644
+--- a/pdf2htmlEX/src/util/encoding.cc
++++ b/pdf2htmlEX/src/util/encoding.cc
+@@ -55,34 +55,46 @@ static int mapUTF8(Unicode u, char *buf, int bufSize)
+     }
+ }
+ 
++static void writeUnicode(ostream & out, const Unicode u) {
++    switch(u)
++    {
++        case '&':
++            out << "&amp;";
++            break;
++        case '\"':
++            out << "&quot;";
++            break;
++        case '\'':
++            out << "&apos;";
++            break;
++        case '<':
++            out << "&lt;";
++            break;
++        case '>':
++            out << "&gt;";
++            break;
++        default:
++        {
++            char buf[4];
++            auto n = mapUTF8(u, buf, 4);
++            out.write(buf, n);
++        }
++    }
++}
++
+ void writeUnicodes(ostream & out, const Unicode * u, int uLen)
+ {
+     for(int i = 0; i < uLen; ++i)
+     {
+-        switch(u[i])
+-        {
+-            case '&':
+-                out << "&amp;";
+-                break;
+-            case '\"':
+-                out << "&quot;";
+-                break;
+-            case '\'':
+-                out << "&apos;";
+-                break;
+-            case '<':
+-                out << "&lt;";
+-                break;
+-            case '>':
+-                out << "&gt;";
+-                break;
+-            default:
+-                {
+-                    char buf[4];
+-                    auto n = mapUTF8(u[i], buf, 4);
+-                    out.write(buf, n);
+-                }
+-        }
++        writeUnicode(out, u[i]);
++    }
++}
++
++void writeUnicodes(ostream & out, const std::vector<Unicode> & u)
++{
++    for(const auto & i: u)
++    {
++        writeUnicode(out, i);
+     }
+ }
+ 
+diff --git a/pdf2htmlEX/src/util/encoding.h b/pdf2htmlEX/src/util/encoding.h
+index c4d7732..da3c00f 100644
+--- a/pdf2htmlEX/src/util/encoding.h
++++ b/pdf2htmlEX/src/util/encoding.h
+@@ -9,6 +9,7 @@
+ #define ENCODING_H__
+ 
+ #include <string>
++#include <vector>
+ #include <iostream>
+ 
+ #include <CharTypes.h>
+@@ -19,6 +20,7 @@ namespace pdf2htmlEX {
+  * Escape necessary characters, and map Unicode to UTF-8
+  */
+ void writeUnicodes(std::ostream & out, const Unicode * u, int uLen);
++void writeUnicodes(std::ostream & out, const std::vector<Unicode> & u);
+ 
+ 
+ /*
+-- 
+2.39.3 (Apple Git-146)
+

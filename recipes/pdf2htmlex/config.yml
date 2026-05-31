@@ -6,4 +6,6 @@ versions:
   # "0.18.8.rc1-odr-git-3dcf842":
   #   folder: "0.18.8.rc1"
   "0.18.8.rc1-odr-git-eb5d291":
-    folder: "0.18.8.rc1"
+    folder: "0.18.8.rc1-odr-git-eb5d291"
+  "0.18.8.rc1-odr-git-e685b24":
+    folder: "0.18.8.rc1-odr-git-e685b24"

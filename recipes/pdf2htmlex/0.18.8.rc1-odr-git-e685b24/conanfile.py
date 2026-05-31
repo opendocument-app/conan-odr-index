@@ -45,7 +45,7 @@ class pdf2htmlEXConan(ConanFile):
                 'Dependency "fontforge" needs to be built with "install_private_headers" option')
 
     def requirements(self):
-        self.requires("poppler/24.08.0-odr", options={
+        self.requires("poppler/26.05.0-odr", options={
             "with_cairo": True,
             "with_glib": True,
             "shared": False,
@@ -58,7 +58,7 @@ class pdf2htmlEXConan(ConanFile):
             "with_xcb": False,
         }, transitive_headers=True, transitive_libs=True)
         self.requires("freetype/2.14.1")
-        self.requires("fontforge/20240423-git", options={
+        self.requires("fontforge/20251009", options={
             "install_private_headers": True,
         })
 

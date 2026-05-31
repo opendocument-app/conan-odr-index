@@ -1,0 +1,7 @@
+sources:
+  "0.18.8.rc1-odr-git-e685b24":
+    url: "https://github.com/opendocument-app/pdf2htmlEX/archive/e685b2417ce97d85f1810c5a540b0b842a6e2e3a.zip"
+    sha256: "27e1850f252ef2218b173d257d95daa3b000013a3ca61f3fb4226fa6bce5f4c6"
+patches:
+  "0.18.8.rc1-odr-git-e685b24":
+    - patch_file: "patches/0003-use-find_package.patch"
