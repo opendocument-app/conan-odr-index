@@ -23,9 +23,7 @@ startxref
 %%EOF)";
 
 int main() {
-    std::vector<char> data(minimal_pdf.size());
-    std::copy(minimal_pdf.begin(), minimal_pdf.end(), data.begin());
-    auto doc = document::load_from_data(&data);
+    auto doc = document::load_from_data(load_from_data.data());
     std::cout << "#pages: " << doc->pages() << '\n';
     return 0;
 }
