@@ -1,27 +1,26 @@
-From 66ff35f6d65c89c261c395c9222a0aa75fe46dc5 Mon Sep 17 00:00:00 2001
+From fc82b0a3b7370647d71784e645a5f1993966695d Mon Sep 17 00:00:00 2001
 From: Andreas Stefl <stefl.andreas@gmail.com>
 Date: Sun, 31 May 2026 18:24:46 +0200
 Subject: [PATCH 2/6] install static library
 
 ---
- fontforge/CMakeLists.txt | 21 ++++++++++++---------
+ fontforge/CMakeLists.txt | 20 +++++++++++++-------
  inc/CMakeLists.txt       | 32 ++++++++++++++++++++++++++++++++
- 2 files changed, 44 insertions(+), 9 deletions(-)
+ 2 files changed, 45 insertions(+), 7 deletions(-)
 
 diff --git a/fontforge/CMakeLists.txt b/fontforge/CMakeLists.txt
-index 8458e5a5f..654eadc89 100644
+index 8458e5a5f..6ac710117 100644
 --- a/fontforge/CMakeLists.txt
 +++ b/fontforge/CMakeLists.txt
-@@ -117,8 +117,6 @@ set(FONTFORGE_INST_HEADERS
- )
- 
- add_library(fontforge
--  ${FONTFORGE_NOINST_HEADERS}
--  ${FONTFORGE_INST_HEADERS}
-   activeinui.c
-   asmfpst.c
-   autohint.c
-@@ -217,6 +215,9 @@ add_library(fontforge
+@@ -46,6 +46,7 @@ set(FONTFORGE_NOINST_HEADERS
+   scstyles.h
+   sfd.h
+   spiro.h
++  splinechar.h
+   splinefill.h
+   splinefit.h
+   splineorder2.h
+@@ -217,6 +218,9 @@ add_library(fontforge
    zapfnomen.c
  )
  
@@ -31,7 +30,7 @@ index 8458e5a5f..654eadc89 100644
  if(ENABLE_WOFF2_RESULT)
    target_sources(fontforge PRIVATE woff2.cc)
  endif()
-@@ -281,11 +282,13 @@ else()
+@@ -281,11 +285,13 @@ else()
    target_link_libraries(fontforge PRIVATE gunicode gutils)
  endif()
  
