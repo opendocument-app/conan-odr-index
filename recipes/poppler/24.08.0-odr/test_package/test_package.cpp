@@ -23,7 +23,7 @@ startxref
 %%EOF)";
 
 int main() {
-    auto doc = document::load_from_data(minimal_pdf.data(), minimal_pdf.size());
+    auto doc = document::load_from_raw_data(minimal_pdf.data(), minimal_pdf.size());
     std::cout << "#pages: " << doc->pages() << '\n';
     return 0;
 }
