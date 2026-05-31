@@ -1,6 +1,18 @@
---- fontforge/CMakeLists.txt	2020-01-27 10:39:51.000000000 +0200
-+++ fontforge/CMakeLists.txt	2023-11-03 10:04:11.517000000 +0200
-@@ -115,8 +115,6 @@
+From 8ea72de9c11fdefbe146cec9a6424ac08f10a09a Mon Sep 17 00:00:00 2001
+From: Andreas Stefl <stefl.andreas@gmail.com>
+Date: Sun, 31 May 2026 18:24:46 +0200
+Subject: [PATCH 2/6] install static library
+
+---
+ fontforge/CMakeLists.txt | 21 ++++++++++++---------
+ inc/CMakeLists.txt       | 32 ++++++++++++++++++++++++++++++++
+ 2 files changed, 44 insertions(+), 9 deletions(-)
+
+diff --git a/fontforge/CMakeLists.txt b/fontforge/CMakeLists.txt
+index 0bda563f2..67dfd7cad 100644
+--- a/fontforge/CMakeLists.txt
++++ b/fontforge/CMakeLists.txt
+@@ -115,8 +115,6 @@ set(FONTFORGE_INST_HEADERS
  )
  
  add_library(fontforge
@@ -9,16 +21,17 @@
    activeinui.c
    asmfpst.c
    autohint.c
-@@ -214,6 +212,8 @@
+@@ -214,6 +212,9 @@ add_library(fontforge
    zapfnomen.c
  )
  
 +set_target_properties(fontforge PROPERTIES PUBLIC_HEADER "${FONTFORGE_INST_HEADERS}")
 +set_target_properties(fontforge PROPERTIES PRIVATE_HEADER "${FONTFORGE_NOINST_HEADERS}")
++
  if(ENABLE_WOFF2_RESULT)
    target_sources(fontforge PRIVATE woff2.cc)
  endif()
-@@ -278,11 +278,13 @@
+@@ -278,11 +279,13 @@ else()
    target_link_libraries(fontforge PRIVATE gunicode gutils)
  endif()
  
@@ -39,10 +52,11 @@
 +if(INSTALL_PRIVATE_HEADERS)
 +  install(TARGETS fontforge PRIVATE_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
  endif()
-
---- inc/CMakeLists.txt
-+++ inc/CMakeLists.txt
-@@ -23,3 +23,35 @@
+diff --git a/inc/CMakeLists.txt b/inc/CMakeLists.txt
+index a64f668d5..71601d673 100644
+--- a/inc/CMakeLists.txt
++++ b/inc/CMakeLists.txt
+@@ -23,3 +23,35 @@ target_link_libraries(fontforge_common_headers
      Gcov::Gcov
  )
  endif()
@@ -78,3 +92,6 @@
 +install(TARGETS fontforge_common_headers
 +    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 +)
+-- 
+2.50.1 (Apple Git-155)
+

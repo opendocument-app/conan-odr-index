@@ -1,0 +1,47 @@
+From 330ee93e0b3ea8225c5de357184a884903c30eaa Mon Sep 17 00:00:00 2001
+From: Andreas Stefl <stefl.andreas@gmail.com>
+Date: Sun, 31 May 2026 18:29:55 +0200
+Subject: [PATCH 4/6] android pre 23 complex math
+
+---
+ CMakeLists.txt           | 7 ++++++-
+ fontforge/splinestroke.c | 4 ++++
+ 2 files changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index b25c84279..fabb02188 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -116,7 +116,12 @@ else()
+ endif()
+ find_package(Iconv REQUIRED)
+ find_package(LibXml2 REQUIRED)
+-find_package(MathLib REQUIRED)
++if(ANDROID AND ANDROID_NATIVE_API_LEVEL STRLESS "23")
++  find_package(OpenLibm REQUIRED)
++  add_library(MathLib::MathLib ALIAS openlibm::openlibm)
++else ()
++  find_package(MathLib REQUIRED)
++endif()
+ find_package(ZLIB REQUIRED)
+ 
+ check_include_file(pthread.h HAVE_PTHREAD_H)
+diff --git a/fontforge/splinestroke.c b/fontforge/splinestroke.c
+index 7c1332f6d..eb4321ee0 100644
+--- a/fontforge/splinestroke.c
++++ b/fontforge/splinestroke.c
+@@ -41,7 +41,11 @@
+ #include "utanvec.h"
+ 
+ #include <assert.h>
++#if defined(__ANDROID__) && __ANDROID_API__ < 23
++#include <openlibm.h>
++#else
+ #include <complex.h>
++#endif
+ #include <math.h>
+ 
+ #define CIRCOFF 0.551915
+-- 
+2.50.1 (Apple Git-155)
+

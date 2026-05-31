@@ -1,3 +1,15 @@
+From b023c150dac4dcb66087cffb3ffe6b9018978e22 Mon Sep 17 00:00:00 2001
+From: Andreas Stefl <stefl.andreas@gmail.com>
+Date: Sun, 31 May 2026 18:14:26 +0200
+Subject: [PATCH 1/6] conan find glib
+
+---
+ CMakeLists.txt           | 4 ++--
+ fontforge/CMakeLists.txt | 2 +-
+ inc/CMakeLists.txt       | 2 +-
+ tests/CMakeLists.txt     | 2 +-
+ 4 files changed, 5 insertions(+), 5 deletions(-)
+
 diff --git a/CMakeLists.txt b/CMakeLists.txt
 index d0b998b8d..f55836399 100644
 --- a/CMakeLists.txt
@@ -53,3 +65,6 @@ index 60d3b416d..9c205606e 100644
  if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
    target_compile_options(systestdriver PRIVATE -Wall -pedantic)
  endif()
+-- 
+2.50.1 (Apple Git-155)
+

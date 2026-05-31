@@ -1,0 +1,38 @@
+From 7799bfe93455284e130f56bdb4de084d63833904 Mon Sep 17 00:00:00 2001
+From: Andreas Stefl <stefl.andreas@gmail.com>
+Date: Sun, 31 May 2026 18:27:01 +0200
+Subject: [PATCH 3/6] gutils fsys get home dir
+
+---
+ gutils/fsys.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/gutils/fsys.c b/gutils/fsys.c
+index 981a8f25c..34dfc15ac 100644
+--- a/gutils/fsys.c
++++ b/gutils/fsys.c
+@@ -158,6 +158,11 @@ char *GFileGetHomeDir(void) {
+ return buffer;
+     }
+ return NULL;
++#elif defined(__ANDROID__)
++    static char *dir;
++    dir = getenv("HOME");
++    if ( dir!=NULL )
++	return( copy(dir) );
+ #else
+     static char *dir;
+     uid_t uid;
+@@ -814,6 +819,9 @@ const char *getUserHomeDir(void) {
+ return dir;
+ 	}
+ return NULL;
++#elif defined(__ANDROID__)
++	char *home = getenv("HOME");
++  return home;
+ #else
+ 	uid_t uid;
+ 	struct passwd *pw;
+-- 
+2.50.1 (Apple Git-155)
+
