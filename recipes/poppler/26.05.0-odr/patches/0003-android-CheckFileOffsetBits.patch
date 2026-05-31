@@ -1,4 +1,4 @@
-From 7d54bcf94fe3b6ad9728f0e0a69297e36899cf52 Mon Sep 17 00:00:00 2001
+From 5c613060246d33b343707e6f577c46cc69c8e579 Mon Sep 17 00:00:00 2001
 From: Andreas Stefl <stefl.andreas@gmail.com>
 Date: Sun, 31 May 2026 18:42:34 +0200
 Subject: [PATCH 3/3] android CheckFileOffsetBits

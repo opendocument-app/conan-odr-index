@@ -1,4 +1,4 @@
-From 98a2f02433b06f2d11e17254a4a0ddd0b6952356 Mon Sep 17 00:00:00 2001
+From 5deead9cdf016da46496c2986716ed53e7f94cec Mon Sep 17 00:00:00 2001
 From: Andreas Stefl <stefl.andreas@gmail.com>
 Date: Sun, 31 May 2026 18:42:06 +0200
 Subject: [PATCH 2/3] cmake use conan qt
