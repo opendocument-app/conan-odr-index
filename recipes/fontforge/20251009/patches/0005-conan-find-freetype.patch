@@ -1,4 +1,4 @@
-From d1cfa357a8e7f6f096fb0036d03af9a7a5785d7e Mon Sep 17 00:00:00 2001
+From ce8a2e4a13126641a8bc09d31f0dcde72c9dbfb2 Mon Sep 17 00:00:00 2001
 From: Andreas Stefl <stefl.andreas@gmail.com>
 Date: Sun, 31 May 2026 18:30:52 +0200
 Subject: [PATCH 5/6] conan find freetype
