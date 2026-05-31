@@ -1,6 +1,17 @@
+From 94d92a882b5533593f4cce6d6baf5e75e731e6f8 Mon Sep 17 00:00:00 2001
+From: Andreas Stefl <stefl.andreas@gmail.com>
+Date: Sun, 31 May 2026 18:42:06 +0200
+Subject: [PATCH 2/3] cmake use conan qt
+
+---
+ CMakeLists.txt | 15 ++++++---------
+ 1 file changed, 6 insertions(+), 9 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 4dff5a9e..94b05de1 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -209,18 +209,15 @@
+@@ -209,18 +209,15 @@ else()
  endif()
  
  set(QT5_VERSION "5.15")
@@ -25,3 +36,6 @@
  
  # Check for Cairo rendering backend
  macro_optional_find_package(Cairo ${CAIRO_VERSION})
+-- 
+2.50.1 (Apple Git-155)
+

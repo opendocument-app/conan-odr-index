@@ -1,9 +1,20 @@
+From 98a2f02433b06f2d11e17254a4a0ddd0b6952356 Mon Sep 17 00:00:00 2001
+From: Andreas Stefl <stefl.andreas@gmail.com>
+Date: Sun, 31 May 2026 18:42:06 +0200
+Subject: [PATCH 2/3] cmake use conan qt
+
+---
+ CMakeLists.txt | 16 +++++++---------
+ 1 file changed, 7 insertions(+), 9 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 16b12445..f6f3082f 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -209,18 +209,15 @@
+@@ -215,17 +215,15 @@ else()
+   message(FATAL_ERROR "Invalid ENABLE_DCTDECODER value.")
  endif()
  
- set(QT5_VERSION "5.15")
 -find_soft_mandatory_package(ENABLE_QT5 Qt5Core ${QT5_VERSION})
 -find_soft_mandatory_package(ENABLE_QT5 Qt5Gui ${QT5_VERSION})
 -find_soft_mandatory_package(ENABLE_QT5 Qt5Xml ${QT5_VERSION})
@@ -13,15 +24,18 @@
 +  find_package(Qt5 COMPONENTS Core Gui Xml Widgets Test REQUIRED CONFIG)
 +endif()
  
- set(QT6_VERSION "6.2")
  SET(QT_NO_CREATE_VERSIONLESS_TARGETS ON)
 -find_soft_mandatory_package(ENABLE_QT6 Qt6Core ${QT6_VERSION})
 -find_soft_mandatory_package(ENABLE_QT6 Qt6Gui ${QT6_VERSION})
 -find_soft_mandatory_package(ENABLE_QT6 Qt6Widgets ${QT6_VERSION})
 -find_soft_mandatory_package(ENABLE_QT6 Qt6Test ${QT6_VERSION})
++
 +if(ENABLE_QT6)
 +  find_package(Qt6 COMPONENTS Core Gui Widgets Test REQUIRED CONFIG)
 +endif()
  
- # Check for Cairo rendering backend
- macro_optional_find_package(Cairo ${CAIRO_VERSION})
+ add_definitions(-DQT_NO_CAST_FROM_ASCII)
+ add_definitions(-DQT_NO_CAST_FROM_BYTEARRAY)
+-- 
+2.50.1 (Apple Git-155)
+

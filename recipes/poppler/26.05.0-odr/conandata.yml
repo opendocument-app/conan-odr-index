@@ -4,6 +4,6 @@ sources:
     sha256: "6fef27ff04f37db43054c86bcdff6128c9fb1f6af4ef3c8b369a7e9abd68d0bb"
 patches:
   "26.05.0-odr":
-    - patch_file: "patches/0004-add-POPPLER_DATADIR-environment-variable.patch"
-    - patch_file: "patches/0007-cmake-use_conan_qt.patch"
-    - patch_file: "patches/CheckFileOffsetBits.patch"
+    - patch_file: "patches/0001-add-POPPLER_DATADIR-environment-variable.patch"
+    - patch_file: "patches/0002-cmake-use-conan-qt.patch"
+    - patch_file: "patches/0003-android-CheckFileOffsetBits.patch"
