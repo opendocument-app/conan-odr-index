@@ -61,8 +61,8 @@ def get_cli_args():
     parser.add_argument(
         "--selection-config",
         type=Path,
-        default=get_default_selection_config(),
-        help="Path to selection config file",
+        default=None,
+        help=f"Path to selection config file. Unused default: {get_default_selection_config()}",
     )
     parser.add_argument(
         "--root-path",
