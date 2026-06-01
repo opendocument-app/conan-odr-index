@@ -1,22 +1,22 @@
 {
     "version": "0.5",
     "requires": [
-        "zlib/1.3.1#cac0f6daea041b0ccf42934163defb20%1765284699.337",
+        "zlib/1.3.2#1cb806da49011867778ffb6ac7190fcb%1777558780.503",
         "util-linux-libuuid/2.41.2#ee8e33ba15c17c0140643e0bd93c0b6f%1765881086.29",
-        "libpng/1.6.55#f32362d4db3c562271d907c99be24091%1770802173.684",
+        "libpng/1.6.58#19cb72905ae54f54948401f753faa2c1%1776606503.628",
         "freetype/2.14.1#40f1e4af5db7d8155f9ecabd09973280%1762374429.281",
-        "expat/2.7.5#89bbde1770876a19bb8620b9808941cc%1773806275.408",
+        "expat/2.8.1#1702584c4e606eb15257df9eacdb863b%1778665563.745",
         "bzip2/1.0.8#c470882369c2d95c5c77e970c0c7e321%1762886692.465",
         "brotli/1.1.0#3f631ef77008f7b5eb388780116371a3%1764862343.045"
     ],
     "build_requires": [
         "pkgconf/2.5.1#93c2051284cba1279494a43a4fcfeae2%1757684701.089",
         "ninja/1.13.2#c8c5dc2a52ed6e4e42a66d75b4717ceb%1764096931.974",
-        "msys2/cci.latest#1996656c3c98e5765b25b60ff5cf77b4%1764840888.758",
-        "meson/1.10.1#426d7d29e3e5f7285cb8398d84546734%1772032339.966",
+        "msys2/cci.latest#d22fe7b2808f5fd34d0a7923ace9c54f%1770657326.649",
+        "meson/1.10.2#9d2d10681fe7fe61c788c58626c89b25%1775558003.754",
         "meson/1.9.1#abbc783cd297bedce14581b4aec060b8%1758626166.349",
         "gperf/3.1#a7afdf8f7cccdc2dcd4d962370c33d4f%1755780571.156",
-        "cmake/4.3.0#b939a42e98f593fb34d3a8c5cc860359%1773780142.26"
+        "cmake/4.3.2#5bae0b181463ca4dc3e924a981367ee6%1779785720.872"
     ],
     "python_requires": [],
     "config_requires": []
