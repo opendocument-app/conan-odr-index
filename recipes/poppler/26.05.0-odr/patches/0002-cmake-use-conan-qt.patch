@@ -1,0 +1,41 @@
+From 5deead9cdf016da46496c2986716ed53e7f94cec Mon Sep 17 00:00:00 2001
+From: Andreas Stefl <stefl.andreas@gmail.com>
+Date: Sun, 31 May 2026 18:42:06 +0200
+Subject: [PATCH 2/4] cmake use conan qt
+
+---
+ CMakeLists.txt | 16 +++++++---------
+ 1 file changed, 7 insertions(+), 9 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 16b12445..f6f3082f 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -215,17 +215,15 @@ else()
+   message(FATAL_ERROR "Invalid ENABLE_DCTDECODER value.")
+ endif()
+ 
+-find_soft_mandatory_package(ENABLE_QT5 Qt5Core ${QT5_VERSION})
+-find_soft_mandatory_package(ENABLE_QT5 Qt5Gui ${QT5_VERSION})
+-find_soft_mandatory_package(ENABLE_QT5 Qt5Xml ${QT5_VERSION})
+-find_soft_mandatory_package(ENABLE_QT5 Qt5Widgets ${QT5_VERSION})
+-find_soft_mandatory_package(ENABLE_QT5 Qt5Test ${QT5_VERSION})
++if(ENABLE_QT5)
++  find_package(Qt5 COMPONENTS Core Gui Xml Widgets Test REQUIRED CONFIG)
++endif()
+ 
+ SET(QT_NO_CREATE_VERSIONLESS_TARGETS ON)
+-find_soft_mandatory_package(ENABLE_QT6 Qt6Core ${QT6_VERSION})
+-find_soft_mandatory_package(ENABLE_QT6 Qt6Gui ${QT6_VERSION})
+-find_soft_mandatory_package(ENABLE_QT6 Qt6Widgets ${QT6_VERSION})
+-find_soft_mandatory_package(ENABLE_QT6 Qt6Test ${QT6_VERSION})
++
++if(ENABLE_QT6)
++  find_package(Qt6 COMPONENTS Core Gui Widgets Test REQUIRED CONFIG)
++endif()
+ 
+ add_definitions(-DQT_NO_CAST_FROM_ASCII)
+ add_definitions(-DQT_NO_CAST_FROM_BYTEARRAY)
+-- 
+2.50.1 (Apple Git-155)
+

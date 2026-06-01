@@ -1,0 +1,99 @@
+From f8db9c31a8ec24b7d702167eebdfcacabdd0f609 Mon Sep 17 00:00:00 2001
+From: Andreas Stefl <stefl.andreas@gmail.com>
+Date: Sun, 31 May 2026 18:24:46 +0200
+Subject: [PATCH 2/6] install static library
+
+---
+ fontforge/CMakeLists.txt | 21 ++++++++++++++-------
+ inc/CMakeLists.txt       | 32 ++++++++++++++++++++++++++++++++
+ 2 files changed, 46 insertions(+), 7 deletions(-)
+
+diff --git a/fontforge/CMakeLists.txt b/fontforge/CMakeLists.txt
+index 8458e5a5f..46f467c5a 100644
+--- a/fontforge/CMakeLists.txt
++++ b/fontforge/CMakeLists.txt
+@@ -46,8 +46,10 @@ set(FONTFORGE_NOINST_HEADERS
+   scstyles.h
+   sfd.h
+   spiro.h
++  splinechar.h
+   splinefill.h
+   splinefit.h
++  splinefont_enums.h
+   splineorder2.h
+   splineoverlap.h
+   splinerefigure.h
+@@ -217,6 +219,9 @@ add_library(fontforge
+   zapfnomen.c
+ )
+ 
++set_target_properties(fontforge PROPERTIES PUBLIC_HEADER "${FONTFORGE_INST_HEADERS}")
++set_target_properties(fontforge PROPERTIES PRIVATE_HEADER "${FONTFORGE_NOINST_HEADERS}")
++
+ if(ENABLE_WOFF2_RESULT)
+   target_sources(fontforge PRIVATE woff2.cc)
+ endif()
+@@ -281,11 +286,13 @@ else()
+   target_link_libraries(fontforge PRIVATE gunicode gutils)
+ endif()
+ 
+-# No dev package -> no need to install if static
+-if(BUILD_SHARED_LIBS)
+-  if(WIN32 OR CYGWIN)
+-    install(TARGETS fontforge RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+-  else()
+-    install(TARGETS fontforge RUNTIME DESTINATION ${CMAKE_INSTALL_LIBDIR} LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+-  endif()
++install(TARGETS fontforge
++  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
++  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
++  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
++  PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
++)
++build_option(INSTALL_PRIVATE_HEADERS BOOL OFF "Install private FontForge headers")
++if(INSTALL_PRIVATE_HEADERS)
++  install(TARGETS fontforge PRIVATE_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+ endif()
+diff --git a/inc/CMakeLists.txt b/inc/CMakeLists.txt
+index a64f668d5..71601d673 100644
+--- a/inc/CMakeLists.txt
++++ b/inc/CMakeLists.txt
+@@ -23,3 +23,35 @@ target_link_libraries(fontforge_common_headers
+     Gcov::Gcov
+ )
+ endif()
++
++set(FONTFORGE_COMMON_INST_HEADERS
++  "${CMAKE_CURRENT_BINARY_DIR}/fontforge-config.h"
++  "${CMAKE_CURRENT_BINARY_DIR}/fontforge-version-extras.h"
++  basics.h
++  carbon.h
++  dlist.h
++  ffgdk.h
++  ffglib.h
++  gdraw.h
++  gfile.h
++  ggadget.h
++  gicons.h
++  gimage.h
++  gkeysym.h
++  gprogress.h
++  gresedit.h
++  gresource.h
++  gutils.h
++  gwidget.h
++  gwwiconv.h
++  hotkeys.h
++  intl.h
++  prefs.h
++  ustring.h
++  utype.h
++)
++set_target_properties(fontforge_common_headers PROPERTIES PUBLIC_HEADER "${FONTFORGE_COMMON_INST_HEADERS}")
++
++install(TARGETS fontforge_common_headers
++    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
++)
+-- 
+2.50.1 (Apple Git-155)
+
