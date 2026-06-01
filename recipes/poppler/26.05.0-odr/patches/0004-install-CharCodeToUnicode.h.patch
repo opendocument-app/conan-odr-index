@@ -1,0 +1,24 @@
+From ddce9820fa42203f9d2d9bb7bda899a36ef8a119 Mon Sep 17 00:00:00 2001
+From: Andreas Stefl <stefl.andreas@gmail.com>
+Date: Mon, 1 Jun 2026 10:53:25 +0200
+Subject: [PATCH 4/4] install CharCodeToUnicode.h
+
+---
+ CMakeLists.txt | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index f6f3082f..f37fd051 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -689,6 +689,7 @@ if(ENABLE_UNSTABLE_API_ABI_HEADERS)
+     poppler/Array.h
+     poppler/CachedFile.h
+     poppler/Catalog.h
++    poppler/CharCodeToUnicode.h
+     poppler/CryptoSignBackend.h
+     poppler/DateInfo.h
+     poppler/Dict.h
+-- 
+2.50.1 (Apple Git-155)
+

@@ -7,3 +7,4 @@ patches:
     - patch_file: "patches/0001-add-POPPLER_DATADIR-environment-variable.patch"
     - patch_file: "patches/0002-cmake-use-conan-qt.patch"
     - patch_file: "patches/0003-android-CheckFileOffsetBits.patch"
+    - patch_file: "patches/0004-install-CharCodeToUnicode.h.patch"
