@@ -1,17 +1,17 @@
-From 90261925551ebd76032324728b2ad52eb741902c Mon Sep 17 00:00:00 2001
+From f6a0af14946e7a809012009a2b6fdd2989440c86 Mon Sep 17 00:00:00 2001
 From: Andreas Stefl <stefl.andreas@gmail.com>
-Date: Wed, 18 Sep 2024 19:49:39 +0200
-Subject: [PATCH 3/4] use `find_package`
+Date: Mon, 1 Jun 2026 10:18:50 +0200
+Subject: [PATCH] use find_package
 
 ---
- pdf2htmlEX/CMakeLists.txt | 75 +++++++++++----------------------------
- 1 file changed, 20 insertions(+), 55 deletions(-)
+ pdf2htmlEX/CMakeLists.txt | 78 ++++++++++-----------------------------
+ 1 file changed, 20 insertions(+), 58 deletions(-)
 
 diff --git a/pdf2htmlEX/CMakeLists.txt b/pdf2htmlEX/CMakeLists.txt
-index 84b4a98..73a7eeb 100644
+index 261b21a..6864c2f 100644
 --- a/pdf2htmlEX/CMakeLists.txt
 +++ b/pdf2htmlEX/CMakeLists.txt
-@@ -21,66 +21,31 @@ add_custom_target(dist
+@@ -21,29 +21,14 @@ add_custom_target(dist
          | bzip2 > ${CMAKE_BINARY_DIR}/${ARCHIVE_NAME}.tar.bz2
      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
  
@@ -22,12 +22,15 @@ index 84b4a98..73a7eeb 100644
 -# poppler... we explicitly describe the poppler include and library 
 -# paths.
 -#
+-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../poppler/cmake")
 -include_directories(
 -  ../poppler/build/poppler
 -  ../poppler/build
 -  ../poppler/poppler
 -  ../poppler
 -)
+-include_directories(${POPPLER_INCLUDE_DIRS})
+-link_directories(${POPPLER_LIBRARY_DIRS})
 -#
 -# The following order is critical as the glib functions use functions 
 -# located in the main poppler library 
@@ -45,7 +48,10 @@ index 84b4a98..73a7eeb 100644
 +    poppler::libpoppler-glib
  )
  
--
+ pkg_check_modules(GLIB REQUIRED IMPORTED_TARGET glib-2.0>=2.80 gio-2.0>=2.80)
+@@ -51,43 +36,20 @@ include_directories(${GLIB_INCLUDE_DIRS})
+ link_directories(${GLIB_LIBRARY_DIRS})
+ 
  if(ENABLE_SVG)
 -    pkg_check_modules(CAIRO REQUIRED cairo>=1.10.0)
 -    message("-- Trying to locate cairo-svg...")
@@ -76,6 +82,7 @@ index 84b4a98..73a7eeb 100644
 +    set(ENABLE_SVG 1)
  endif()
  
+-
 -# SINCE we have a very intimate relationship with a particular version of 
 -# fontforge... we explicitly describe the fontforge include and library 
 -# paths.
@@ -86,7 +93,7 @@ index 84b4a98..73a7eeb 100644
 -  ../fontforge/build/inc
 -  ../fontforge/inc
 -)
--#
+-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../fontforge/cmake")
 -include_directories(${FONTFORGE_INCLUDE_DIRS})
 -link_directories(${FONTFORGE_LIBRARY_DIRS})
 -set(FONTFORGE_LIBRARIES ${FONTFORGE_LIBRARIES}
@@ -99,5 +106,5 @@ index 84b4a98..73a7eeb 100644
  
  # If we are using Alpine Linux then we need to add -lintl
 -- 
-2.39.3 (Apple Git-146)
+2.50.1 (Apple Git-155)
 
