@@ -1,0 +1,28 @@
+From ae0a6f73b9b62157e57ab864f04f5af4d510a705 Mon Sep 17 00:00:00 2001
+From: Andreas Stefl <stefl.andreas@gmail.com>
+Date: Mon, 1 Jun 2026 10:53:25 +0200
+Subject: [PATCH 4/4] install more unstable headers
+
+---
+ CMakeLists.txt | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index f6f3082f..b2932cf8 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -688,7 +688,11 @@ if(ENABLE_UNSTABLE_API_ABI_HEADERS)
+     poppler/AnnotStampImageHelper.h
+     poppler/Array.h
+     poppler/CachedFile.h
++    poppler/CairoFontEngine.h
++    poppler/CairoOutputDev.h
++    poppler/CairoRescaleBox.h
+     poppler/Catalog.h
++    poppler/CharCodeToUnicode.h
+     poppler/CryptoSignBackend.h
+     poppler/DateInfo.h
+     poppler/Dict.h
+-- 
+2.50.1 (Apple Git-155)
+
