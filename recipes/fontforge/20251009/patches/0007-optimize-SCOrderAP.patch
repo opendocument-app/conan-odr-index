@@ -1,0 +1,104 @@
+From 0484c77d7a4ca68a96a2d73a8ca4c56b97aa1805 Mon Sep 17 00:00:00 2001
+From: Andreas Stefl <stefl.andreas@gmail.com>
+Date: Sat, 6 Jun 2026 11:00:33 +0200
+Subject: [PATCH 7/8] optimize SCOrderAP
+
+---
+ fontforge/splinechar.c | 70 +++++++++++++++++++++++++++++++-----------
+ 1 file changed, 52 insertions(+), 18 deletions(-)
+
+diff --git a/fontforge/splinechar.c b/fontforge/splinechar.c
+index d22dbe91b..aa2f38299 100644
+--- a/fontforge/splinechar.c
++++ b/fontforge/splinechar.c
+@@ -1054,35 +1054,69 @@ void AltUniAdd_DontCheckDups(SplineChar *sc,int uni) {
+     }
+ }
+ 
++struct aporder {
++    AnchorPoint *ap;
++    int order;
++};
++
++static int SCOrderAPCmp(const void *a, const void *b) {
++    const struct aporder *ap_a = a, *ap_b = b;
++
++    if ( ap_a->ap->lig_index < ap_b->ap->lig_index )
++return( -1 );
++    if ( ap_a->ap->lig_index > ap_b->ap->lig_index )
++return( 1 );
++return( ap_a->order - ap_b->order );
++}
++
+ void SCOrderAP(SplineChar *sc) {
+-    int lc=0, cnt=0, out=false, i,j;
+-    AnchorPoint *ap, **array;
++    int cnt=0, ascending=true, descending=true, first=true, prev=0, i;
++    AnchorPoint *ap, *next, *rev = NULL;
++    struct aporder *array;
+     /* Order so that first ligature index comes first */
+ 
+     for ( ap=sc->anchor; ap!=NULL; ap=ap->next ) {
+-	if ( ap->lig_index<lc ) out = true;
+-	if ( ap->lig_index>lc ) lc = ap->lig_index;
++	if ( first ) {
++	    prev = ap->lig_index;
++	    first = false;
++	} else {
++	    if ( ap->lig_index < prev )
++		ascending = false;
++	    if ( ap->lig_index > prev )
++		descending = false;
++	    prev = ap->lig_index;
++	}
+ 	++cnt;
+     }
+-    if ( !out )
++    if ( cnt<2 || ascending )
+ return;
+ 
+-    array = malloc(cnt*sizeof(AnchorPoint *));
+-    for ( i=0, ap=sc->anchor; ap!=NULL; ++i, ap=ap->next )
+-	array[i] = ap;
+-    for ( i=0; i<cnt-1; ++i ) {
+-	for ( j=i+1; j<cnt; ++j ) {
+-	    if ( array[i]->lig_index>array[j]->lig_index ) {
+-		ap = array[i];
+-		array[i] = array[j];
+-		array[j] = ap;
+-	    }
++
++    if ( descending ) {
++	for ( ap = sc->anchor; ap!=NULL; ap=next ) {
++	    next = ap->next;
++	    ap->next = rev;
++	    rev = ap;
+ 	}
++	sc->anchor = rev;
++	return;
++    }
++
++    array = malloc(cnt*sizeof(*array));
++    if ( array==NULL )
++return;
++
++    for ( i=0, ap=sc->anchor; ap!=NULL; ++i, ap=ap->next ) {
++	array[i].ap = ap;
++	array[i].order = i;
+     }
+-    sc->anchor = array[0];
++    qsort(array,cnt,sizeof(*array),SCOrderAPCmp);
++
++    sc->anchor = array[0].ap;
+     for ( i=0; i<cnt-1; ++i )
+-	array[i]->next = array[i+1];
+-    array[cnt-1]->next = NULL;
++	array[i].ap->next = array[i+1].ap;
++
++	array[cnt-1].ap->next = NULL;
+     free( array );
+ }
+ 
+-- 
+2.50.1 (Apple Git-155)
+
