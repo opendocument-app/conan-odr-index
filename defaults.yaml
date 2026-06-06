@@ -13,7 +13,7 @@ packages:
     - "poppler/24.08.0-odr"
     - "poppler/26.05.0-odr"
     - "pdf2htmlex/0.18.8.rc1-odr-git-eb5d291"
-    - "pdf2htmlex/0.18.8.rc1-odr-git-fc0a3d5"
+    - "pdf2htmlex/0.18.8.rc1-odr-git-732fd68"
     - "odrcore/5.2.0"
 
 platforms:
