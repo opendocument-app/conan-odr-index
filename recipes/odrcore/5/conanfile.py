@@ -22,6 +22,7 @@ class OpenDocumentCoreConan(ConanFile):
         "with_pdf2htmlEX": [True, False],
         "with_wvWare": [True, False],
         "with_libmagic": [True, False],
+        "bundle_assets": [True, False],
     }
     default_options = {
         "shared": False,
@@ -29,6 +30,7 @@ class OpenDocumentCoreConan(ConanFile):
         "with_pdf2htmlEX": True,
         "with_wvWare": True,
         "with_libmagic": True,
+        "bundle_assets": True,
     }
 
     def config_options(self):
@@ -86,6 +88,10 @@ class OpenDocumentCoreConan(ConanFile):
         tc.variables["WITH_PDF2HTMLEX"] = self.options.get_safe("with_pdf2htmlEX", False)
         tc.variables["WITH_WVWARE"] = self.options.get_safe("with_wvWare", False)
         tc.variables["WITH_LIBMAGIC"] = self.options.get_safe("with_libmagic", False)
+        # When disabled, third-party data (magic.mgc, fontconfig, ...) is not
+        # bundled into the odrcore build; the consumer ships those files itself
+        # and wires the paths at runtime via odr::GlobalParams.
+        tc.variables["ODR_BUNDLE_ASSETS"] = self.options.get_safe("bundle_assets", True)
         tc.generate()
 
         deps = CMakeDeps(self)
