@@ -1,3 +1,5 @@
+import os
+
 from conan import ConanFile
 from conan.tools.build import check_min_cppstd
 from conan.tools.cmake import CMakeToolchain, CMakeDeps, CMake, cmake_layout
@@ -88,10 +90,22 @@ class OpenDocumentCoreConan(ConanFile):
         tc.variables["WITH_PDF2HTMLEX"] = self.options.get_safe("with_pdf2htmlEX", False)
         tc.variables["WITH_WVWARE"] = self.options.get_safe("with_wvWare", False)
         tc.variables["WITH_LIBMAGIC"] = self.options.get_safe("with_libmagic", False)
-        # When disabled, third-party data (magic.mgc, fontconfig, ...) is not
-        # bundled into the odrcore build; the consumer ships those files itself
-        # and wires the paths at runtime via odr::GlobalParams.
         tc.variables["ODR_BUNDLE_ASSETS"] = self.options.get_safe("bundle_assets", True)
+
+        # When ODR_BUNDLE_ASSETS is on, odrcore's CMake copies third-party data
+        # files into its own data dir. Point it at each dependency's files
+        # directly via the package folders (not via runenv) so bundling works.
+        if self.options.get_safe("with_libmagic"):
+            libmagic = self.dependencies["libmagic"].package_folder
+            tc.variables["LIBMAGIC_DATABASE_PATH"] = os.path.join(libmagic, "res", "magic.mgc")
+        if self.options.get_safe("with_pdf2htmlEX"):
+            pdf2htmlex = self.dependencies["pdf2htmlex"].package_folder
+            poppler_data = self.dependencies["poppler-data"].package_folder
+            fontconfig = self.dependencies["fontconfig"].package_folder
+            tc.variables["PDF2HTMLEX_DATA_PATH"] = os.path.join(pdf2htmlex, "share", "pdf2htmlEX")
+            tc.variables["POPPLER_DATA_PATH"] = os.path.join(poppler_data, "share", "poppler")
+            tc.variables["FONTCONFIG_DATA_PATH"] = os.path.join(fontconfig, "res", "share")
+
         tc.generate()
 
         deps = CMakeDeps(self)
