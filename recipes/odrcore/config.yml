@@ -45,5 +45,9 @@ versions:
     folder: "5"
   "5.2.0":
     folder: "5"
+  "5.3.0":
+    folder: "5"
+  "5.4.0":
+    folder: "5"
   "9.9.9":
     folder: "main"
