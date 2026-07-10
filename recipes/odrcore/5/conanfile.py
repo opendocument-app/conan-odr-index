@@ -1,6 +1,7 @@
 from conan import ConanFile
 from conan.tools.build import check_min_cppstd
 from conan.tools.cmake import CMakeToolchain, CMakeDeps, CMake, cmake_layout
+from conan.tools.env import Environment
 from conan.tools.files import (
     apply_conandata_patches, export_conandata_patches, get
 )
@@ -13,7 +14,7 @@ class OpenDocumentCoreConan(ConanFile):
     homepage = "https://opendocument.app/"
     description = "C++ library that translates office documents to HTML"
     topics = "open document", "openoffice xml", "open document reader"
-    license = "GPL 3.0"
+    license = "MPL-2.0"
 
     settings = "os", "arch", "compiler", "build_type"
     options = {
@@ -92,6 +93,21 @@ class OpenDocumentCoreConan(ConanFile):
         # paths at runtime (e.g. via odr::GlobalParams) can set this to False to
         # skip bundling them into the odrcore package at build time.
         tc.variables["ODR_BUNDLE_ASSETS"] = self.options.get_safe("bundle_assets", True)
+
+        # When ODR_BUNDLE_ASSETS is on, odrcore's CMake copies third-party data
+        # files (fontconfig/poppler/pdf2htmlEX data, magic.mgc) into its own data
+        # dir and needs their source paths at configure time. It never discovers
+        # them itself, so bridge them from the dependencies' runenv (exported by
+        # their package_info()); otherwise the build fails fast (issue #599).
+        runenv_info = Environment()
+        for dep in self.dependencies.host.topological_sort.values():
+            runenv_info.compose_env(dep.runenv_info)
+        envvars = runenv_info.vars(self)
+        tc.variables["FONTCONFIG_DATA_PATH"] = envvars.get("FONTCONFIG_PATH")
+        tc.variables["POPPLER_DATA_PATH"] = envvars.get("POPPLER_DATA_DIR")
+        tc.variables["PDF2HTMLEX_DATA_PATH"] = envvars.get("PDF2HTMLEX_DATA_DIR")
+        tc.variables["LIBMAGIC_DATABASE_PATH"] = envvars.get("MAGIC")
+
         tc.generate()
 
         deps = CMakeDeps(self)
