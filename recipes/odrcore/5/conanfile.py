@@ -5,6 +5,7 @@ from conan.tools.env import Environment
 from conan.tools.files import (
     apply_conandata_patches, export_conandata_patches, get
 )
+from conan.tools.scm import Version
 
 
 class OpenDocumentCoreConan(ConanFile):
@@ -62,7 +63,14 @@ class OpenDocumentCoreConan(ConanFile):
         if self.options.get_safe("with_http_server"):
             self.requires("cpp-httplib/0.28.0")
         if self.options.get_safe("with_pdf2htmlEX"):
-            self.requires("pdf2htmlex/0.18.8.rc1-odr-git-732fd68")
+            # pdf2htmlex pins poppler/fontforge transitively. The newer build
+            # (732fd68 -> poppler 26.05.0-odr, fontforge 20251009) is only
+            # compatible with odrcore >= 5.3.0; older cores need the previous
+            # pdf2htmlex (eb5d291 -> poppler 24.08.0-odr, fontforge 20240423-git).
+            if Version(self.version) >= "5.3.0":
+                self.requires("pdf2htmlex/0.18.8.rc1-odr-git-732fd68")
+            else:
+                self.requires("pdf2htmlex/0.18.8.rc1-odr-git-eb5d291")
         if self.options.get_safe("with_wvWare"):
             self.requires("wvware/1.2.9-odr")
         if self.options.get_safe("with_libmagic", False):
