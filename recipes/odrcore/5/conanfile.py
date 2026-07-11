@@ -23,6 +23,7 @@ class OpenDocumentCoreConan(ConanFile):
         "with_pdf2htmlEX": [True, False],
         "with_wvWare": [True, False],
         "with_libmagic": [True, False],
+        "with_http_server": [True, False],
         "bundle_assets": [True, False],
     }
     default_options = {
@@ -31,6 +32,7 @@ class OpenDocumentCoreConan(ConanFile):
         "with_pdf2htmlEX": True,
         "with_wvWare": True,
         "with_libmagic": True,
+        "with_http_server": True,
         "bundle_assets": True,
     }
 
@@ -56,8 +58,9 @@ class OpenDocumentCoreConan(ConanFile):
         self.requires("uchardet/0.0.8")
         self.requires("utfcpp/4.0.8")
         self.requires("argon2/20190702-odr")
-        self.requires("cpp-httplib/0.28.0")
 
+        if self.options.get_safe("with_http_server"):
+            self.requires("cpp-httplib/0.28.0")
         if self.options.get_safe("with_pdf2htmlEX"):
             self.requires("pdf2htmlex/0.18.8.rc1-odr-git-732fd68")
         if self.options.get_safe("with_wvWare"):
@@ -89,6 +92,7 @@ class OpenDocumentCoreConan(ConanFile):
         tc.variables["WITH_PDF2HTMLEX"] = self.options.get_safe("with_pdf2htmlEX", False)
         tc.variables["WITH_WVWARE"] = self.options.get_safe("with_wvWare", False)
         tc.variables["WITH_LIBMAGIC"] = self.options.get_safe("with_libmagic", False)
+        tc.variables["ODR_WITH_HTTP_SERVER"] = self.options.get_safe("with_http_server", True)
         # Consumers that ship the third-party data files themselves and wire the
         # paths at runtime (e.g. via odr::GlobalParams) can set this to False to
         # skip bundling them into the odrcore package at build time.
