@@ -25,6 +25,7 @@ class OpenDocumentCoreConan(ConanFile):
         "with_wvWare": [True, False],
         "with_libmagic": [True, False],
         "with_http_server": [True, False],
+        "with_cli": [True, False],
         "with_python": [True, False],
         "with_jni": [True, False],
         "bundle_assets": [True, False],
@@ -36,6 +37,7 @@ class OpenDocumentCoreConan(ConanFile):
         "with_wvWare": True,
         "with_libmagic": True,
         "with_http_server": True,
+        "with_cli": True,
         "with_python": False,
         "with_jni": False,
         "bundle_assets": True,
@@ -49,6 +51,9 @@ class OpenDocumentCoreConan(ConanFile):
         #   ODR_BUNDLE_ASSETS      -> 5.3.0 (assets were always installed before)
         #   ODR_WITH_HTTP_SERVER   -> 5.4.1 (cpp-httplib was a hard dependency)
         #   ODR_PYTHON / ODR_JNI   -> 5.7.0 (bindings did not exist before)
+        # ODR_CLI is far older than any of these, but only from 5.7.0 does the
+        # install step skip the cli targets it did not build - turning it off in
+        # an older core just breaks packaging.
         version = Version(self.version)
         if version < "5.1.0":
             del self.options.with_libmagic
@@ -57,6 +62,7 @@ class OpenDocumentCoreConan(ConanFile):
         if version < "5.4.1":
             del self.options.with_http_server
         if version < "5.7.0":
+            del self.options.with_cli
             del self.options.with_python
             del self.options.with_jni
         if self.settings.os == "Windows":
@@ -125,6 +131,9 @@ class OpenDocumentCoreConan(ConanFile):
         tc.variables["WITH_WVWARE"] = self.options.get_safe("with_wvWare", False)
         tc.variables["WITH_LIBMAGIC"] = self.options.get_safe("with_libmagic", False)
         tc.variables["ODR_WITH_HTTP_SERVER"] = self.options.get_safe("with_http_server", True)
+        # Consumers that only link the library (e.g. the mobile apps) can drop the
+        # cli tools, which otherwise get built and installed with the package.
+        tc.variables["ODR_CLI"] = self.options.get_safe("with_cli", True)
         tc.variables["ODR_PYTHON"] = self.options.get_safe("with_python", False)
         tc.variables["ODR_JNI"] = self.options.get_safe("with_jni", False)
         # Consumers that ship the third-party data files themselves and wire the
