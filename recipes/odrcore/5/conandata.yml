@@ -50,3 +50,6 @@ sources:
   "5.5.0":
     source:
       url: "https://github.com/opendocument-app/OpenDocument.core/archive/refs/tags/v5.5.0.tar.gz"
+  "5.6.0":
+    source:
+      url: "https://github.com/opendocument-app/OpenDocument.core/archive/refs/tags/v5.6.0.tar.gz"
