@@ -56,3 +56,6 @@ sources:
   "5.7.0":
     source:
       url: "https://github.com/opendocument-app/OpenDocument.core/archive/refs/tags/v5.7.0.tar.gz"
+  "5.7.1":
+    source:
+      url: "https://github.com/opendocument-app/OpenDocument.core/archive/refs/tags/v5.7.1.tar.gz"
