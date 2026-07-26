@@ -25,6 +25,8 @@ class OpenDocumentCoreConan(ConanFile):
         "with_wvWare": [True, False],
         "with_libmagic": [True, False],
         "with_http_server": [True, False],
+        "with_python": [True, False],
+        "with_jni": [True, False],
         "bundle_assets": [True, False],
     }
     default_options = {
@@ -34,17 +36,36 @@ class OpenDocumentCoreConan(ConanFile):
         "with_wvWare": True,
         "with_libmagic": True,
         "with_http_server": True,
+        "with_python": False,
+        "with_jni": False,
         "bundle_assets": True,
     }
 
     def config_options(self):
+        # Drop options that the requested core does not know about yet, so they
+        # cannot be set to a value that silently has no effect. The upstream
+        # CMake option each one drives appeared in:
+        #   WITH_LIBMAGIC          -> 5.1.0 (no libmagic support at all before)
+        #   ODR_BUNDLE_ASSETS      -> 5.3.0 (assets were always installed before)
+        #   ODR_WITH_HTTP_SERVER   -> 5.4.1 (cpp-httplib was a hard dependency)
+        #   ODR_PYTHON / ODR_JNI   -> 5.7.0 (bindings did not exist before)
+        version = Version(self.version)
+        if version < "5.1.0":
+            del self.options.with_libmagic
+        if version < "5.3.0":
+            del self.options.bundle_assets
+        if version < "5.4.1":
+            del self.options.with_http_server
+        if version < "5.7.0":
+            del self.options.with_python
+            del self.options.with_jni
         if self.settings.os == "Windows":
             del self.options.fPIC
             # @TODO: ideally Windows should just default_options['with_pdf2htmlEX'] = False
             # But by the time config_options() is executed, default_options is already done parsed.
             del self.options.with_pdf2htmlEX
             del self.options.with_wvWare
-            del self.options.with_libmagic
+            self.options.rm_safe("with_libmagic")
 
     def configure(self):
         if self.options.shared:
@@ -60,7 +81,8 @@ class OpenDocumentCoreConan(ConanFile):
         self.requires("utfcpp/4.0.8")
         self.requires("argon2/20190702-odr")
 
-        if self.options.get_safe("with_http_server"):
+        # Cores before 5.4.1 have no option for it and link cpp-httplib always.
+        if self.options.get_safe("with_http_server", True):
             self.requires("cpp-httplib/0.28.0")
         if self.options.get_safe("with_pdf2htmlEX"):
             # pdf2htmlex pins poppler/fontforge transitively. The newer build
@@ -75,6 +97,8 @@ class OpenDocumentCoreConan(ConanFile):
             self.requires("wvware/1.2.9-odr")
         if self.options.get_safe("with_libmagic", False):
             self.requires("libmagic/5.45")
+        if self.options.get_safe("with_python", False):
+            self.requires("pybind11/2.13.6")
 
     def build_requirements(self):
         self.test_requires("gtest/1.17.0")
@@ -101,6 +125,8 @@ class OpenDocumentCoreConan(ConanFile):
         tc.variables["WITH_WVWARE"] = self.options.get_safe("with_wvWare", False)
         tc.variables["WITH_LIBMAGIC"] = self.options.get_safe("with_libmagic", False)
         tc.variables["ODR_WITH_HTTP_SERVER"] = self.options.get_safe("with_http_server", True)
+        tc.variables["ODR_PYTHON"] = self.options.get_safe("with_python", False)
+        tc.variables["ODR_JNI"] = self.options.get_safe("with_jni", False)
         # Consumers that ship the third-party data files themselves and wire the
         # paths at runtime (e.g. via odr::GlobalParams) can set this to False to
         # skip bundling them into the odrcore package at build time.
